@@ -12,8 +12,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import subcomponents.app.subsCustomerMainWindowController;
 import subcomponents.body.Admin.AdminMainBodyController;
+import subcomponents.body.Customer.main.CustomerMainBodyController;
 import subcomponents.header.MainHeaderController;
 import time.Timeline;
 import utills.Engine;
@@ -28,8 +28,8 @@ public class mainWindowController {
     @FXML private MainHeaderController mainHeaderController;
     @FXML private ScrollPane adminMainBody;
     @FXML private AdminMainBodyController adminMainBodyController;
-    @FXML private BorderPane subsCustomerMainWindow;
-    @FXML private subsCustomerMainWindowController subsCustomerMainWindowController;
+    @FXML private ScrollPane customerMainBodyMain;
+    @FXML private CustomerMainBodyController customerMainBodyMainController;
 
     private Stage primaryStage;
     private SimpleBooleanProperty isFileSelected;
@@ -51,8 +51,8 @@ public class mainWindowController {
             mainHeaderController.setMainController(this);
             adminMainBodyController.setMainController(this);
         }
-        if(subsCustomerMainWindowController!=null){
-            subsCustomerMainWindowController.setMainController(this);
+        if(customerMainBodyMainController!=null){
+            customerMainBodyMainController.setMainController(this);
         }
         mainHeaderController.initializeComboBox();
         mainHeaderController.bindProperties(isFileSelected,selectedFileProperty,currentYazProperty);
@@ -72,7 +72,7 @@ public class mainWindowController {
 
 
     public void ChangeToCustomerCompenent(){
-        root.setCenter(subsCustomerMainWindow);
+        root.setCenter(customerMainBodyMain);
     }
 
     public void ChangeToAdminCompenent(){
@@ -101,6 +101,8 @@ public class mainWindowController {
         selectedFileProperty.set(absolutePath);
         isFileSelected.set(true);
     }
+
+
 
 }
 

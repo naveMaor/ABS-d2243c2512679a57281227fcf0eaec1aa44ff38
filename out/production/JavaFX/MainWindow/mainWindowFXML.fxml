@@ -3,7 +3,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainWindow.mainWindowController">
    <content>
       <BorderPane fx:id="root">
@@ -14,7 +13,7 @@
             <fx:include fx:id="adminMainBody" source="../subcomponents/body/Admin/AdminMainBody.fxml" />
          </center>
          <bottom>
-            <fx:include fx:id="subsCustomerMainWindow" source="../subcomponents/app/subsCustomerMainWindow.fxml" />
+            <fx:include fx:id="customerMainBodyMain" source="../subcomponents/body/Customer/main/CustomerMainBody.fxml" />
          </bottom>
       </BorderPane>
    </content>

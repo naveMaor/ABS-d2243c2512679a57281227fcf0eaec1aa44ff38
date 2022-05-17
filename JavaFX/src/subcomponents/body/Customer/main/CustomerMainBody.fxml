@@ -11,7 +11,7 @@
          <children>
             <TabPane tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab onSelectionChanged="#InformationButtonActionListener" text="Information">
+                <Tab text="Information">
                   <content>
                     <AnchorPane>
                            <children>
@@ -20,12 +20,12 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab onSelectionChanged="#ScrambleButtonActionListener" text="Scramble">
+                <Tab text="Scramble">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>
                 </Tab>
-                  <Tab onSelectionChanged="#PaymentButtonActionListener" text="Payment">
+                  <Tab text="Payment">
                     <content>
                       <AnchorPane>
                            <children>
