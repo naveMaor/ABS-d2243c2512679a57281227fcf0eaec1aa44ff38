@@ -56,8 +56,8 @@ public class User_interface {
      */
     public void func4() {
         //printing to UI all clients in database, letting user choose wanted client and getting the wanted deposit amount
-        printAllClientsFromDatabase();
-        String clientFullName = ChooseClientFromDatabase();
+        printFuncs.printAllClientsFromDatabase();
+        String clientFullName = printFuncs.ChooseClientFromDatabase();
         int deposit =  getDepositAmount(clientFullName);
 
         //making the wire
@@ -68,8 +68,8 @@ public class User_interface {
 
     public void func5(){
         //printing to UI all clients in database, letting user choose wanted client and getting the wanted withdraw amount
-        printAllClientsFromDatabase();
-        String clientFullName =ChooseClientFromDatabase();
+        printFuncs.printAllClientsFromDatabase();
+        String clientFullName =printFuncs.ChooseClientFromDatabase();
         int withdrawal =  printFuncs.getWithdrawalAmount(clientFullName);
         //making the wire
         engine.AccountTransaction(withdrawal,clientFullName);
