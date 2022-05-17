@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+
+<ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Customer.Information.CustomerInformationBodyController">
+   <content>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #fff18a;">
+         <center>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0" prefWidth="319.0" style="-fx-background-color: #fff18a;" BorderPane.alignment="CENTER">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="196.0" prefWidth="482.0" style="-fx-background-color: #fff18a;">
+                     <children>
+                        <Button layoutX="22.0" layoutY="15.0" mnemonicParsing="false" onAction="#InformationLoanerLoansTableButtonListener" prefHeight="154.0" prefWidth="366.0" style="-fx-border-color: black; -fx-background-color: cccccc;" text="Loaner loans table" textAlignment="CENTER">
+                           <font>
+                              <Font size="28.0" />
+                           </font>
+                           <effect>
+                              <DropShadow>
+                                 <input>
+                                    <Glow />
+                                 </input>
+                                 <color>
+                                    <Color red="0.8199999928474426" green="0.8199999928474426" blue="0.8199999928474426" opacity="0.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="407.0">
+                     <children>
+                        <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#LenderLoansTableButtonListener" prefHeight="154.0" prefWidth="366.0" style="-fx-border-color: black; -fx-background-color: cccccc;" text="Lender loans table" textAlignment="CENTER">
+                           <effect>
+                              <DropShadow>
+                                 <input>
+                                    <Glow />
+                                 </input>
+                                 <color>
+                                    <Color red="0.8199999928474426" green="0.8199999928474426" blue="0.8199999928474426" opacity="0.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                           <font>
+                              <Font size="29.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+              </items>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </SplitPane>
+         </center>
+         <right>
+            <VBox focusTraversable="true" maxHeight="350.0" prefHeight="350.0" prefWidth="168.0" style="-fx-background-color: cccccc; -fx-border-color: black;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="350.0" prefWidth="164.0" text="Account&#10;transactions" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets top="40.0" />
+                     </padding>
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="100.0" prefWidth="166.0" spacing="10.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#ChargeTransactionButtonListener" prefHeight="28.0" prefWidth="82.0" style="-fx-border-color: black; -fx-background-image: white;" text="Charge">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#WithdrawTransactionButtonListener" prefHeight="28.0" prefWidth="82.0" style="-fx-border-color: black; -fx-background-image: white;" text="Withdraw">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <effect>
+                  <Glow />
+               </effect>
+            </VBox>
+         </right>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
+         </padding>
+      </BorderPane>
+   </content>
+</ScrollPane>

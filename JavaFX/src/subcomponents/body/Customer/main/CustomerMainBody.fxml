@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<ScrollPane fx:id="customerMainBody" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Customer.main.CustomerMainBodyController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0">
+         <children>
+            <TabPane tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab onSelectionChanged="#InformationButtonActionListener" text="Information">
+                  <content>
+                    <AnchorPane>
+                           <children>
+                              <fx:include fx:id="customerInformationBody" source="../Information/CustomerInformationBody.fxml" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab onSelectionChanged="#ScrambleButtonActionListener" text="Scramble">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                  <Tab onSelectionChanged="#PaymentButtonActionListener" text="Payment">
+                    <content>
+                      <AnchorPane>
+                           <children>
+                              <fx:include fx:id="customerPaymentBody" source="../Payment/CustomerIpaymentBody.fxml" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children></AnchorPane>
+  </content>
+</ScrollPane>

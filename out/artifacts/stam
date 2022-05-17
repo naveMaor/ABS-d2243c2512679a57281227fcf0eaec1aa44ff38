@@ -1,0 +1,30 @@
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":3,
+    "params":{
+      "q":"title:חומות^=100 OR keywords:חומות OR title:חומות OR desctiption:חומות",
+      "hl":"true",
+      "hl.simple.post":"</strong>",
+      "indent":"true",
+      "hl.requireFieldMatch":"false",
+      "hl.usePhraseHighLighter":"false",
+      "q.op":"OR",
+      "hl.fl":"*",
+      "hl.simple.pre":"<strong>",
+      "_":"1652363932824",
+      "hl.highlightMultiTerm":"false"}},
+  "response":{"numFound":1,"start":0,"numFoundExact":true,"docs":[
+      {
+        "desctiption":"גם חודשים ארוכים לאחר שננטש מצליח המבנה המתפורר של כלא שש - מתקן הכליאה המיתולוגי שהפך לפולקלור ישראלי - לעורר התרגשות בלתי מוסברת. אסף קמר, חייל-אסיר לשעבר,  יצא למסע מצולם בין קירות \"הקצינייה\", דרך הצינוק של פלוגה ג' ועד ל\"אגף הבודדים\", והוצף בזיכרונות שעדיין מצליחים להכאיב",
+        "id":"https://www.ynet.co.il/news/article/rjmfdjntt",
+        "keywords":"israel, news, yedioth, ahronoth, hebrew, jewish, arab, palestine, intifada, update, search, israeli, newspaper, jerusalem, tel aviv, yediot, aharonoth, middle east, west bank, quotes, portal, maccabi, hapoel, beitar,  www.ynet.co.il",
+        "text":".support.plus@ynet.co.il.עוד פלוס.ראשי.אסף קמר.לביטול מינוי.צור קשר.התחברו.פורסם:.נגישות.גישה בלתי מוגבלת לכל כתבות +ynet.כדין יש לשלוח שם מלא ות.ז. באחד האופנים הבאים: מילוי הטופס או בדוא\"ל.תנאי שימוש.גם חודשים ארוכים לאחר שננטש מצליח המבנה המתפורר של כלא שש - מתקן הכליאה המיתולוגי שהפך לפולקלור ישראלי - לעורר התרגשות בלתי מוסברת. אסף קמר, חייל-אסיר לשעבר,  יצא למסע מצולם בין קירות \"הקצינייה\", דרך הצינוק של פלוגה ג' ועד ל\"אגף הבודדים\", והוצף בזיכרונות שעדיין מצליחים להכאיב.כבר יש לכם מנוי?.|.התחברות.ניתן לבטל בקלות בכל עת.עד 3 חיבורים פעילים בו זמנית.ynet+.שאלות ותשובות.חודש ראשון חינם!.חומות של ייאוש: בחזרה למבנה הנטוש של כלא שש.צילום: אסף קמר.עושים מינוי +ynet ונהנים מכל העולמות.25.01.22|09:51.או בת.ד. 438 ראשון לציון או בטל' 3773*/03-6933933 או בפקס: 03-6933999.מדיניות פרטיות",
+        "title":"חומות של ייאוש: בחזרה למבנה הנטוש של כלא שש",
+        "scanned_time":"2022-05-03T15:21:55.652Z",
+        "_version_":1731807690527604736}]
+  },
+  "highlighting":{
+    "https://www.ynet.co.il/news/article/rjmfdjntt":{
+      "text":[" בקלות בכל עת.עד 3 חיבורים פעילים בו זמנית.ynet+.שאלות ותשובות.חודש ראשון חינם!.<strong>חומות</strong> של ייאוש: בחזרה"],
+      "title":["<strong>חומות</strong> של ייאוש: בחזרה למבנה הנטוש של כלא שש"]}}}
