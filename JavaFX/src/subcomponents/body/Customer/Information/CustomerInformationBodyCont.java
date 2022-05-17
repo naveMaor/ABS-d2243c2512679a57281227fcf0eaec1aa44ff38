@@ -2,11 +2,9 @@ package subcomponents.body.Customer.Information;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import subcomponents.app.subsCustomerMainWindowController;
 
 public class CustomerInformationBodyCont {
 
-    private subsCustomerMainWindowController customerMainWindowController;
 
 
     @FXML
@@ -29,7 +27,5 @@ public class CustomerInformationBodyCont {
 
     }
 
-    public void setMainController(subsCustomerMainWindowController customerMainWindowController) {
-        this.customerMainWindowController = customerMainWindowController;
-    }
+
 }

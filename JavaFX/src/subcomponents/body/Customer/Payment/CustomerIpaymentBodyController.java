@@ -2,11 +2,9 @@ package subcomponents.body.Customer.Payment;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import subcomponents.app.subsCustomerMainWindowController;
 
 public class CustomerIpaymentBodyController {
 
-    private subsCustomerMainWindowController customerMainWindowController;
 
 
     @FXML
@@ -19,8 +17,6 @@ public class CustomerIpaymentBodyController {
 
     }
 
-    public void setCustomerMainWindowController(subsCustomerMainWindowController customerMainWindowController) {
-        this.customerMainWindowController = customerMainWindowController;
-    }
+
 
 }
