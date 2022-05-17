@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+
+<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.header.MainHeaderController">
+   <center>
+      <HBox prefHeight="61.0" prefWidth="557.0" spacing="5.0">
+         <children>
+            <ComboBox fx:id="ViewByComboBox" editable="true" onAction="#ViewByComboBoxListener" prefHeight="57.0" prefWidth="121.0" promptText="View By" style="-fx-color: #fff18a; -fx-background-color: #fff18a;">
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color red="1.0" green="0.9450980424880981" blue="0.5411764979362488" />
+                     </color>
+                  </DropShadow>
+               </effect>
+            </ComboBox>
+            <VBox spacing="5.0">
+               <children>
+                  <Label fx:id="NameFilePath" prefHeight="27.0" prefWidth="306.0" style="-fx-background-color: #ffbb9e;" text="Corrently Loaded File Path">
+                     <effect>
+                        <Glow />
+                     </effect>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label fx:id="NameCurrentYaz" minWidth="-Infinity" prefHeight="26.0" prefWidth="115.0" style="-fx-background-color: #ffbb9e;" text="Current Yaz">
+                     <effect>
+                        <Glow />
+                     </effect>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <padding>
+      <Insets left="20.0" right="20.0" />
+   </padding>
+</BorderPane>
