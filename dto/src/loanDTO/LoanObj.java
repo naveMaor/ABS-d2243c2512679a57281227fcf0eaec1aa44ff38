@@ -33,6 +33,10 @@ public class LoanObj {
     private double intristPerPayment;
     private double fundPerPayment;
 
+    //money that raised so far and money that left to raised to make active.
+    private double moneyRaisedSoFar;
+    private double missingMoney;
+
     //Original Loan info:
     private double originalInterest;//ribit mekorit
     private double loanOriginalDepth;//Schum halvaa mekori
@@ -63,6 +67,8 @@ public class LoanObj {
         this.loanAccount = loanToCopy.getLoanAccount();//todo: might be a problem with copying an list in the account
         this.intristPerPayment = loanToCopy.getIntristPerPayment();
         this.deviation= loanToCopy.getDeviation();
+        this.moneyRaisedSoFar=this.calculateDeposit(loanToCopy.getLendersList());
+        this.missingMoney=this.LeftToMakeActive();
     }
 
     public String getLoanID() {
@@ -160,5 +166,32 @@ public class LoanObj {
         }
 
         return -1000000000000.0;
+    }
+    public double calculateDeposit(List<Lenders> lendersList)
+    {
+        double sum=0;
+        for (Lenders lenders:lendersList)
+            sum+=lenders.getDeposit();
+
+        return sum;
+    }
+    public double LeftToMakeActive(){
+       return this.loanOriginalDepth-this.moneyRaisedSoFar;
+    }
+
+    public double getFundPerPayment() {
+        return fundPerPayment;
+    }
+
+    public double getMoneyRaisedSoFar() {
+        return moneyRaisedSoFar;
+    }
+
+    public double getMissingMoney() {
+        return missingMoney;
+    }
+
+    public double getTotalRemainingLoan() {
+        return totalRemainingLoan;
     }
 }
