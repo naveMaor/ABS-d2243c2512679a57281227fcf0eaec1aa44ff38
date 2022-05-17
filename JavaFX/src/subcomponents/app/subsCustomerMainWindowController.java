@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import subcomponents.body.Customer.Information.CustomerInformationBodyCont;
 
 public class subsCustomerMainWindowController {
 
@@ -17,7 +18,7 @@ public class subsCustomerMainWindowController {
     @FXML private subcomponents.header.Customer.CustomerHeaderController CustomerHeaderController;
 
     @FXML private ScrollPane CustomerInformationBody;
-    @FXML private subcomponents.body.Customer.Information.CustomerInformationBodyController CustomerInformationBodyController;
+    @FXML private CustomerInformationBodyCont CustomerInformationBodyController;
 
     @FXML private ScrollPane CustomerPaymentBody;
     @FXML private subcomponents.body.Customer.Payment.CustomerIpaymentBodyController CustomerPaymentBodyController;

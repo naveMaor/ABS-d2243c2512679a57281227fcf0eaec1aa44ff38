@@ -1,11 +1,10 @@
 package subcomponents.body.Customer.Information;
 
-import MainWindow.mainWindowController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import subcomponents.app.subsCustomerMainWindowController;
 
-public class CustomerInformationBodyController {
+public class CustomerInformationBodyCont {
 
     private subsCustomerMainWindowController customerMainWindowController;
 
