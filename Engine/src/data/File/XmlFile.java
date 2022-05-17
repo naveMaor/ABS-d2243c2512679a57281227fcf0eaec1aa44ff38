@@ -63,18 +63,16 @@ public class XmlFile implements Serializable {
         inputObject = null;
     }
 
-    public static void createInputObjectFromFile(File selectedFile) throws Exception {
-        try {
+    public static void createInputObjectFromFile(File selectedFile) throws FileNotFoundException, JAXBException {
             inputStream = new FileInputStream(selectedFile);
             AbsDescriptor descriptor = SchemaBasedJAXB.deserializeFrom(inputStream);
             inputObject= descriptor;
-        }
-        catch ( FileNotFoundException e) {
+/*        catch ( FileNotFoundException e) {
             throw new Exception("Invalid path name, file doesn't exist.");
         } catch (JAXBException j){
 
             throw new Exception("Couldn't read file");
-        }
+        }*/
         //isCopySucceeded = true;
     }
 }

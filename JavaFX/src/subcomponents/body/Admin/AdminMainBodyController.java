@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import time.Timeline;
 import utills.Engine;
 
+import java.io.IOException;
+
 public class AdminMainBodyController {
     Engine engine = Engine.getInstance();
 
@@ -39,7 +41,11 @@ public class AdminMainBodyController {
 
     @FXML
     void LoadFileButtonListener(ActionEvent event) {
-        mainController.openFileButtonAction();
+        try {
+            mainController.openFileButtonAction();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

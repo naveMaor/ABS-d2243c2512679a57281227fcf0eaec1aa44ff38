@@ -1,26 +1,38 @@
 
 package MainWindow;
 
+import java.awt.*;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 
+import MainWindow.popUpMessage.MessageController;
 import data.File.XmlFile;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import subcomponents.body.Admin.AdminMainBodyController;
 import subcomponents.body.Customer.main.CustomerMainBodyController;
 import subcomponents.header.MainHeaderController;
 import time.Timeline;
 import utills.Engine;
+import
+import javax.xml.bind.JAXBException;
 
 public class mainWindowController {
     Engine engine = Engine.getInstance();
-
+    public enum MessageType{Error,Successfully,Information};
 
 
     @FXML private BorderPane root;
@@ -83,26 +95,61 @@ public class mainWindowController {
         this.primaryStage = primaryStage;
     }
 
-    public void openFileButtonAction() {
+    public void openFileButtonAction() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select words file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        Scene scene = new Scene(load, 800, 600);
+        Stage errorWindow;
         if (selectedFile == null) {
             return;
         }
         try {
             XmlFile.createInputObjectFromFile(selectedFile);
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            errorWindow= MessageStage(MessageType.Error,e.getMessage());
+            errorWindow.initModality(Modality.APPLICATION_MODAL);
+            errorWindow.show();
+            e.printStackTrace();
+
+        } catch (JAXBException e) {
+            errorWindow= MessageStage(MessageType.Error,"file is corrupted");
+            errorWindow.initModality(Modality.APPLICATION_MODAL);
+            errorWindow.show();
             e.printStackTrace();
         }
+        errorWindow= MessageStage(MessageType.Successfully,"File loaded Successfully");
+        errorWindow.initModality(Modality.APPLICATION_MODAL);
+        errorWindow.show();
         engine.buildDataFromDescriptor();
         String absolutePath = selectedFile.getAbsolutePath();
         selectedFileProperty.set(absolutePath);
         isFileSelected.set(true);
     }
 
+    public Stage MessageStage(MessageType type , String message) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        MessageController messageController;
+        Stage stage = new Stage();
+        stage.setTitle("Message");
+        URL url = getClass().getResource("/popUpMessage/message-fxml.fxml");
+        fxmlLoader.setLocation(url);
+        ScrollPane MessagePane = fxmlLoader.load(url.openStream());
+        messageController = fxmlLoader.getController();
+        messageController.setMessageText(message);
+        switch (type) {
+            case Error:
+                Image icon = new Image(getClass().getResourceAsStream("/popUpMessage/resources/error-icon-png-23.jpg")) {
+                };
+                messageController.setMessageImage(icon);
+                break;
+            case Successfully:
+                icon = new Image(getClass().getResourceAsStream("/popUpMessage/resources/successfully-icon-png-24.jpg"));
+                messageController.setMessageImage(icon);
+                break;
 
-
+        }
+    }
 }
 
