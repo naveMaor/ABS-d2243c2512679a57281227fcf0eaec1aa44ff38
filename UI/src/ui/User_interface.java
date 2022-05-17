@@ -81,7 +81,7 @@ public class User_interface {
         //double amountOfMoneyPerLoan,minNeededInvestment,investment;
         int loanListSize;
         //getting wanted investor
-        String clientName = customersMenu();
+        String clientName = printFuncs.customersMenu();
         //creating wanted loans to invest list by investor wanted parameters
         List<Loan> loanslistToInvest = printFuncs.ChooseLoans(clientName);
         if(loanslistToInvest.isEmpty()){
