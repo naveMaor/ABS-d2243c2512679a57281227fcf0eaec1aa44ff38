@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="NewTable" prefHeight="319.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+          <TableColumn fx:id="ColumnId" prefWidth="50.0" text="id" />
+          <TableColumn fx:id="ColumnName" prefWidth="75.0" text="name" />
+            <TableColumn fx:id="ColumnStatus" prefWidth="75.0" text="status" />
+            <TableColumn fx:id="ColumnCategory" prefWidth="75.0" text="category" />
+            <TableColumn fx:id="ColumnAmount" prefWidth="75.0" text="Amount" />
+            <TableColumn fx:id="ColumnTotalYaz" prefWidth="75.0" text="Total Yaz" />
+            <TableColumn fx:id="ColumnPayEvery" minWidth="105.0" prefWidth="105.0" resizable="false" text="Pay Every (Yazes)" />
+            <TableColumn fx:id="ColumnInterest" prefWidth="75.0" text="Interest" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
