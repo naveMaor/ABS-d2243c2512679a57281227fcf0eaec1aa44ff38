@@ -1,6 +1,8 @@
 package data;
 
 import ClientDTO.ClientObj;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import loan.Loan;
 import customes.Client;
 import loan.enums.eDeviationPortion;
@@ -31,7 +33,6 @@ public class Database implements Serializable {
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
         loanMapByCategory = loanMapByCategory;
     }
-
     public void setClientMap(Map<String, Client> clientMap) {
         clientMap = clientMap;
     }
@@ -146,4 +147,10 @@ public class Database implements Serializable {
             }});
     }
 
+    public ObservableList<String> getAllClientNames(){
+        List<String> clientNameList = new ArrayList<>(clientMap.keySet());
+        ObservableList<String> result = FXCollections.observableArrayList(clientNameList);
+
+        return result;
+    }
 }

@@ -390,7 +390,35 @@ This func gets lenders list and return thus sum of their deposit
         } while (wantedInvestment != 0 && loanListSize != 0);
 
   return loanListSize;
-}}
+}
+
+    public boolean CheckInvalidFile(AbsDescriptor descriptor) throws Exception {
+        boolean isValid =true;
+        String s = new String();
+
+        if(!checkValidCategories(descriptor)){
+            s+= "\nthere is loan category that does not exist";
+            isValid = false;
+        }
+        if(!checkValidCustomersList(descriptor)){
+            s+="\nthere are two customers with the same name";
+            isValid =false;
+        }
+        if(!checkValidLoanOwner(descriptor)){
+            s+="\nthere is a loan with a loan owner name that does not exist";
+            isValid = false;
+        }
+        if(!checkValidPaymentFrequency(descriptor)){
+            s+="\npayment frequency is not fully divided by the total time of the loan";
+            isValid = false;
+        }
+
+        if(!isValid){
+            s="File not valid!\n" +s;
+            throw new Exception(s);
+        }
+        return isValid;
+    }}
 
 
 

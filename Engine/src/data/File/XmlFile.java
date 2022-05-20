@@ -15,6 +15,7 @@ public class XmlFile implements Serializable {
         return inputObject;
     }
 
+
     public static void getDetailsForFile(){
         Scanner scanner = new Scanner(System.in);
         boolean inputValidation = false;

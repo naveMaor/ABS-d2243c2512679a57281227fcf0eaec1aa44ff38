@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -32,9 +33,8 @@ public class MainHeaderController {
             mainController.ChangeToAdminCompenent();
 
         }
-        if (selectedBomboBox.equals("Customer")){
+        else{
             mainController.ChangeToCustomerCompenent();
-
         }
     }
 
@@ -46,7 +46,9 @@ public class MainHeaderController {
 
 
     public void initializeComboBox() {
-        ViewByComboBox.setItems((FXCollections.observableArrayList("Admin","Customer")));
+        ObservableList <String> clientNameList = mainController.getAllClientNames();
+        clientNameList.add("Admin");
+        ViewByComboBox.setItems(clientNameList);
     }
 
     public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleIntegerProperty currentYazProperty){

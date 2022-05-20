@@ -41,11 +41,7 @@ public class AdminMainBodyController {
 
     @FXML
     void LoadFileButtonListener(ActionEvent event) {
-        try {
             mainController.openFileButtonAction();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
