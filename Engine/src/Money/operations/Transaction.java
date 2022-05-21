@@ -6,14 +6,14 @@ import java.io.Serializable;
 import java.util.Objects;
 public class Transaction implements Serializable {
 
-    private Timeline timeOfMovement;// time of the movemonet was occured
+    private int timeOfMovement;// time of the movemonet was occured
     private double sum;// schum tnua
     private String to_from;
     private  char sign;
     private double balanceBefore;
     private double balanceAfter;
 
-    public Transaction(Timeline timeOfMovement, double sum, String to_from, double balanceBefore,double balanceAfter) {
+    public Transaction(int timeOfMovement, double sum, String to_from, double balanceBefore,double balanceAfter) {
         this.timeOfMovement = timeOfMovement;
         this.sum = sum;
         this.to_from=to_from;
@@ -34,7 +34,7 @@ public class Transaction implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
-       boolean shai = (this.sign == that.sign && timeOfMovement.getTimeStamp()==that.timeOfMovement.getTimeStamp() && to_from.equals(that.to_from));
+       boolean shai = (this.sign == that.sign && timeOfMovement==that.timeOfMovement && to_from.equals(that.to_from));
 
         return shai ;
     }           // same "Sign" of transaction +/-
@@ -62,7 +62,7 @@ public class Transaction implements Serializable {
     }
 
 
-    public Timeline getTimeOfMovement() {
+    public int getTimeOfMovement() {
         return timeOfMovement;
     }
 
@@ -78,7 +78,7 @@ public class Transaction implements Serializable {
         return balanceAfter;
     }
 
-    public void setTimeOfMovement(Timeline timeOfMovement) {
+    public void setTimeOfMovement(int timeOfMovement) {
         this.timeOfMovement = timeOfMovement;
     }
 
@@ -89,4 +89,7 @@ public class Transaction implements Serializable {
     public void setSum(double sum) {
         this.sum = sum;
     }
+
+
+
 }

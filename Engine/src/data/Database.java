@@ -6,9 +6,9 @@ import javafx.collections.ObservableList;
 import loan.Loan;
 import customes.Client;
 import loan.enums.eDeviationPortion;
+import loan.enums.eLoanStatus;
 import loanDTO.LoanObj;
 import time.Timeline;
-import utills.Engine;
 
 import java.io.Serializable;
 import java.util.*;
@@ -133,8 +133,8 @@ public class Database implements Serializable {
 
             public int compare(Object o1, Object o2) {
 
-                Integer x1 = ((Loan) o1).getStartLoanYaz().getTimeStamp();
-                Integer x2 = ((Loan) o2).getStartLoanYaz().getTimeStamp();
+                Integer x1 = ((Loan) o1).getStartLoanYaz();
+                Integer x2 = ((Loan) o2).getStartLoanYaz();
                 int sComp = x1.compareTo(x2);
 
                 if (sComp != 0) {
@@ -147,10 +147,23 @@ public class Database implements Serializable {
             }});
     }
 
-    public ObservableList<String> getAllClientNames(){
+    public ObservableList<String> o_getAllClientNames(){
         List<String> clientNameList = new ArrayList<>(clientMap.keySet());
         ObservableList<String> result = FXCollections.observableArrayList(clientNameList);
 
         return result;
     }
+
+    public ObservableList<Loan> o_getAllLoansByStatus(eLoanStatus status){
+        List<Loan> loanList = getLoanList();
+        ObservableList <Loan> result =  FXCollections.observableArrayList();
+        for (Loan loan:loanList){
+            if(loan.getStatus().equals(status)){
+                result.add(loan);
+            }
+        }
+        return result;
+    }
+
+
 }

@@ -9,6 +9,8 @@ import data.schema.generated.AbsCustomer;
 import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 //
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import loan.Loan;
 import Money.operations.Transaction;
 import loan.enums.eDeviationPortion;
@@ -63,7 +65,7 @@ This func gets lenders list and return thus sum of their deposit
         Account accDest = database.getClientByname(accDestName).getMyAccount();
         double balanceAfter= accDest.getCurrBalance()+money;
         //create a timestamp
-        Timeline timeStamp = new Timeline(Timeline.getCurrTime());
+        int timeStamp = Timeline.getCurrTime();
         //update dest account
         Transaction transaction = new Transaction(timeStamp,money,"My Account",accDest.getCurrBalance(),balanceAfter);
         accDest.getTnuaList().add(transaction);
@@ -73,7 +75,7 @@ This func gets lenders list and return thus sum of their deposit
     public void TransferMoneyBetweenAccounts(Account accSource, double money, Account accDest)
     {
         //create a timestamp
-        Timeline timeStamp = new Timeline(Timeline.getCurrTime());
+        int timeStamp = Timeline.getCurrTime();
 
         //update source account
         Transaction transactionMinus = new Transaction(timeStamp,(-money),String.valueOf(accDest.getID()),accSource.getCurrBalance(),accSource.getCurrBalance()-money);
@@ -154,7 +156,6 @@ This func gets lenders list and return thus sum of their deposit
 /*    *//**
      * this fun get loan list and order it by two parameters:
      * getStartLoanYaz and then nextExpectedPaymentAmount
-     * @param LoanList
      *//*
     public void orderLoanList(List<Loan> LoanList) {
 
@@ -179,6 +180,7 @@ This func gets lenders list and return thus sum of their deposit
     public void filterAndHandleLoansListAfterPromote(){
         List<Loan> sortedLoanList = database.getSortedLoanList();
         for (Loan loan:sortedLoanList){
+            loan.setNextYazToPay(loan.nextYazToPay());
             if((loan.nextYazToPay() == 0)&&((loan.getStatus()== ACTIVE)|| (loan.getStatus()== RISK))){
                 loan.handleLoanAfterTimePromote();
             }
@@ -384,6 +386,10 @@ This func gets lenders list and return thus sum of their deposit
                     loanslistToInvest.remove(index);
                 else //should move foward nothing was removed
                     ++index;
+                double totalRaisedDeposit = calculateDeposit(loan.getLendersList());
+                double missingMoney = loan.getLoanOriginalDepth() - totalRaisedDeposit;
+                loan.setMissingMoney(missingMoney);
+                loan.setTotalRaisedDeposit(totalRaisedDeposit);
             }
             loanListSize=loanslistToInvest.size();//NEWLY ADDED
             // as long as there is money left to invest , or list of optional investments is not empty
@@ -418,7 +424,25 @@ This func gets lenders list and return thus sum of their deposit
             throw new Exception(s);
         }
         return isValid;
-    }}
+    }
+
+    public ObservableList<Transaction> getClientTransactionsList(String name){
+        Client client = database.getClientByname(name);
+        ObservableList <Transaction> result =  FXCollections.observableArrayList();
+        Account account = client.getMyAccount();
+        List<Transaction> transactionList = account.getTnuaList();
+        if(!transactionList.isEmpty()) {
+            double lastBalance = transactionList.get(0).getBalanceBefore();
+
+            for (Transaction transaction : transactionList) {
+                transaction.setBalanceBefore(lastBalance);
+                transaction.setBalanceAfter(lastBalance + transaction.getSum());
+            }
+        }
+        result.addAll(transactionList);
+        return result;
+    }
+}
 
 
 

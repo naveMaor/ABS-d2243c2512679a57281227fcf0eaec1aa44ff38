@@ -5,9 +5,9 @@ package MainWindow;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 
 import MainWindow.popUpMessage.MessageController;
+import Money.operations.Transaction;
 import data.File.XmlFile;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,7 +15,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -49,6 +48,7 @@ public class mainWindowController {
     private SimpleBooleanProperty isAdminWindow;
     private SimpleStringProperty selectedFileProperty;
     private SimpleIntegerProperty currentYazProperty;
+    private SimpleStringProperty customerName = new SimpleStringProperty();
 
     public mainWindowController() {
         isAdminWindow = new SimpleBooleanProperty(true);
@@ -68,8 +68,9 @@ public class mainWindowController {
             customerMainBodyMainController.setMainController(this);
         }
         //mainHeaderController.initializeComboBox();
-        mainHeaderController.bindProperties(isFileSelected,selectedFileProperty,currentYazProperty);
+        mainHeaderController.bindProperties(isFileSelected,selectedFileProperty,currentYazProperty,customerName);
         adminMainBodyController.bindProperties(isFileSelected,selectedFileProperty);
+        customerMainBodyMainController.bindProperties(customerName);
     }
 
     //todo:do we really need it?!?
@@ -86,6 +87,7 @@ public class mainWindowController {
 
     public void ChangeToCustomerCompenent(){
         root.setCenter(customerMainBodyMain);
+        System.out.println(customerName.get());
     }
 
     public void ChangeToAdminCompenent(){
@@ -131,6 +133,7 @@ public class mainWindowController {
         String absolutePath = selectedFile.getAbsolutePath();
         selectedFileProperty.set(absolutePath);
         mainHeaderController.initializeComboBox();
+        adminMainBodyController.initializeAdminTables();
         isFileSelected.set(true);
     }
 
@@ -166,7 +169,7 @@ public class mainWindowController {
     }
 
     public ObservableList<String> getAllClientNames(){
-        return engine.getDatabase().getAllClientNames();
+        return engine.getDatabase().o_getAllClientNames();
     }
 
 

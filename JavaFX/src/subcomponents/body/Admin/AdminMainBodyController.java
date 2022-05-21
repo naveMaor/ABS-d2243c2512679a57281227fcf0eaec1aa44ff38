@@ -6,10 +6,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import subcomponents.body.Admin.adminClientTable.adminClientTableController;
+import subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
 import time.Timeline;
 import utills.Engine;
-
-import java.io.IOException;
 
 public class AdminMainBodyController {
     Engine engine = Engine.getInstance();
@@ -25,9 +26,13 @@ public class AdminMainBodyController {
     @FXML
     private Button LoadFileButtonId;
 
-    @FXML
-    private Button LoansButtonId;
 
+
+    @FXML private AnchorPane adminLoanTables;
+    @FXML private adminLoanTablesController adminLoanTablesController;
+
+    @FXML private AnchorPane adminClientTable;
+    @FXML private adminClientTableController adminClientTableController;
 
     @FXML
     void CustomersInformationButtonListener(ActionEvent event) {
@@ -55,9 +60,13 @@ public class AdminMainBodyController {
 
 
     public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty){
-        CustomersInformationButtonId.disableProperty().bind(isFileSelected.not());
+        //CustomersInformationButtonId.disableProperty().bind(isFileSelected.not());
         IncreaseYazButtonId.disableProperty().bind(isFileSelected.not());
         //LoadFileButtonId.disableProperty().bind(isFileSelected.not());
-        LoansButtonId.disableProperty().bind(isFileSelected.not());
+    }
+
+    public void initializeAdminTables(){
+        adminLoanTablesController.initializeLoansTable();
+        adminClientTableController.initializeClientTable();
     }
 }

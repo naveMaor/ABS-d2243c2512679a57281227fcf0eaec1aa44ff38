@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -12,38 +13,28 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Admin.AdminMainBodyController">
    <content>
-      <GridPane prefHeight="368.0" prefWidth="600.0" style="-fx-background-color: #ffbb9e;">
+      <GridPane style="-fx-background-color: #ffbb9e;">
          <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="194.39996337890625" minWidth="30.0" prefWidth="30.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="550.0" minWidth="500.0" prefWidth="550.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
             <ColumnConstraints hgrow="NEVER" maxWidth="143.60003662109375" minWidth="30.0" prefWidth="30.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
             <RowConstraints maxHeight="123.60001220703126" minHeight="44.400000000000006" prefHeight="44.400000000000006" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="123.60001220703126" minHeight="0.0" prefHeight="61.00001831054688" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="196.80000000000004" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
             <RowConstraints maxHeight="128.5999969482422" minHeight="15.0" prefHeight="42.599993896484364" vgrow="NEVER" />
+            <RowConstraints maxHeight="131.80001831054688" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="131.80001831054688" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="77.60002441406249" minHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Button fx:id="LoansButtonId" mnemonicParsing="false" onAction="#LoansButtonListener" prefHeight="100.0" prefWidth="550.0" text="Loans" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets left="25.0" right="25.0" top="5.0" />
-               </GridPane.margin>
-               <font>
-                  <Font size="50.0" />
-               </font>
-            </Button>
-            <Button fx:id="CustomersInformationButtonId" mnemonicParsing="false" onAction="#CustomersInformationButtonListener" prefHeight="100.0" prefWidth="501.0" text="Customers information" GridPane.columnIndex="1" GridPane.rowIndex="5">
-               <GridPane.margin>
-                  <Insets left="25.0" right="25.0" />
-               </GridPane.margin>
-               <font>
-                  <Font size="26.0" />
-               </font>
-            </Button>
+            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <fx:include fx:id="adminLoanTables" source="adminLoanTables/adminLoanTablesMain/adminLoanTables.fxml" />
+               </children>
+            </AnchorPane>
             <HBox prefHeight="115.0" prefWidth="550.0" spacing="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <Button fx:id="IncreaseYazButtonId" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="30.0" prefWidth="174.0" style="-fx-background-color: grey;" text="Increase YAZ" textFill="WHITE">
@@ -73,6 +64,11 @@
                   <Insets top="15.0" />
                </GridPane.margin>
             </HBox>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <children>
+                  <fx:include fx:id="adminClientTable" source="adminClientTable/adminClientTable.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </children>
          <effect>
             <Glow />

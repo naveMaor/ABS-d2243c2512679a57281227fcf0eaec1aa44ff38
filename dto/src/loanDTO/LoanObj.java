@@ -24,9 +24,9 @@ public class LoanObj {
     private List<Payment> paymentsList = new ArrayList<>();// borrower paying every yaz list
 
     //Time settings data members:
-    private Timeline originalLoanTimeFrame = null;// misgeret zman halvaa
+    private int originalLoanTimeFrame;// misgeret zman halvaa
     private Timeline startLoanYaz = new Timeline();
-    private Timeline paymentFrequency = new Timeline();
+    private int paymentFrequency ;
     private Timeline endLoanYaz = new Timeline();
     private double interestPercentagePerTimeUnit ;//
 
@@ -86,10 +86,10 @@ public class LoanObj {
     public double getTotalLoanCostInterestPlusOriginalDepth() {
         return totalLoanCostInterestPlusOriginalDepth;
     }
-    public Timeline getOriginalLoanTimeFrame() {
+    public int getOriginalLoanTimeFrame() {
         return originalLoanTimeFrame;
     }
-    public Timeline getPaymentFrequency() {
+    public int getPaymentFrequency() {
         return paymentFrequency;
     }
     public eLoanStatus getStatus() {
@@ -135,7 +135,7 @@ public class LoanObj {
     public int nextYazToPay() {
         int currTime = Timeline.getCurrTime();
         int startLoanYaz = this.startLoanYaz.getTimeStamp();
-        int paymentFrequency = this.paymentFrequency.getTimeStamp();
+        int paymentFrequency = this.paymentFrequency;
 
         return ((currTime-startLoanYaz) % paymentFrequency );
     }
@@ -161,7 +161,7 @@ public class LoanObj {
                     return deviation.getSumOfDeviation();
                 }
                 else
-                    return (totalLoanCostInterestPlusOriginalDepth / (originalLoanTimeFrame.getTimeStamp()/paymentFrequency.getTimeStamp()));
+                    return (totalLoanCostInterestPlusOriginalDepth / (originalLoanTimeFrame/paymentFrequency));
             }
         }
 

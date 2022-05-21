@@ -3,6 +3,7 @@ package ClientDTO;
 import customes.Account;
 import customes.Client;
 import loan.Loan;
+import loan.enums.eLoanStatus;
 import loanDTO.LoanObj;
 
 import java.io.Serializable;
@@ -34,5 +35,26 @@ public class ClientObj {
         }
         public List<LoanObj> getClientAsBorrowLoanObjList() {
                 return clientAsBorrowLoanList;
+        }
+
+        public int getNumberOfLoansByStatus(eLoanStatus eLoanStatus,int lenderOrBorrower){
+                int lender=1;
+                int borrower=0;
+                int result=0;
+                if(lenderOrBorrower==lender){
+                        for (LoanObj loanObj:clientAsLenderLoanList) {
+                                if(loanObj.getStatus()==eLoanStatus){
+                                     ++result;
+                                }
+                        }
+                }
+                else{
+                        for (LoanObj loanObj:clientAsBorrowLoanList) {
+                                if(loanObj.getStatus()==eLoanStatus){
+                                        ++result;
+                                }
+                        }
+                }
+                return result;
         }
 }

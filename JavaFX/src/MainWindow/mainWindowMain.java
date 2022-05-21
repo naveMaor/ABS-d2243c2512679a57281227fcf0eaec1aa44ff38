@@ -29,8 +29,6 @@ public class mainWindowMain extends Application {
         mainWindowController controller =loader.getController();
         controller.setPrimaryStage(primaryStage);
 
-        //todo: connect engine instance to controller
-        //todo: create Engine instance
 
         primaryStage.setTitle("ABS System");
 

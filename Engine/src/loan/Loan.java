@@ -31,10 +31,10 @@ public class Loan implements Serializable {
     private List<Payment> paymentsList = new ArrayList<>();// borrower paying every yaz list
 
     //Time settings data members:
-    private Timeline originalLoanTimeFrame = null;// misgeret zman halvaa
-    private Timeline startLoanYaz = new Timeline();
-    private Timeline paymentFrequency = new Timeline();
-    private Timeline endLoanYaz = new Timeline();
+    private int originalLoanTimeFrame;// misgeret zman halvaa
+    private int startLoanYaz;
+    private int paymentFrequency;
+    private int endLoanYaz;
     private double interestPercentagePerTimeUnit ;//
 
    private double intristPerPayment;
@@ -49,7 +49,9 @@ public class Loan implements Serializable {
     private double payedInterest=0;//ribit shulma
     private double payedFund=0;//keren shulma
     private Deviation deviation;
-
+    double missingMoney;
+    double totalRaisedDeposit;
+    int nextYazToPay;
     //remaining Loan data:
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
 
@@ -76,11 +78,11 @@ public class Loan implements Serializable {
         this.borrowerName =borrowerName;
         this.loanCategory =loanCategory;
         this.loanOriginalDepth =loanOriginalDepth;
-        Timeline newOriginalLoanTimeFrame = new Timeline(originalLoanTimeFrame);
-        this.originalLoanTimeFrame =newOriginalLoanTimeFrame;
-        Timeline newPaymentFrequency = new Timeline(paymentFrequency);
-        this.paymentFrequency = newPaymentFrequency;
-        this.fundPerPayment = this.loanOriginalDepth/(this.originalLoanTimeFrame.getTimeStamp()/this.paymentFrequency.getTimeStamp());
+        //Timeline newOriginalLoanTimeFrame = new Timeline(originalLoanTimeFrame);
+        this.originalLoanTimeFrame =originalLoanTimeFrame;
+        //Timeline newPaymentFrequency = new Timeline(paymentFrequency);
+        this.paymentFrequency = paymentFrequency;
+        this.fundPerPayment = this.loanOriginalDepth/(this.originalLoanTimeFrame/this.paymentFrequency);
         this.status = eLoanStatus.NEW;
         this.loanID = LoanId;
         //this.loanID = Objects.hash(this.loanCategory, this.originalLoanTimeFrame, startLoanYaz) & 0xfffffff;
@@ -121,13 +123,13 @@ public class Loan implements Serializable {
     public void setPaymentsList(List<Payment> paymentsList) {
         this.paymentsList = paymentsList;
     }
-    public Timeline getOriginalLoanTimeFrame() {
+    public int getOriginalLoanTimeFrame() {
         return originalLoanTimeFrame;
     }
-    public Timeline getPaymentFrequency() {
+    public int getPaymentFrequency() {
         return paymentFrequency;
     }
-    public Timeline getEndLoanYaz() {
+    public int getEndLoanYaz() {
         return endLoanYaz;
     }
     public double getInterestPercentagePerTimeUnit() {
@@ -163,10 +165,10 @@ public class Loan implements Serializable {
     public List<Lenders> getLendersList() {
         return lendersList;
     }
-    public Timeline getStartLoanYaz() {
+    public int getStartLoanYaz() {
         return startLoanYaz;
     }
-    public void setStartLoanYaz(Timeline startLoanYaz) {
+    public void setStartLoanYaz(int startLoanYaz) {
         this.startLoanYaz = startLoanYaz;
     }
     public void setLendersList(List<Lenders> lendersList) {
@@ -189,11 +191,35 @@ public class Loan implements Serializable {
     }
 
     public double calculateInristPerPayment(){
-        return this.originalInterest/(originalLoanTimeFrame.getTimeStamp()/paymentFrequency.getTimeStamp());
+        return this.originalInterest/(originalLoanTimeFrame/paymentFrequency);
     }
 
     public Deviation getDeviation() {
         return deviation;
+    }
+
+    public void setMissingMoney(double missingMoney) {
+        this.missingMoney = missingMoney;
+    }
+
+    public void setTotalRaisedDeposit(double totalRaisedDeposit) {
+        this.totalRaisedDeposit = totalRaisedDeposit;
+    }
+
+    public void setNextYazToPay(int nextYazToPay) {
+        this.nextYazToPay = nextYazToPay;
+    }
+
+    public double getMissingMoney() {
+        return missingMoney;
+    }
+
+    public double getTotalRaisedDeposit() {
+        return totalRaisedDeposit;
+    }
+
+    public int getNextYazToPay() {
+        return nextYazToPay;
     }
 
     @Override
@@ -216,8 +242,8 @@ public class Loan implements Serializable {
      */
     public int nextYazToPay() {
         int currTime = Timeline.getCurrTime();
-        int startLoanYaz = this.startLoanYaz.getTimeStamp();
-        int paymentFrequency = this.paymentFrequency.getTimeStamp();
+        int startLoanYaz = this.startLoanYaz;
+        int paymentFrequency = this.paymentFrequency;
 
             return ((currTime-startLoanYaz) % paymentFrequency );
     }
@@ -251,7 +277,7 @@ public class Loan implements Serializable {
                     return deviation.getSumOfDeviation();
                 }
                 else
-                    return (totalLoanCostInterestPlusOriginalDepth / (originalLoanTimeFrame.getTimeStamp()/paymentFrequency.getTimeStamp()));
+                    return (totalLoanCostInterestPlusOriginalDepth / (originalLoanTimeFrame/paymentFrequency));
             }
         }
 
@@ -282,8 +308,8 @@ public class Loan implements Serializable {
         Client borrower = engine.returnClientByName(this.getBorrowerName());
         engine.TransferMoneyBetweenAccounts(loanAccount,loanOriginalDepth,borrower.getMyAccount());
         loanAccount.setCurrBalance(0);
-        Timeline startingLoanTimeStamp = new Timeline (Timeline.getCurrTime());
-        startLoanYaz=startingLoanTimeStamp;
+        //Timeline startingLoanTimeStamp = new Timeline (Timeline.getCurrTime());
+        startLoanYaz=Timeline.getCurrTime();
     }
 
     public void updateDynamicDataMembersAfterYazPromotion(double interest, double fund){
@@ -298,7 +324,7 @@ public class Loan implements Serializable {
     public void handleLoanAfterTimePromote(){
         Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
         Account borrowerAccount = borrowerAsClient.getMyAccount();
-        Timeline currTimeStamp = new Timeline(Timeline.getCurrTime());
+        int currTimeStamp = Timeline.getCurrTime();
         Double nextExpectedPaymentAmount = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
         Double nextExpectedInterest = nextExpectedPaymentAmount(eDeviationPortion.INTEREST);
         Double nextExpectedFund = nextExpectedPaymentAmount(eDeviationPortion.FUND);
@@ -355,7 +381,7 @@ public class Loan implements Serializable {
         //getting clients account
         Account accToPay = engine.getDatabase().getClientMap().get(lendersNameToPay).getMyAccount();
         //getting current timeStamp for transaction.
-        Timeline currTimeStamp = new Timeline(Timeline.getCurrTime());
+        int currTimeStamp = Timeline.getCurrTime();
             //updating lenders balance
             double updatedLenderBalance = accToPay.getCurrBalance()+amountToPayLender;
             //creating a transaction

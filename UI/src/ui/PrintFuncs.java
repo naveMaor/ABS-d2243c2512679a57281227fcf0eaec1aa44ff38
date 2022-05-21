@@ -73,8 +73,8 @@ public class PrintFuncs {
         System.out.println("sum of deviation: " + currLoan.getDeviation().getSumOfDeviation());
     }
     public static void printFINISHEDstatus(Loan currLoan){
-        Timeline startLoanYaz = currLoan.getStartLoanYaz();
-        Timeline endLoanYaz = currLoan.getEndLoanYaz();
+        int startLoanYaz = currLoan.getStartLoanYaz();
+        int endLoanYaz = currLoan.getEndLoanYaz();
         List<Payment> paymentsList = currLoan.getPaymentsList();
 
         System.out.println("start loan yaz: "+startLoanYaz);
@@ -374,7 +374,7 @@ public class PrintFuncs {
             //todo: notice here!!
                 if (!(client.getFullName().equalsIgnoreCase(loan.getBorrowerName()) ))//If the client's name is not the borrower
                         if (minInterestPerYaz <= loan.getInterestPercentagePerTimeUnit())
-                            if (minYazTimeFrame <= loan.getOriginalLoanTimeFrame().getTimeStamp())
+                            if (minYazTimeFrame <= loan.getOriginalLoanTimeFrame())
                                 if (engine.checkCategoryList(loanCategoryUserList, loan.getLoanCategory()))
                                     result.add(loan);
         }

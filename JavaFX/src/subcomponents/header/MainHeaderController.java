@@ -25,18 +25,21 @@ public class MainHeaderController {
     @FXML
     private ComboBox<String> ViewByComboBox;
 
+    private SimpleStringProperty choosenCustomerName = new SimpleStringProperty();
 
     @FXML
     void ViewByComboBoxListener(ActionEvent event) {
-        String selectedBomboBox = ViewByComboBox.getSelectionModel().getSelectedItem().toString();
+        String selectedBomboBox = ViewByComboBox.getValue();
+        choosenCustomerName.setValue(selectedBomboBox);
         if (selectedBomboBox.equals("Admin")){
             mainController.ChangeToAdminCompenent();
-
         }
         else{
             mainController.ChangeToCustomerCompenent();
         }
     }
+
+
 
 
 
@@ -51,13 +54,14 @@ public class MainHeaderController {
         ViewByComboBox.setItems(clientNameList);
     }
 
-    public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleIntegerProperty currentYazProperty){
+    public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleIntegerProperty currentYazProperty,SimpleStringProperty customerName){
         NameCurrentYaz.disableProperty().bind(isFileSelected.not());
         ViewByComboBox.disableProperty().bind(isFileSelected.not());
         //promoteYazButtonId.disableProperty().bind(isFileSelected.not());
         NameFilePath.textProperty().bind(selectedFileProperty);
         NameCurrentYaz.textProperty().bind(Bindings.concat("Current Yaz: ", currentYazProperty));
         //todo add isFileSelected bolean!!
+        customerName.bind(Bindings.concat(choosenCustomerName));
     }
 
 

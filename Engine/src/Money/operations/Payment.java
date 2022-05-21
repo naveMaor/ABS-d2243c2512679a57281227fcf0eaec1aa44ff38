@@ -8,7 +8,7 @@ public class Payment implements Serializable {
 
     private double fundPortion;
     private double interestPortion;
-    private Timeline paymentYaz;
+    private int paymentYaz;
     private double fundPlusInterest;
     private boolean isPayed;
 
@@ -31,7 +31,7 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Timeline paymentYaz, boolean isPayed,double fundPortion,double interestPortion) {
+    public Payment(int paymentYaz, boolean isPayed,double fundPortion,double interestPortion) {
         this.fundPortion = fundPortion;
         this.interestPortion = interestPortion;
         this.paymentYaz = paymentYaz;
@@ -51,10 +51,10 @@ public class Payment implements Serializable {
     }
 */
 
-    public Timeline getPaymentYaz() {
+    public int getPaymentYaz() {
         return paymentYaz;
     }
-    public void setPaymentYaz(Timeline paymentYaz) {
+    public void setPaymentYaz(int paymentYaz) {
         this.paymentYaz = paymentYaz;
     }
 
