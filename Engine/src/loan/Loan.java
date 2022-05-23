@@ -4,6 +4,7 @@ import customes.Account;
 import customes.Client;
 import customes.Lenders;
 import data.Database;
+import javafx.scene.control.Button;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
 import Money.operations.Payment;
@@ -59,7 +60,7 @@ public class Loan implements Serializable {
     private Account loanAccount;
 
     private CheckBox select=new CheckBox();
-
+    private Button infoButton = new Button();
 
     //constructors
     public Loan(String LoanId,String borrowerName, String loanCategory,double loanOriginalDepth,int originalLoanTimeFrame,int paymentFrequency, int intristPerPayment){
@@ -82,6 +83,7 @@ public class Loan implements Serializable {
         this.intristPerPayment = calculateInristPerPayment();
         this.deviation= new Deviation();
         this.select = new CheckBox();
+        this.infoButton = new Button();
     }
 
 
@@ -218,6 +220,10 @@ public class Loan implements Serializable {
 
     public void setSelect(CheckBox select) {
         this.select = select;
+    }
+
+    public Button getInfoButton() {
+        return infoButton;
     }
 
     @Override

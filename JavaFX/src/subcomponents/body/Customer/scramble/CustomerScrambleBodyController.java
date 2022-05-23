@@ -1,5 +1,6 @@
 package subcomponents.body.Customer.scramble;
 
+import customes.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +30,7 @@ public class CustomerScrambleBodyController {
     private int minInterest;
     private int minYaz;
     private int maxOpenLoans;
-
+    private String clientName;
     @FXML
     private Button activateScrambleButton;
 
@@ -109,17 +110,24 @@ public class CustomerScrambleBodyController {
 
     @FXML
     void activateActivateScrambleButton(ActionEvent event) {
-
-        String customerName = customerMainBodyController.getCustomerName();
+        int num = 0;
+        clientName = customerMainBodyController.getCustomerName();
         for (Loan loan:userFilteredLoanList){
             if(loan.getSelect().isSelected()){
                 CheckBoxLoanList.add(loan);
+                ++num;
             }
         }
-        engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,customerName);
-        ReleventLoansTable.getItems().clear();
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
-        alert.showAndWait();
+        if(num==0){
+            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!");
+            alert.showAndWait();
+        }
+        else {
+            engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName);
+            loadReleventLoansTable();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
+            alert.showAndWait();
+        }
     }
 
 
@@ -158,7 +166,9 @@ public class CustomerScrambleBodyController {
 
     @FXML
     void activateShowRelevantLoansListButton(ActionEvent event) {
-        String clientName = customerMainBodyController.getCustomerName();
+        clientName = customerMainBodyController.getCustomerName();
+        Alert alert;
+        double clientBalance =engine.getDatabase().getClientByname(clientName).getMyAccount().getCurrBalance();
         try {
             minInterest = Integer.parseInt(minimumInterestTextField.getText());
             minYaz = Integer.parseInt(minimumYazTextField.getText());
@@ -167,12 +177,18 @@ public class CustomerScrambleBodyController {
             maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
         }
         catch (NumberFormatException e){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
+            alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
             alert.showAndWait();
         }
-        userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
-        resetRelevantLoansTable();
-        loadReleventLoansTable();
+        if (amount>clientBalance){
+            alert = new Alert(Alert.AlertType.ERROR,"Amount must be less then client current balance:\n"+ clientBalance);
+            alert.showAndWait();
+        }
+        else{
+            userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+            resetRelevantLoansTable();
+            loadReleventLoansTable();
+        }
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -181,7 +197,6 @@ public class CustomerScrambleBodyController {
 
     public void initialize(){
         allCategoriesList = engine.getDatabase().getAllCategories();
-        //categoriesOptionsListView.getItems().addAll(allCategoriesList);
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
@@ -195,6 +210,9 @@ public class CustomerScrambleBodyController {
     }
 
     public void loadReleventLoansTable(){
+
+        userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+        resetRelevantLoansTable();
         ReleventLoansTable.setItems(userFilteredLoanList);
     }
 
