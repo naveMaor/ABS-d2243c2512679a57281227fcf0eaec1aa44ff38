@@ -3,6 +3,7 @@ package subcomponents.body.Customer.scramble;
 import customes.Client;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableIntegerValue;
 import javafx.beans.value.ObservableValue;
@@ -40,7 +41,6 @@ public class CustomerScrambleBodyController {
     private int minYaz;
     private int maxOpenLoans;
     private String clientName;
-
     @FXML
     private StackPane stackPane;
 
@@ -224,8 +224,9 @@ public class CustomerScrambleBodyController {
         p.progressProperty().bind(service.progressProperty());
         veil.visibleProperty().bind(service.runningProperty());
         p.visibleProperty().bind(service.runningProperty());
-
-        //System.out.println(service.valueProperty().get());
+        customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
+        customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
+        customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
         ReleventLoansTable.itemsProperty().bind(service.valueProperty());
 
 

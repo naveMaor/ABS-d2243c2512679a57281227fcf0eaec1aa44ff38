@@ -13,7 +13,7 @@
          <children>
             <TabPane tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab style="-fx-background-color: #d1e5ff;" text="Information">
+                <Tab fx:id="informationTabPane" style="-fx-background-color: #d1e5ff;" text="Information">
                   <content>
                     <AnchorPane>
                            <children>
@@ -30,7 +30,7 @@
                            </children></AnchorPane>
                   </content>
                 </Tab>
-                  <Tab style="-fx-background-color: #d1e5ff;" text="Payment">
+                  <Tab fx:id="paymentTabPane" style="-fx-background-color: #d1e5ff;" text="Payment">
                     <content>
                       <AnchorPane>
                            <children>

@@ -62,6 +62,7 @@ public class MainHeaderController {
         NameCurrentYaz.textProperty().bind(Bindings.concat("Current Yaz: ", currentYazProperty));
         //todo add isFileSelected bolean!!
         customerName.bind(Bindings.concat(choosenCustomerName));
+        ViewByComboBox.disableProperty().bind(mainController.getRunningServiceProperty());
     }
 
 

@@ -3,9 +3,12 @@ package subcomponents.body.Customer.main;
 import MainWindow.mainWindowController;
 import Money.operations.Transaction;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import subcomponents.body.Customer.Information.CustomerInformationBodyCont;
 import subcomponents.body.Customer.Payment.CustomerPaymentBodyController;
@@ -26,6 +29,8 @@ public class CustomerMainBodyController {
     @FXML private AnchorPane customerPaymentBody;
     @FXML private CustomerPaymentBodyController customerPaymentBodyController;
 
+    @FXML private Tab informationTabPane;
+    @FXML private Tab paymentTabPane;
 
 /*    @FXML
     private ScrollPane customerInformationBody;
@@ -46,6 +51,8 @@ public class CustomerMainBodyController {
         return customerName;
     }
 
+    private SimpleBooleanProperty runningServiceProperty= new SimpleBooleanProperty();
+
     @FXML public void initialize() {
         if (customerInformationBodyController != null&& customerScrambleBodyController!=null) {
             System.out.println(customerInformationBodyController);
@@ -58,6 +65,7 @@ public class CustomerMainBodyController {
 
     public void bindProperties(SimpleStringProperty customerName){
         this.customerName.bind(Bindings.concat(customerName));
+
     }
 
     public void setMainController(mainWindowController mainController) {
@@ -73,5 +81,21 @@ public class CustomerMainBodyController {
     public void resetFields(){
         customerScrambleBodyController.resetFileds();
         customerScrambleBodyController.resetRelevantLoansTable();
+    }
+
+    public Tab getInformationTabPane() {
+        return informationTabPane;
+    }
+
+    public Tab getPaymentTabPane() {
+        return paymentTabPane;
+    }
+
+    public boolean isRunningServiceProperty() {
+        return runningServiceProperty.get();
+    }
+
+    public SimpleBooleanProperty runningServicePropertyProperty() {
+        return runningServiceProperty;
     }
 }

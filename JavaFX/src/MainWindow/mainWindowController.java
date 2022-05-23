@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import MainWindow.popUpMessage.MessageController;
-import Money.operations.Transaction;
 import data.File.XmlFile;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -175,7 +174,9 @@ public class mainWindowController {
     }
 
 
-
+    public SimpleBooleanProperty getRunningServiceProperty(){
+        return customerMainBodyMainController.runningServicePropertyProperty();
+    }
 
 }
 
