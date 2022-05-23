@@ -61,6 +61,7 @@ public class CustomerMainBodyController {
             customerScrambleBodyController.setMainController(this);
         }
         customerScrambleBodyController.initialize();
+        resetFields();
     }
 
     public void bindProperties(SimpleStringProperty customerName){

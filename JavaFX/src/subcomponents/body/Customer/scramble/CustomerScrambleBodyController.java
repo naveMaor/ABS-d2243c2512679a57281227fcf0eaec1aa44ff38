@@ -124,11 +124,12 @@ public class CustomerScrambleBodyController {
     @FXML
     void activateActivateScrambleButton(ActionEvent event) {
         int num = 0;
+        ObservableList<Loan> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
-        for (Loan loan:userFilteredLoanList){
+        for (Loan loan:items){
             if(loan.getSelect().isSelected()){
                 CheckBoxLoanList.add(loan);
-                ++num;
+                num++;
             }
         }
         if(num==0){
@@ -136,10 +137,13 @@ public class CustomerScrambleBodyController {
             alert.showAndWait();
         }
         else {
+            ReleventLoansTable.getItems().removeAll(CheckBoxLoanList);
             engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName);
-            loadReleventLoansTable();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
             alert.showAndWait();
+            if (ReleventLoansTable.getItems().size()==0){
+                resetFileds();
+            }
         }
     }
 
@@ -218,9 +222,6 @@ public class CustomerScrambleBodyController {
         p.setMaxSize(140, 140);
         p.setStyle(" -fx-progress-color: orange;");
 
-        //change progress color
-
-
         p.progressProperty().bind(service.progressProperty());
         veil.visibleProperty().bind(service.runningProperty());
         p.visibleProperty().bind(service.runningProperty());
@@ -228,20 +229,16 @@ public class CustomerScrambleBodyController {
         customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
         customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
         ReleventLoansTable.itemsProperty().bind(service.valueProperty());
-
-
         stackPane.getChildren().addAll(veil, p);
-        service.start();
 
-/*        if (amount.get()>clientBalance){
+
+       if (amount>clientBalance){
             alert = new Alert(Alert.AlertType.ERROR,"Amount must be less then client current balance:\n"+ clientBalance);
             alert.showAndWait();
         }
         else{
-            userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest.get(),minYaz.get(),maxOpenLoans.get(),existChoosenCategories);
-            resetRelevantLoansTable();
-            loadReleventLoansTable();
-        }*/
+           service.start();
+        }
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -259,14 +256,14 @@ public class CustomerScrambleBodyController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
-        resetFileds();
+        //resetFileds();
     }
 
     public void loadReleventLoansTable(){
 
         userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
         resetRelevantLoansTable();
-        ReleventLoansTable.setItems(userFilteredLoanList);
+        //ReleventLoansTable.setItems(userFilteredLoanList);
     }
 
     public void resetFileds(){
