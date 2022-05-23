@@ -1,6 +1,7 @@
 package customes;
 
 import loan.Loan;
+import loan.enums.eLoanStatus;
 import loanDTO.LoanObj;
 
 import java.io.Serializable;
@@ -95,4 +96,14 @@ public class Client implements Serializable {
         }
     }*/
 
+
+    public int getOpenLoansNumber(){
+        int result=0;
+        for(Loan loan:clientAsBorrowLoanList){
+            if(loan.getStatus()!= eLoanStatus.FINISHED){
+                ++result;
+            }
+        }
+        return result;
+    }
 }

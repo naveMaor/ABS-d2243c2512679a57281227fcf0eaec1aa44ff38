@@ -111,6 +111,8 @@ public class Database implements Serializable {
         return result;
     }
 
+
+
     public Client getClientByname(String name){
         return clientMap.get(name);
     }

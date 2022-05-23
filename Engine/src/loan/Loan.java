@@ -12,6 +12,7 @@ import time.Timeline;
 import utills.Engine;
 import Money.*;
 
+import javafx.scene.control.CheckBox;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,24 +57,11 @@ public class Loan implements Serializable {
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
 
     private Account loanAccount;
-    //constructors
-/*
-    public Loan(String loanCategory, eLoanStatus status, String borrowerName, Timeline originalLoanTimeFrame, Timeline startLoanYaz, Timeline paymentFrequency, double interestPercentagePerTimeUnit, double loanOriginalDepth) {
-        this.loanCategory = loanCategory;
-        this.status = status;
-        this.borrowerName = borrowerName;
-        this.originalLoanTimeFrame = originalLoanTimeFrame;
-        this.startLoanYaz = startLoanYaz;
-        this.paymentFrequency = paymentFrequency;
-        this.interestPercentagePerTimeUnit = interestPercentagePerTimeUnit;
-        this.loanOriginalDepth = loanOriginalDepth;
-        //this.currInterestDepth = originalInterest - payedInterest;//schum ribit nochechit
-        //this.currFundDepth = loanOriginalDepth - payedFund;//schum keren nochchit
-        //this.totalRemainingLoan = currInterestDepth + currFundDepth;//fund+interest
-        calculateInterest();
-    }
-*/
 
+    private CheckBox select=new CheckBox();
+
+
+    //constructors
     public Loan(String LoanId,String borrowerName, String loanCategory,double loanOriginalDepth,int originalLoanTimeFrame,int paymentFrequency, int intristPerPayment){
         this.borrowerName =borrowerName;
         this.loanCategory =loanCategory;
@@ -93,7 +81,9 @@ public class Loan implements Serializable {
         this.loanAccount = new Account(Objects.hash(this.loanID) & 0xfffffff,0);
         this.intristPerPayment = calculateInristPerPayment();
         this.deviation= new Deviation();
+        this.select = new CheckBox();
     }
+
 
 
     public final double calculateCurrInterestDepth(){
@@ -220,6 +210,14 @@ public class Loan implements Serializable {
 
     public int getNextYazToPay() {
         return nextYazToPay;
+    }
+
+    public CheckBox getSelect() {
+        return select;
+    }
+
+    public void setSelect(CheckBox select) {
+        this.select = select;
     }
 
     @Override

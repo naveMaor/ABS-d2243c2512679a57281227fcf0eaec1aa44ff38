@@ -3,7 +3,9 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
 
 <ScrollPane fx:id="customerMainBody" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Customer.main.CustomerMainBodyController">
   <content>
@@ -11,7 +13,7 @@
          <children>
             <TabPane tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Information">
+                <Tab style="-fx-background-color: #d1e5ff;" text="Information">
                   <content>
                     <AnchorPane>
                            <children>
@@ -20,17 +22,27 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab text="Scramble">
+                <Tab onSelectionChanged="#initialize" text="Scramble">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <fx:include fx:id="customerScrambleBody" source="../scramble/CustomerScrambleBody.fxml" />
+                           </children></AnchorPane>
                   </content>
                 </Tab>
-                  <Tab text="Payment">
+                  <Tab style="-fx-background-color: #d1e5ff;" text="Payment">
                     <content>
                       <AnchorPane>
                            <children>
-                              <fx:include fx:id="customerPaymentBody" source="../Payment/CustomerIpaymentBody.fxml" />
+                              <fx:include fx:id="customerPaymentBody" source="../Payment/CustomerpaymentBody.fxml" />
                            </children>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="0.15534979104995728" green="0.16044238209724426" blue="0.1666666716337204" opacity="0.8700000047683716" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
                         </AnchorPane>
                     </content>
                   </Tab>

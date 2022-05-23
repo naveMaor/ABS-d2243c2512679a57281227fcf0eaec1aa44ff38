@@ -99,7 +99,7 @@ public class NewTableController {
     }
 
 
-    public void initializeTable() {
+    public void initialize(){
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("originalInterest"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
@@ -108,7 +108,10 @@ public class NewTableController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+    }
 
+    public void initializeTable() {
+        initialize();
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.NEW);
         NewTable.setItems(loanObservableList);
 

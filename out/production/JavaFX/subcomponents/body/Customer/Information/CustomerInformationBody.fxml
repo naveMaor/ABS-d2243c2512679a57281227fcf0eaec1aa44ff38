@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="customerInformationBody" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Customer.Information.CustomerInformationBodyCont">
+<ScrollPane fx:id="customerInformationBody" style="-fx-background-color: #e6fffe;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Customer.Information.CustomerInformationBodyCont">
    <content>
-      <BorderPane style="-fx-background-color: #fff18a;">
+      <BorderPane style="-fx-background-color: #d1e5ff;">
          <center>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" style="-fx-background-color: #fff18a;" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
               <items>
-                <AnchorPane style="-fx-background-color: #fff18a;" />
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="407.0">
+                <AnchorPane style="-fx-background-color: grey; -fx-border-color: black;">
+                     <effect>
+                        <Glow level="0.44" />
+                     </effect></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="407.0" style="-fx-background-color: grey; -fx-border-color: black;">
                      <children>
 <!--                        <Button layoutX="22.0" layoutY="14.0" mnemonicParsing="false" onAction="#LenderLoansTableButtonListener" prefHeight="154.0" prefWidth="366.0" style="-fx-border-color: black; -fx-background-color: cccccc;" text="Lender loans table" textAlignment="CENTER">
                            <effect>
@@ -36,6 +35,9 @@
                            </font>
                         </Button>-->
                      </children>
+                     <effect>
+                        <Glow level="0.44" />
+                     </effect>
                   </AnchorPane>
               </items>
                <opaqueInsets>
@@ -52,6 +54,9 @@
          <right>
             <fx:include fx:id="transactions" source="transactionsTableView/transactions.fxml" />
          </right>
+         <effect>
+            <Glow level="0.24" />
+         </effect>
       </BorderPane>
    </content>
 </ScrollPane>

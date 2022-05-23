@@ -9,17 +9,16 @@ import data.schema.generated.AbsCustomer;
 import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 //
+import exceptions.BalanceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 import loan.Loan;
 import Money.operations.Transaction;
-import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
 import time.Timeline;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static loan.enums.eLoanStatus.ACTIVE;
@@ -60,10 +59,12 @@ This func gets lenders list and return thus sum of their deposit
      * @param money
      * @param accDestName
      */
-    public void AccountTransaction(double money, String accDestName)
-    {
+    public void AccountTransaction(double money, String accDestName) throws BalanceException {
         Account accDest = database.getClientByname(accDestName).getMyAccount();
         double balanceAfter= accDest.getCurrBalance()+money;
+        if (balanceAfter<0){
+            throw new BalanceException("user can not be in minus");
+        }
         //create a timestamp
         int timeStamp = Timeline.getCurrTime();
         //update dest account
@@ -126,7 +127,7 @@ This func gets lenders list and return thus sum of their deposit
     //NIKOL: this should probably be part of one of the classes.
     //NIKOL: what are you doing here? why do you need a list where all the values are the same?
     //SHAI: in what context this function is used? check if a certain category is in sent Arraylist ?
-    public boolean checkCategoryList(List<String> loanCategoryArrayList, String category) {
+    public boolean checkCategoryList(ObservableList<String> loanCategoryArrayList, String category) {
         boolean result=false;
         for(String s:loanCategoryArrayList){
             if(s.equalsIgnoreCase(category)){
@@ -431,15 +432,35 @@ This func gets lenders list and return thus sum of their deposit
         ObservableList <Transaction> result =  FXCollections.observableArrayList();
         Account account = client.getMyAccount();
         List<Transaction> transactionList = account.getTnuaList();
-        if(!transactionList.isEmpty()) {
+
+/*        if(!transactionList.isEmpty()) {
             double lastBalance = transactionList.get(0).getBalanceBefore();
 
             for (Transaction transaction : transactionList) {
                 transaction.setBalanceBefore(lastBalance);
                 transaction.setBalanceAfter(lastBalance + transaction.getSum());
             }
-        }
+        }*/
         result.addAll(transactionList);
+        return result;
+    }
+
+    public ObservableList<Loan> O_getLoansToInvestList(String clientName, int minInterestPerYaz, int minYazTimeFrame, int maxOpenLoans, ObservableList<String> loanCategoryUserList){
+        Client client = database.getClientByname(clientName);
+        ObservableList<Loan> tmp = FXCollections.observableArrayList(getDatabase().getLoanList());
+        ObservableList<Loan> result = FXCollections.observableArrayList();
+        int clientOpenLoansNumber= client.getOpenLoansNumber();
+        for (Loan loan : tmp) {
+            if (loan.getStatus() == eLoanStatus.NEW || loan.getStatus() == eLoanStatus.PENDING)//if the loan is new or pending
+                //todo: notice here!!
+                if (!(client.getFullName().equalsIgnoreCase(loan.getBorrowerName()) ))//If the client's name is not the borrower
+                    if (minInterestPerYaz <= loan.getInterestPercentagePerTimeUnit())
+                        if (minYazTimeFrame <= loan.getOriginalLoanTimeFrame())
+                            if (checkCategoryList(loanCategoryUserList, loan.getLoanCategory()))
+                                if(clientOpenLoansNumber<=maxOpenLoans)
+                                    result.add(loan);
+        }
+
         return result;
     }
 }
