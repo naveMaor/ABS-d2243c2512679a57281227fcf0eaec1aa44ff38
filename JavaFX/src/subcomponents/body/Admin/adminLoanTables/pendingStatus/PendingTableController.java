@@ -107,7 +107,7 @@ public class PendingTableController {
 
     public void initializeTable() {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("originalInterest"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         LeftToMakeActive.setCellValueFactory(new PropertyValueFactory<Loan, Double>("missingMoney"));
         RaisedColmun.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalRaisedDeposit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));

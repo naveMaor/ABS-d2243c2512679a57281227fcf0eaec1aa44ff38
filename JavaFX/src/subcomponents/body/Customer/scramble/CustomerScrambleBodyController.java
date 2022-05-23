@@ -159,14 +159,20 @@ public class CustomerScrambleBodyController {
     @FXML
     void activateShowRelevantLoansListButton(ActionEvent event) {
         String clientName = customerMainBodyController.getCustomerName();
-        minInterest = Integer.parseInt(minimumInterestTextField.getText());
-        minYaz = Integer.parseInt(minimumYazTextField.getText());
-        maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
-        amount=Integer.parseInt(amountToInvestTextField.getText());
-        maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
+        try {
+            minInterest = Integer.parseInt(minimumInterestTextField.getText());
+            minYaz = Integer.parseInt(minimumYazTextField.getText());
+            maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
+            amount=Integer.parseInt(amountToInvestTextField.getText());
+            maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
+        }
+        catch (NumberFormatException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
+            alert.showAndWait();
+        }
         userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+        resetRelevantLoansTable();
         loadReleventLoansTable();
-        resetFileds();
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -175,9 +181,9 @@ public class CustomerScrambleBodyController {
 
     public void initialize(){
         allCategoriesList = engine.getDatabase().getAllCategories();
-        categoriesOptionsListView.getItems().addAll(allCategoriesList);
+        //categoriesOptionsListView.getItems().addAll(allCategoriesList);
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("originalInterest"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnCheckBox.setCellValueFactory(new PropertyValueFactory<Loan, String>("select"));
         ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
@@ -185,6 +191,7 @@ public class CustomerScrambleBodyController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        resetFileds();
     }
 
     public void loadReleventLoansTable(){
@@ -192,12 +199,15 @@ public class CustomerScrambleBodyController {
     }
 
     public void resetFileds(){
-        amountToInvestTextField.setText("");
-        maxOpenLoansTextField.setText("");
-        maxOwnershipTextField.setText("");
-        minimumInterestTextField.setText("");
-        minimumYazTextField.setText("");
+        amountToInvestTextField.clear();
+        maxOpenLoansTextField.clear();
+        maxOwnershipTextField.clear();
+        minimumInterestTextField.clear();
+        minimumYazTextField.clear();
         categoriesOptionsListView.getItems().addAll(allCategoriesList);
         userChoiceCategoriesListView.getItems().removeAll(allCategoriesList);
+    }
+    public void resetRelevantLoansTable(){
+        ReleventLoansTable.getItems().clear();
     }
 }

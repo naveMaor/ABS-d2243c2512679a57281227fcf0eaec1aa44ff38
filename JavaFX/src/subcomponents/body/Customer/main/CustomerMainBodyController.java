@@ -69,4 +69,9 @@ public class CustomerMainBodyController {
         return engine.getClientTransactionsList(customerName.get());
     }
 
+
+    public void resetFields(){
+        customerScrambleBodyController.resetFileds();
+        customerScrambleBodyController.resetRelevantLoansTable();
+    }
 }

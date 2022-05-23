@@ -105,7 +105,7 @@ public class ActiveTableController {
 
     public void initializeTable() {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("originalInterest"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
         ColumnName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
