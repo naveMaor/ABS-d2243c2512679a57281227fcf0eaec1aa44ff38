@@ -14,12 +14,22 @@ import utills.Engine;
 import java.util.List;
 
 public class CustomerScrambleBodyController {
-    Engine engine=Engine.getInstance();
+    private Engine engine=Engine.getInstance();
     private CustomerMainBodyController customerMainBodyController;
-    List<String> allCategoriesList;
-    ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();
-    List<String> choosenCategories;
-    ObservableList<String> existChoosenCategories;
+    private List<String> allCategoriesList;
+    private ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();
+    private ObservableList<Loan> CheckBoxLoanList =  FXCollections.observableArrayList();
+
+    private List<String> choosenCategories;
+    private ObservableList<String> existChoosenCategories;
+
+    private int amount;
+    private int maxOwnership;
+
+    private int minInterest;
+    private int minYaz;
+    private int maxOpenLoans;
+
     @FXML
     private Button activateScrambleButton;
 
@@ -99,11 +109,17 @@ public class CustomerScrambleBodyController {
 
     @FXML
     void activateActivateScrambleButton(ActionEvent event) {
-/*
-        int amount=Integer.parseInt(amountToInvestTextField.getText());
-        int maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
-*/
 
+        String customerName = customerMainBodyController.getCustomerName();
+        for (Loan loan:userFilteredLoanList){
+            if(loan.getSelect().isSelected()){
+                CheckBoxLoanList.add(loan);
+            }
+        }
+        engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,customerName);
+        ReleventLoansTable.getItems().clear();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
+        alert.showAndWait();
     }
 
 
@@ -143,9 +159,11 @@ public class CustomerScrambleBodyController {
     @FXML
     void activateShowRelevantLoansListButton(ActionEvent event) {
         String clientName = customerMainBodyController.getCustomerName();
-        int minInterest = Integer.parseInt(minimumInterestTextField.getText());
-        int minYaz = Integer.parseInt(minimumYazTextField.getText());
-        int maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
+        minInterest = Integer.parseInt(minimumInterestTextField.getText());
+        minYaz = Integer.parseInt(minimumYazTextField.getText());
+        maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
+        amount=Integer.parseInt(amountToInvestTextField.getText());
+        maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
         userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
         loadReleventLoansTable();
         resetFileds();

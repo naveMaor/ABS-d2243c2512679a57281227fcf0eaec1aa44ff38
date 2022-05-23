@@ -87,10 +87,11 @@ public class mainWindowController {
 
     public void ChangeToCustomerCompenent(){
         root.setCenter(customerMainBodyMain);
-        System.out.println(customerName.get());
+        //System.out.println(customerName.get());
     }
 
     public void ChangeToAdminCompenent(){
+        adminMainBodyController.initializeAdminTables();
         root.setCenter(adminMainBody);
     }
 
@@ -171,6 +172,8 @@ public class mainWindowController {
     public ObservableList<String> getAllClientNames(){
         return engine.getDatabase().o_getAllClientNames();
     }
+
+
 
 
 }

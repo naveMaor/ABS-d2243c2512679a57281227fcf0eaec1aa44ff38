@@ -17,7 +17,7 @@ import utills.Engine;
 
 public class NewTableController {
 
-    Engine engine =Engine.getInstance();
+    private Engine engine =Engine.getInstance();
 
     private adminLoanTablesController mainTablesController;
 

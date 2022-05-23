@@ -463,6 +463,9 @@ This func gets lenders list and return thus sum of their deposit
 
         return result;
     }
+
+
+
 }
 
 

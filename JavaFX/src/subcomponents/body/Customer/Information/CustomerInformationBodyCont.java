@@ -11,7 +11,7 @@ import subcomponents.body.Customer.main.CustomerMainBodyController;
 import utills.Engine;
 
 public class CustomerInformationBodyCont {
-    Engine engine= Engine.getInstance();
+    private Engine engine= Engine.getInstance();
     private CustomerMainBodyController customerMainBodyController;
 
     @FXML
