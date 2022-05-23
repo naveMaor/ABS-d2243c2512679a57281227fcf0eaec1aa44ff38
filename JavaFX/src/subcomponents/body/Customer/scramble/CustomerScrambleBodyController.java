@@ -1,16 +1,25 @@
 package subcomponents.body.Customer.scramble;
 
 import customes.Client;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.util.converter.NumberStringConverter;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import subcomponents.body.Customer.main.CustomerMainBodyController;
 import utills.Engine;
+import utills.scrambleService;
 
 import java.util.List;
 
@@ -27,10 +36,14 @@ public class CustomerScrambleBodyController {
     private int amount;
     private int maxOwnership;
 
-    private int minInterest;
+    private int minInterest ;
     private int minYaz;
     private int maxOpenLoans;
     private String clientName;
+
+    @FXML
+    private StackPane stackPane;
+
     @FXML
     private Button activateScrambleButton;
 
@@ -170,6 +183,22 @@ public class CustomerScrambleBodyController {
         Alert alert;
         double clientBalance =engine.getDatabase().getClientByname(clientName).getMyAccount().getCurrBalance();
         try {
+/*            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
+                    minInterest,
+                    new NumberStringConverter());
+            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
+                    minYaz,
+                    new NumberStringConverter());
+            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
+                    maxOpenLoans,
+                    new NumberStringConverter());
+            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
+                    amount,
+                    new NumberStringConverter());
+            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
+                    maxOwnership,
+                    new NumberStringConverter());*/
+
             minInterest = Integer.parseInt(minimumInterestTextField.getText());
             minYaz = Integer.parseInt(minimumYazTextField.getText());
             maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
@@ -180,15 +209,38 @@ public class CustomerScrambleBodyController {
             alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
             alert.showAndWait();
         }
-        if (amount>clientBalance){
+        scrambleService service =new scrambleService(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+
+        Region veil = new Region();
+        veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
+        veil.setPrefSize(400, 440);
+        ProgressIndicator p = new ProgressIndicator();
+        p.setMaxSize(140, 140);
+        p.setStyle(" -fx-progress-color: orange;");
+
+        //change progress color
+
+
+        p.progressProperty().bind(service.progressProperty());
+        veil.visibleProperty().bind(service.runningProperty());
+        p.visibleProperty().bind(service.runningProperty());
+
+        //System.out.println(service.valueProperty().get());
+        ReleventLoansTable.itemsProperty().bind(service.valueProperty());
+
+
+        stackPane.getChildren().addAll(veil, p);
+        service.start();
+
+/*        if (amount.get()>clientBalance){
             alert = new Alert(Alert.AlertType.ERROR,"Amount must be less then client current balance:\n"+ clientBalance);
             alert.showAndWait();
         }
         else{
-            userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+            userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest.get(),minYaz.get(),maxOpenLoans.get(),existChoosenCategories);
             resetRelevantLoansTable();
             loadReleventLoansTable();
-        }
+        }*/
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {

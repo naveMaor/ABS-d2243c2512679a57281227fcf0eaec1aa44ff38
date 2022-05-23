@@ -10,6 +10,7 @@ import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 //
 import exceptions.BalanceException;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -465,7 +466,28 @@ This func gets lenders list and return thus sum of their deposit
     }
 
 
+    public ObservableList<Loan> merge(ObservableList<Loan> into, ObservableList<Loan>... lists) {
+        final ObservableList<Loan> list = into;
+        for (ObservableList<Loan> l : lists) {
+            //list.addAll(l);
+            l.addListener((javafx.collections.ListChangeListener.Change<? extends Loan> c) -> {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        list.addAll(c.getAddedSubList());
+                    }
+                    if (c.wasRemoved()) {
+                        list.removeAll(c.getRemoved());
+                    }
+                }
+            });
+        }
 
+        return list;
+    }
+
+
+/*    public void merge(ObservableList<Loan> lists, ReadOnlyObjectProperty<ObservableList<Loan>> into, ObservableList<Loan> loans) {
+    }*/
 }
 
 

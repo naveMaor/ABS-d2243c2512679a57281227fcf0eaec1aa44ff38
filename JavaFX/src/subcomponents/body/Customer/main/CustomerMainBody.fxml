@@ -11,7 +11,7 @@
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0">
          <children>
-            <TabPane tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="customerTabPane" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab style="-fx-background-color: #d1e5ff;" text="Information">
                   <content>
