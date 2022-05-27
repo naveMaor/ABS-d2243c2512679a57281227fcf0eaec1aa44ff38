@@ -14,6 +14,7 @@ public class scrambleService extends Service<ObservableList<Loan>> {
     private int minInterest;
     private int minYaz;
     private int maxOpenLoans;
+    private int maxOwnership;
     private ObservableList<String> existChoosenCategories = FXCollections.observableArrayList();
     private ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();
 
@@ -66,12 +67,21 @@ public class scrambleService extends Service<ObservableList<Loan>> {
         this.existChoosenCategories = existChoosenCategories;
     }
 
-    public scrambleService(String clientName, int minInterest, int minYaz, int maxOpenLoans, ObservableList<String> existChoosenCategories) {
+    public int getMaxOwnership() {
+        return maxOwnership;
+    }
+
+    public void setMaxOwnership(int maxOwnership) {
+        this.maxOwnership = maxOwnership;
+    }
+
+    public scrambleService(String clientName, int minInterest, int minYaz, int maxOpenLoans, ObservableList<String> existChoosenCategories,int maxOwnership) {
         this.clientName = clientName;
         this.minInterest = minInterest;
         this.minYaz = minYaz;
         this.maxOpenLoans = maxOpenLoans;
         this.existChoosenCategories = existChoosenCategories;
+        this.maxOwnership = maxOwnership;
     }
 
     @Override
@@ -102,7 +112,7 @@ public class scrambleService extends Service<ObservableList<Loan>> {
                 updateProgress(200, 500); //40% progress
 
                 double clientBalance =engine.getDatabase().getClientByname(clientName).getMyAccount().getCurrBalance();
-                userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+                userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
 
                 Thread.sleep(1505);
                 updateProgress(500, 500); //100% task complete

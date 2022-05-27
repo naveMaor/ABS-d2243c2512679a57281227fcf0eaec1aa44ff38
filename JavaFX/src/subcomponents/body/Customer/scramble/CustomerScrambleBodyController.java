@@ -138,7 +138,7 @@ public class CustomerScrambleBodyController {
         }
         else {
             ReleventLoansTable.getItems().removeAll(CheckBoxLoanList);
-            engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName);
+            engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName,maxOwnership);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
             alert.showAndWait();
             if (ReleventLoansTable.getItems().size()==0){
@@ -186,6 +186,11 @@ public class CustomerScrambleBodyController {
         clientName = customerMainBodyController.getCustomerName();
         Alert alert;
         double clientBalance =engine.getDatabase().getClientByname(clientName).getMyAccount().getCurrBalance();
+        minInterest = -1;
+        maxOwnership = -1;
+        minYaz =-1;
+        amount = 0;
+        maxOpenLoans = -1;
         try {
 /*            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
                     minInterest,
@@ -202,18 +207,40 @@ public class CustomerScrambleBodyController {
             Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
                     maxOwnership,
                     new NumberStringConverter());*/
+            String minInterestText = minimumInterestTextField.getText();
+            if(minInterestText.matches("[0-9]+"))
+                minInterest =  Integer.parseInt(minInterestText);
+            //minInterest = Integer.parseInt(minimumInterestTextField.getText());
 
-            minInterest = Integer.parseInt(minimumInterestTextField.getText());
-            minYaz = Integer.parseInt(minimumYazTextField.getText());
-            maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
-            amount=Integer.parseInt(amountToInvestTextField.getText());
-            maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
+            String maxShareText = maxOwnershipTextField.getText();
+            if(maxShareText.matches("[0-9]+"))
+                maxOwnership =  Integer.parseInt(maxShareText);
+            //maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
+
+
+            String minYazText = minimumYazTextField.getText();
+            if(minYazText.matches("[0-9]+"))
+                minYaz =  Integer.parseInt(minYazText);
+            //minYaz = Integer.parseInt(minimumYazTextField.getText());
+
+
+            String investmentAmountText = amountToInvestTextField.getText();
+            if(investmentAmountText.matches("[0-9]+"))
+                amount =  Integer.parseInt(investmentAmountText);
+            //amount=Integer.parseInt(amountToInvestTextField.getText());
+
+            String maxInvolvedLoansText = maxOpenLoansTextField.getText();
+            if(maxInvolvedLoansText.matches("[0-9]+"))
+                maxOpenLoans =  Integer.parseInt(maxInvolvedLoansText);
+            //maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
+
+
         }
         catch (NumberFormatException e){
             alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
             alert.showAndWait();
         }
-        scrambleService service =new scrambleService(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+        scrambleService service =new scrambleService(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
 
         Region veil = new Region();
         veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
@@ -225,10 +252,13 @@ public class CustomerScrambleBodyController {
         p.progressProperty().bind(service.progressProperty());
         veil.visibleProperty().bind(service.runningProperty());
         p.visibleProperty().bind(service.runningProperty());
+
         customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
         customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
         customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
+
         ReleventLoansTable.itemsProperty().bind(service.valueProperty());
+
         stackPane.getChildren().addAll(veil, p);
 
 
@@ -261,7 +291,7 @@ public class CustomerScrambleBodyController {
 
     public void loadReleventLoansTable(){
 
-        userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories);
+        userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
         resetRelevantLoansTable();
         //ReleventLoansTable.setItems(userFilteredLoanList);
     }

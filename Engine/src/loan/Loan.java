@@ -3,7 +3,6 @@ package loan;
 import customes.Account;
 import customes.Client;
 import customes.Lenders;
-import data.Database;
 import javafx.scene.control.Button;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
@@ -51,9 +50,10 @@ public class Loan implements Serializable {
     private double payedInterest=0;//ribit shulma
     private double payedFund=0;//keren shulma
     private Deviation deviation;
-    double missingMoney;
-    double totalRaisedDeposit;
-    int nextYazToPay;
+    private double missingMoney = loanOriginalDepth;
+    private double totalRaisedDeposit;
+    private int nextYazToPay;
+    private double maxOwnershipMoneyForPercentage; // this data member only usable for calculating and remembering lenders investment according to max percentage given in scramble
     //remaining Loan data:
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
 
@@ -84,6 +84,7 @@ public class Loan implements Serializable {
         this.deviation= new Deviation();
         this.select = new CheckBox();
         this.infoButton = new Button();
+        this.missingMoney = this.loanOriginalDepth;
     }
 
 
@@ -169,61 +170,57 @@ public class Loan implements Serializable {
     public Account getLoanAccount() {
         return loanAccount;
     }
-
     public double getFundPerPayment() {
         return fundPerPayment;
     }
-
     public double getTotalRemainingLoan() {
         return totalRemainingLoan;
     }
-
     public double getIntristPerPayment() {
         return intristPerPayment;
     }
-
     public double calculateInristPerPayment(){
         return this.originalInterest/(originalLoanTimeFrame/paymentFrequency);
     }
-
     public Deviation getDeviation() {
         return deviation;
     }
-
     public void setMissingMoney(double missingMoney) {
         this.missingMoney = missingMoney;
     }
-
     public void setTotalRaisedDeposit(double totalRaisedDeposit) {
         this.totalRaisedDeposit = totalRaisedDeposit;
     }
-
     public void setNextYazToPay(int nextYazToPay) {
         this.nextYazToPay = nextYazToPay;
     }
-
     public double getMissingMoney() {
         return missingMoney;
     }
-
     public double getTotalRaisedDeposit() {
         return totalRaisedDeposit;
     }
-
     public int getNextYazToPay() {
         return nextYazToPay;
     }
-
     public CheckBox getSelect() {
         return select;
     }
-
     public void setSelect(CheckBox select) {
         this.select = select;
     }
-
     public Button getInfoButton() {
         return infoButton;
+    }
+    public double getMaxOwnershipMoneyForPercentage() {
+        return maxOwnershipMoneyForPercentage;
+    }
+    public void editMaxInvestedForPercentageOnGivenPercentage(int percentage) {
+        this.maxOwnershipMoneyForPercentage = missingMoney*percentage;
+    }
+
+    public void setMaxOwnershipMoneyForPercentage(double maxOwnershipMoneyForPercentage) {
+        this.maxOwnershipMoneyForPercentage = maxOwnershipMoneyForPercentage;
     }
 
     @Override
@@ -417,6 +414,10 @@ public class Loan implements Serializable {
         }
     }//MAYBE TO DELETE NOT YET
 
+    public int calculateTotalOwnersPercentage(){
+        totalRaisedDeposit = loanAccount.getCurrBalance();
+        return (int) ((totalRaisedDeposit/loanOriginalDepth)*100);
+    }
 
 
 
