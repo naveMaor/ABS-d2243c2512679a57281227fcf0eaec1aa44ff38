@@ -1,7 +1,5 @@
 package Money.operations;
 
-import time.Timeline;
-
 import java.io.Serializable;
 
 public class Payment implements Serializable {
@@ -12,9 +10,6 @@ public class Payment implements Serializable {
     private double fundPlusInterest;
     private boolean isPayed;
 
-    public boolean isPayed() {
-        return isPayed;
-    }
 
     public void setPayed(boolean payed) {
         isPayed = payed;
@@ -56,6 +51,17 @@ public class Payment implements Serializable {
     }
     public void setPaymentYaz(int paymentYaz) {
         this.paymentYaz = paymentYaz;
+    }
+
+    public double getFundPortion() {
+        return fundPortion;
+    }
+    public boolean getIsPayed() {
+        return isPayed;
+    }
+
+    public double getInterestPortion() {
+        return interestPortion;
     }
 
     @Override

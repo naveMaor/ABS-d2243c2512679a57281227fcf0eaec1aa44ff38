@@ -496,14 +496,15 @@ public class Loan implements Serializable {
         Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
         Account borrowerAccount = borrowerAsClient.getMyAccount();
         int currTimeStamp = Timeline.getCurrTime();
-        Double nextExpectedPaymentAmount = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
-        Double nextExpectedInterest = calculateNextExpectedPaymentAmount(eDeviationPortion.INTEREST);
-        Double nextExpectedFund = calculateNextExpectedPaymentAmount(eDeviationPortion.FUND);
-
         if(currTimeStamp==(paymentFrequency+1)){
             //enlarge the deviation
             deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
         }
+        Double nextExpectedPaymentAmount = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        Double nextExpectedInterest = calculateNextExpectedPaymentAmount(eDeviationPortion.INTEREST);
+        Double nextExpectedFund = calculateNextExpectedPaymentAmount(eDeviationPortion.FUND);
+
+
         status = eLoanStatus.RISK;
         //add new payment to the loan payment list with false
         Payment BorrowPayment = new Payment(currTimeStamp,false,nextExpectedFund,nextExpectedInterest);
@@ -512,5 +513,45 @@ public class Loan implements Serializable {
         deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
         //update data member
         nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+    }
+
+    public void payEntireLoan() throws messageException {
+        Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
+        Account borrowerAccount = borrowerAsClient.getMyAccount();
+        int currTimeStamp = Timeline.getCurrTime();
+        Double nextExpectedPaymentAmount = totalRemainingLoan;
+        Double nextExpectedInterest = originalInterest - payedInterest;
+        Double nextExpectedFund = loanOriginalDepth -payedFund;
+
+        //if the borrower have the money for paying this loan at the time of the yaz
+        if(borrowerAccount.getCurrBalance()>=nextExpectedPaymentAmount){
+            //add new payment to the loan payment list
+            Payment BorrowPayment = new Payment(currTimeStamp,true,nextExpectedFund,nextExpectedInterest);
+            paymentsList.add(BorrowPayment);
+            //add the transaction stamp to the borrower transaction list
+            Transaction transaction = new Transaction(currTimeStamp,-nextExpectedPaymentAmount,String.valueOf(this.loanID),borrowerAccount.getCurrBalance(),borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
+            borrowerAccount.addTnuaToAccount(transaction);
+            //update loan money info
+            loanAccount.setCurrBalance(loanAccount.getCurrBalance()+nextExpectedPaymentAmount);
+            borrowerAccount.setCurrBalance(borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
+
+            updateDynamicDataMembersAfterPayment(nextExpectedInterest,nextExpectedFund);
+            deviation.resetDeviation();
+            //update loan status
+            if(totalRemainingLoan == 0) {
+                status=eLoanStatus.FINISHED;
+                endLoanYaz = currTimeStamp;
+                payLoanDividendsToLenders();
+            }
+            else if(status == eLoanStatus.RISK) {
+                status=eLoanStatus.ACTIVE;
+            }
+        }
+        else {
+            throw new messageException("You do not have enough money to pay for :" + loanID);
+        }
+        nextExpectedPaymentAmountDataMember=0;
+        //nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+
     }
 }

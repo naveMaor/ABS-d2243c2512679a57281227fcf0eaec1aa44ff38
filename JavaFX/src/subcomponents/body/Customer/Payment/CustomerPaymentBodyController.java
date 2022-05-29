@@ -2,6 +2,7 @@ package subcomponents.body.Customer.Payment;
 
 import Money.operations.Payment;
 import exceptions.messageException;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import subcomponents.body.Customer.main.CustomerMainBodyController;
+import time.Timeline;
 import utills.Engine;
 
 import java.util.List;
@@ -18,9 +20,11 @@ import java.util.List;
 public class CustomerPaymentBodyController {
     private Engine engine=Engine.getInstance();
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
-    private ObservableList<Loan> loanList =  FXCollections.observableArrayList();
+    private ObservableList<Loan> loanListForTable =  FXCollections.observableArrayList();
+    private ObservableList<Loan> loanListForTextArea =  FXCollections.observableArrayList();
     private CustomerMainBodyController customerMainBodyController;
 
+    private SimpleBooleanProperty loadTextAfterYazChange = new SimpleBooleanProperty();
 
     @FXML
     private ListView<String> LoansListView;
@@ -61,7 +65,23 @@ public class CustomerPaymentBodyController {
 
     @FXML
     void activateCloseEntireLoanButton(ActionEvent event) {
+        List<String> loanNameList = LoansListView.getItems();
+        List<Loan> tmp = engine.getDatabase().getLoanList();
+        ObservableList <Loan> loanList = FXCollections.observableArrayList();
+        for (Loan loan:tmp){
+            if (loanNameList.contains(loan.getLoanID())){
+                loanList.add(loan);
+            }
+        }
 
+        try {
+            engine.payEntirePaymentForLoanList(loanList);
+        } catch (messageException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
+            alert.showAndWait();
+        }
+        loadLoanTableData();
+        LoansListView.getItems().clear();
     }
 
     @FXML
@@ -128,23 +148,48 @@ public class CustomerPaymentBodyController {
 
     }
 
+    public void bindProperties(SimpleBooleanProperty yazChanged){
+        loadTextAfterYazChange.bindBidirectional(yazChanged);
+    }
+
     public void loadLoanTableData(){
-        ObservableList <Loan> loanListForTable =engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
-        for (Loan loan:loanListForTable
+        loadTextAreaData();
+        loanListForTable.clear();
+        ReleventLoansTable.getItems().clear();
+
+        ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
+        for (Loan loan:tmp
              ) {
             eLoanStatus status = loan.getStatus();
-            if((status== eLoanStatus.FINISHED)||(status== eLoanStatus.NEW)||(status== eLoanStatus.PENDING)){
-                loanListForTable.remove(loan);
+            if((status== eLoanStatus.RISK)||(status==eLoanStatus.ACTIVE)){
+                loanListForTable.add(loan);
             }
         }
         //because of unexpected bug that the compliler does not run on all over the items i have to write it down again
-        for(Loan loan:loanListForTable){
+
+        ReleventLoansTable.setItems(loanListForTable);
+    }
+
+    public void loadTextAreaData(){
+        StringBuilder comment = new StringBuilder("Yaz now:" + Timeline.getCurrTime() + ", you need to pay for these loans:\n");
+        ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
+        int num=1;
+        boolean append = false;
+        for (Loan loan:tmp
+        ) {
             eLoanStatus status = loan.getStatus();
-            if((status== eLoanStatus.FINISHED)||(status== eLoanStatus.NEW)||(status== eLoanStatus.PENDING)){
-                loanListForTable.remove(loan);
+            if((status== eLoanStatus.RISK)||(status==eLoanStatus.ACTIVE) && loan.getNextYazToPay() ==0){
+                append = true;
+                comment.append(num).append(". ").append(loan.getLoanID()).append("\n");
+                num++;
             }
         }
-        ReleventLoansTable.getItems().clear();
-        ReleventLoansTable.setItems(loanListForTable);
+        comment.append("\n");
+        if(append&&loadTextAfterYazChange.getValue()){
+            notificationsTextArea.appendText(comment.toString());
+            loadTextAfterYazChange.setValue(false);
+        }
+
+
     }
 }

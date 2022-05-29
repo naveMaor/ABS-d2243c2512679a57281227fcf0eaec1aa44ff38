@@ -44,13 +44,13 @@ public class mainWindowController {
 
     private Stage primaryStage;
     private SimpleBooleanProperty isFileSelected;
-    private SimpleBooleanProperty isAdminWindow;
+    private SimpleBooleanProperty isYazChanged;
     private SimpleStringProperty selectedFileProperty;
     private SimpleIntegerProperty currentYazProperty;
     private SimpleStringProperty customerName = new SimpleStringProperty();
 
     public mainWindowController() {
-        isAdminWindow = new SimpleBooleanProperty(true);
+        isYazChanged = new SimpleBooleanProperty(false);
         isFileSelected = new SimpleBooleanProperty(false);
         selectedFileProperty = new SimpleStringProperty();
         currentYazProperty = new SimpleIntegerProperty(Timeline.getCurrTime());
@@ -68,8 +68,8 @@ public class mainWindowController {
         }
         //mainHeaderController.initializeComboBox();
         mainHeaderController.bindProperties(isFileSelected,selectedFileProperty,currentYazProperty,customerName);
-        adminMainBodyController.bindProperties(isFileSelected,selectedFileProperty);
-        customerMainBodyMainController.bindProperties(customerName);
+        adminMainBodyController.bindProperties(isFileSelected,selectedFileProperty, isYazChanged);
+        customerMainBodyMainController.bindProperties(customerName, isYazChanged);
     }
 
     //todo:do we really need it?!?

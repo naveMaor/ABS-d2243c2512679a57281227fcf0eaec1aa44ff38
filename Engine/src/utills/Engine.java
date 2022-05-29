@@ -196,6 +196,12 @@ This func gets lenders list and return thus sum of their deposit
             loan.paySingleLoanPayment();
         }
     }
+    public void payEntirePaymentForLoanList(List<Loan> loanList) throws messageException {
+        for (Loan loan:loanList){
+            loan.payEntireLoan();
+        }
+    }
+
 
     /**
      *     check if there is a loan category that does not exist

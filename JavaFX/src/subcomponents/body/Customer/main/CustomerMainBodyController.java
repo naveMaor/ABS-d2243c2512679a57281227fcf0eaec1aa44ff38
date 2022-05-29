@@ -36,6 +36,7 @@ public class CustomerMainBodyController {
 
 
     private SimpleStringProperty customerName = new SimpleStringProperty();
+    private SimpleBooleanProperty loadTextAfterYazChange = new SimpleBooleanProperty();
 
     public String getCustomerName() {
         return customerName.get();
@@ -47,6 +48,13 @@ public class CustomerMainBodyController {
 
     private SimpleBooleanProperty runningServiceProperty= new SimpleBooleanProperty();
 
+    public boolean isLoadTextAfterYazChange() {
+        return loadTextAfterYazChange.get();
+    }
+
+    public SimpleBooleanProperty loadTextAfterYazChangeProperty() {
+        return loadTextAfterYazChange;
+    }
 
     @FXML public void initialize() {
         if (customerInformationBodyController != null&& customerScrambleBodyController!=null&& customerPaymentBodyController!=null) {
@@ -73,14 +81,15 @@ public class CustomerMainBodyController {
                     }
                 }
         );
-
+        customerPaymentBodyController.bindProperties(loadTextAfterYazChange);
         customerScrambleBodyController.initialize();
         resetFields();
     }
 
-    public void bindProperties(SimpleStringProperty customerName){
+    public void bindProperties(SimpleStringProperty customerName, SimpleBooleanProperty yazChanged){
         this.customerName.bind(Bindings.concat(customerName));
-
+        loadTextAfterYazChange.bindBidirectional(yazChanged);
+        //yazChanged.bind(loadTextAfterYazChange);
     }
 
     public void setMainController(mainWindowController mainController) {

@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import subcomponents.body.Admin.adminClientTable.adminClientTableController;
 import subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
-import time.Timeline;
 import utills.Engine;
 
 public class AdminMainBodyController {
@@ -38,10 +37,13 @@ public class AdminMainBodyController {
     void CustomersInformationButtonListener(ActionEvent event) {
     }
 
+    SimpleBooleanProperty increaseYaz = new SimpleBooleanProperty(false);
+
     @FXML
     void IncreaseYazButtonListener(ActionEvent event) {
         engine.increaseYaz();
         initializeAdminTables();
+        increaseYaz.setValue(true);
     }
 
     @FXML
@@ -59,10 +61,11 @@ public class AdminMainBodyController {
     }
 
 
-    public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty){
+    public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleBooleanProperty isYazChanged){
         //CustomersInformationButtonId.disableProperty().bind(isFileSelected.not());
         IncreaseYazButtonId.disableProperty().bind(isFileSelected.not());
         //LoadFileButtonId.disableProperty().bind(isFileSelected.not());
+        isYazChanged.bindBidirectional(increaseYaz);
     }
 
     public void initializeAdminTables(){
