@@ -143,8 +143,8 @@ public class Database implements Serializable {
                     return sComp;
                 }
 
-                Double x3 = ((Loan) o1).nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
-                Double x4 = ((Loan) o2).nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+                Double x3 = ((Loan) o1).calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+                Double x4 = ((Loan) o2).calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
                 return x3.compareTo(x4);
             }});
     }

@@ -184,8 +184,8 @@ This func gets lenders list and return thus sum of their deposit
     public void filterAndHandleLoansListAfterPromote(){
         List<Loan> sortedLoanList = database.getSortedLoanList();
         for (Loan loan:sortedLoanList){
-            loan.setNextYazToPay(loan.nextYazToPay());
-            if((loan.nextYazToPay() == 0)&&((loan.getStatus()== ACTIVE)|| (loan.getStatus()== RISK))){
+            loan.setNextYazToPay(loan.calculateNextYazToPay());
+            if((loan.calculateNextYazToPay() == 0)&&((loan.getStatus()== ACTIVE)|| (loan.getStatus()== RISK))){
                 loan.handleLoanAfterTimePromote();
             }
         }
@@ -193,7 +193,6 @@ This func gets lenders list and return thus sum of their deposit
 
     public void paySinglePaymentForLoanList(List<Loan> loanList) throws messageException {
         for (Loan loan:loanList){
-            loan.setNextYazToPay(loan.nextYazToPay());
             loan.paySingleLoanPayment();
         }
     }
@@ -534,6 +533,22 @@ This func gets lenders list and return thus sum of their deposit
         }
     }
 
+    public void increaseYaz(){
+        Timeline.promoteStaticCurrTime();
+        List<Loan> loanList = database.getLoanList();
+        for (Loan loan:loanList) {
+            loan.setNextYazToPay(loan.calculateNextYazToPay());
+            if(loan.getNextYazToPay() == 0){
+                loan.getDeviation().setSkipped(true);
+            }
+            eLoanStatus status = loan.getStatus();
+            if((status== ACTIVE)||(status==RISK)){
+                if ((loan.getDeviation().isSkipped()) && ((loan.getNextYazToPay()>0)||(loan.getPaymentFrequency()==1))){
+                    loan.setLoanToRisk();
+                }
+            }
+        }
+    }
 }
 
 

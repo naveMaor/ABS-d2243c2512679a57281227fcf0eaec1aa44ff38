@@ -55,7 +55,7 @@ public class Loan implements Serializable {
     private double totalRaisedDeposit;
     private int nextYazToPay;
     private double maxOwnershipMoneyForPercentage=0; // this data member only usable for calculating and remembering lenders investment according to max percentage given in scramble
-    private double nextExpectedPaymentAmountDataMember =0;
+    private double nextExpectedPaymentAmountDataMember =-1;
 
     //remaining Loan data:
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
@@ -89,7 +89,8 @@ public class Loan implements Serializable {
         this.infoButton = new Button();
         this.missingMoney = this.loanOriginalDepth;
         this.maxOwnershipMoneyForPercentage=0;
-        this.nextExpectedPaymentAmountDataMember=nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        this.nextExpectedPaymentAmountDataMember= calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        this.nextYazToPay = paymentFrequency;
     }
 
 
@@ -251,12 +252,20 @@ public class Loan implements Serializable {
      *
      * @return
      */
-    public int nextYazToPay() {
+    public int calculateNextYazToPay() {
         int currTime = Timeline.getCurrTime();
         int startLoanYaz = this.startLoanYaz;
         int paymentFrequency = this.paymentFrequency;
 
-            return ((currTime-startLoanYaz) % paymentFrequency );
+        if(paymentFrequency==1){
+            return 0;
+        }
+
+        if(currTime==0){
+            return paymentFrequency;
+        }
+
+        return ((paymentFrequency - ((currTime-startLoanYaz) % paymentFrequency ))% paymentFrequency);
     }
 
     /**
@@ -266,7 +275,7 @@ public class Loan implements Serializable {
      */
 
 
-    public double nextExpectedPaymentAmount(eDeviationPortion DeviationPortion) {
+    public double calculateNextExpectedPaymentAmount(eDeviationPortion DeviationPortion) {
         //double intristPerPayment = this.originalInterest/this.originalLoanTimeFrame.getTimeStamp();
         switch (DeviationPortion)
         {
@@ -323,7 +332,7 @@ public class Loan implements Serializable {
         startLoanYaz=Timeline.getCurrTime();
     }
 
-    public void updateDynamicDataMembersAfterYazPromotion(double interest, double fund){
+    public void updateDynamicDataMembersAfterPayment(double interest, double fund){
         totalRemainingLoan-= (interest+fund);
         payedInterest += interest;
         payedFund += fund;
@@ -336,9 +345,9 @@ public class Loan implements Serializable {
         Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
         Account borrowerAccount = borrowerAsClient.getMyAccount();
         int currTimeStamp = Timeline.getCurrTime();
-        Double nextExpectedPaymentAmount = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
-        Double nextExpectedInterest = nextExpectedPaymentAmount(eDeviationPortion.INTEREST);
-        Double nextExpectedFund = nextExpectedPaymentAmount(eDeviationPortion.FUND);
+        Double nextExpectedPaymentAmount = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        Double nextExpectedInterest = calculateNextExpectedPaymentAmount(eDeviationPortion.INTEREST);
+        Double nextExpectedFund = calculateNextExpectedPaymentAmount(eDeviationPortion.FUND);
         //if the borrower have the money for paying this loan at the time of the yaz
         if(borrowerAccount.getCurrBalance()>=nextExpectedPaymentAmount){
                 //add new payment to the loan payment list
@@ -351,7 +360,7 @@ public class Loan implements Serializable {
                 loanAccount.setCurrBalance(loanAccount.getCurrBalance()+nextExpectedPaymentAmount);
                 borrowerAccount.setCurrBalance(borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
 
-                updateDynamicDataMembersAfterYazPromotion(nextExpectedInterest,nextExpectedFund);
+                updateDynamicDataMembersAfterPayment(nextExpectedInterest,nextExpectedFund);
                 deviation.resetDeviation();
                 //update loan status
                 if(totalRemainingLoan == 0) {
@@ -372,7 +381,7 @@ public class Loan implements Serializable {
             //enlarge the deviation
             deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
         }
-        nextExpectedPaymentAmountDataMember = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
     }
 
 
@@ -442,12 +451,15 @@ public class Loan implements Serializable {
 
 
     public void paySingleLoanPayment() throws messageException {
+        if(nextExpectedPaymentAmountDataMember==0){
+            return;
+        }
         Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
         Account borrowerAccount = borrowerAsClient.getMyAccount();
         int currTimeStamp = Timeline.getCurrTime();
-        Double nextExpectedPaymentAmount = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
-        Double nextExpectedInterest = nextExpectedPaymentAmount(eDeviationPortion.INTEREST);
-        Double nextExpectedFund = nextExpectedPaymentAmount(eDeviationPortion.FUND);
+        Double nextExpectedPaymentAmount = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        Double nextExpectedInterest = calculateNextExpectedPaymentAmount(eDeviationPortion.INTEREST);
+        Double nextExpectedFund = calculateNextExpectedPaymentAmount(eDeviationPortion.FUND);
         //if the borrower have the money for paying this loan at the time of the yaz
         if(borrowerAccount.getCurrBalance()>=nextExpectedPaymentAmount){
             //add new payment to the loan payment list
@@ -460,7 +472,7 @@ public class Loan implements Serializable {
             loanAccount.setCurrBalance(loanAccount.getCurrBalance()+nextExpectedPaymentAmount);
             borrowerAccount.setCurrBalance(borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
 
-            updateDynamicDataMembersAfterYazPromotion(nextExpectedInterest,nextExpectedFund);
+            updateDynamicDataMembersAfterPayment(nextExpectedInterest,nextExpectedFund);
             deviation.resetDeviation();
             //update loan status
             if(totalRemainingLoan == 0) {
@@ -475,5 +487,30 @@ public class Loan implements Serializable {
         else {
             throw new messageException("You do not have enough money to pay for :" + loanID);
         }
+        nextExpectedPaymentAmountDataMember=0;
+        //nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+
+    }
+
+    public void setLoanToRisk(){
+        Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
+        Account borrowerAccount = borrowerAsClient.getMyAccount();
+        int currTimeStamp = Timeline.getCurrTime();
+        Double nextExpectedPaymentAmount = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        Double nextExpectedInterest = calculateNextExpectedPaymentAmount(eDeviationPortion.INTEREST);
+        Double nextExpectedFund = calculateNextExpectedPaymentAmount(eDeviationPortion.FUND);
+
+        if(currTimeStamp==(paymentFrequency+1)){
+            //enlarge the deviation
+            deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
+        }
+        status = eLoanStatus.RISK;
+        //add new payment to the loan payment list with false
+        Payment BorrowPayment = new Payment(currTimeStamp,false,nextExpectedFund,nextExpectedInterest);
+        paymentsList.add(BorrowPayment);
+        //enlarge the deviation
+        deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
+        //update data member
+        nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
     }
 }

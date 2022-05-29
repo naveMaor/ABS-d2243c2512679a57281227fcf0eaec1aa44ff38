@@ -8,7 +8,7 @@ public class Deviation implements Serializable {
     double fundDeviation=0;
     //double sumOfDeviation=0;
     int numberOfYazNotPayed=0;
-
+    boolean skipped = false;
 
     public int getNumberOfYazNotPayed() {
         return numberOfYazNotPayed;
@@ -23,6 +23,14 @@ public class Deviation implements Serializable {
 
     public double getFundDeviation() {
         return fundDeviation;
+    }
+
+    public boolean isSkipped() {
+        return skipped;
+    }
+
+    public void setSkipped(boolean skipped) {
+        this.skipped = skipped;
     }
 
     public void incrementTheNumberOfYazNotPayed(){this.numberOfYazNotPayed++;}
@@ -41,5 +49,8 @@ public class Deviation implements Serializable {
         numberOfYazNotPayed=0;
         interestDeviation=0;
         fundDeviation=0;
+        skipped = false;
     }
+
+
 }

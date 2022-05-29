@@ -69,13 +69,13 @@ public class CustomerPaymentBodyController {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         int num = 0;
         for (Loan loan:items){
-            if(loan.getSelect().isSelected()){
+            if(loan.getSelect().isSelected()&&loan.getNextExpectedPaymentAmountDataMember()>0&&loan.getNextYazToPay()==0){
                 CheckBoxLoanList.add(loan.getLoanID());
                 num++;
             }
         }
         if(num==0){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!\nPlease select by the check box \nYou can only choose loans that has next yaz 0 and loans that you not payed already");
             alert.showAndWait();
         }
         else {
@@ -129,13 +129,22 @@ public class CustomerPaymentBodyController {
     }
 
     public void loadLoanTableData(){
-        loanList.clear();
         ObservableList <Loan> loanListForTable =engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
-        for(Loan loan:loanListForTable){
-            if(loan.getStatus()== eLoanStatus.FINISHED||loan.getStatus()== eLoanStatus.NEW||loan.getStatus()== eLoanStatus.PENDING){
+        for (Loan loan:loanListForTable
+             ) {
+            eLoanStatus status = loan.getStatus();
+            if((status== eLoanStatus.FINISHED)||(status== eLoanStatus.NEW)||(status== eLoanStatus.PENDING)){
                 loanListForTable.remove(loan);
             }
         }
+        //because of unexpected bug that the compliler does not run on all over the items i have to write it down again
+        for(Loan loan:loanListForTable){
+            eLoanStatus status = loan.getStatus();
+            if((status== eLoanStatus.FINISHED)||(status== eLoanStatus.NEW)||(status== eLoanStatus.PENDING)){
+                loanListForTable.remove(loan);
+            }
+        }
+        ReleventLoansTable.getItems().clear();
         ReleventLoansTable.setItems(loanListForTable);
     }
 }
