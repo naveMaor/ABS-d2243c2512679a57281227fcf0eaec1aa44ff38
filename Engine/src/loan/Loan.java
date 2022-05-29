@@ -3,6 +3,7 @@ package loan;
 import customes.Account;
 import customes.Client;
 import customes.Lenders;
+import exceptions.messageException;
 import javafx.scene.control.Button;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
@@ -50,10 +51,12 @@ public class Loan implements Serializable {
     private double payedInterest=0;//ribit shulma
     private double payedFund=0;//keren shulma
     private Deviation deviation;
-    private double missingMoney = loanOriginalDepth;
+    private double missingMoney = loanOriginalDepth; //money missing in order to set this loan active
     private double totalRaisedDeposit;
     private int nextYazToPay;
-    private double maxOwnershipMoneyForPercentage; // this data member only usable for calculating and remembering lenders investment according to max percentage given in scramble
+    private double maxOwnershipMoneyForPercentage=0; // this data member only usable for calculating and remembering lenders investment according to max percentage given in scramble
+    private double nextExpectedPaymentAmountDataMember =0;
+
     //remaining Loan data:
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
 
@@ -85,6 +88,8 @@ public class Loan implements Serializable {
         this.select = new CheckBox();
         this.infoButton = new Button();
         this.missingMoney = this.loanOriginalDepth;
+        this.maxOwnershipMoneyForPercentage=0;
+        this.nextExpectedPaymentAmountDataMember=nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
     }
 
 
@@ -206,21 +211,26 @@ public class Loan implements Serializable {
     public CheckBox getSelect() {
         return select;
     }
-    public void setSelect(CheckBox select) {
-        this.select = select;
+    public void setSelect(Boolean select) {
+        this.select.setSelected(select);
     }
+
     public Button getInfoButton() {
         return infoButton;
     }
     public double getMaxOwnershipMoneyForPercentage() {
         return maxOwnershipMoneyForPercentage;
     }
-    public void editMaxInvestedForPercentageOnGivenPercentage(int percentage) {
-        this.maxOwnershipMoneyForPercentage = missingMoney*percentage;
+    public void editMaxOwnershipMoneyForPercentage(int percentage) {
+        this.maxOwnershipMoneyForPercentage = loanOriginalDepth*(double)percentage/100;
     }
 
     public void setMaxOwnershipMoneyForPercentage(double maxOwnershipMoneyForPercentage) {
         this.maxOwnershipMoneyForPercentage = maxOwnershipMoneyForPercentage;
+    }
+
+    public double getNextExpectedPaymentAmountDataMember() {
+        return nextExpectedPaymentAmountDataMember;
     }
 
     @Override
@@ -278,7 +288,7 @@ public class Loan implements Serializable {
                     return deviation.getSumOfDeviation();
                 }
                 else
-                    return (totalLoanCostInterestPlusOriginalDepth / (originalLoanTimeFrame/paymentFrequency));
+                    return (totalLoanCostInterestPlusOriginalDepth / (double)(originalLoanTimeFrame/paymentFrequency));
             }
         }
 
@@ -362,6 +372,7 @@ public class Loan implements Serializable {
             //enlarge the deviation
             deviation.increaseDeviationBy(intristPerPayment,fundPerPayment);
         }
+        nextExpectedPaymentAmountDataMember = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
     }
 
 
@@ -419,6 +430,50 @@ public class Loan implements Serializable {
         return (int) ((totalRaisedDeposit/loanOriginalDepth)*100);
     }
 
+    public int calculateClientLoanOwningPercentage(Client client){
+        double clientOwningSum = -1;
+        for (Lenders lender:lendersList){
+            if(lender.getFullName().equals(client.getFullName())){
+                clientOwningSum = lender.getDeposit();
+            }
+        }
+        return (int)((double) (clientOwningSum/loanOriginalDepth)*100);
+    }
 
 
+    public void paySingleLoanPayment() throws messageException {
+        Client borrowerAsClient = engine.getDatabase().getClientMap().get(borrowerName);
+        Account borrowerAccount = borrowerAsClient.getMyAccount();
+        int currTimeStamp = Timeline.getCurrTime();
+        Double nextExpectedPaymentAmount = nextExpectedPaymentAmount(eDeviationPortion.TOTAL);
+        Double nextExpectedInterest = nextExpectedPaymentAmount(eDeviationPortion.INTEREST);
+        Double nextExpectedFund = nextExpectedPaymentAmount(eDeviationPortion.FUND);
+        //if the borrower have the money for paying this loan at the time of the yaz
+        if(borrowerAccount.getCurrBalance()>=nextExpectedPaymentAmount){
+            //add new payment to the loan payment list
+            Payment BorrowPayment = new Payment(currTimeStamp,true,nextExpectedFund,nextExpectedInterest);
+            paymentsList.add(BorrowPayment);
+            //add the transaction stamp to the borrower transaction list
+            Transaction transaction = new Transaction(currTimeStamp,-nextExpectedPaymentAmount,String.valueOf(this.loanID),borrowerAccount.getCurrBalance(),borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
+            borrowerAccount.addTnuaToAccount(transaction);
+            //update loan money info
+            loanAccount.setCurrBalance(loanAccount.getCurrBalance()+nextExpectedPaymentAmount);
+            borrowerAccount.setCurrBalance(borrowerAccount.getCurrBalance()-nextExpectedPaymentAmount);
+
+            updateDynamicDataMembersAfterYazPromotion(nextExpectedInterest,nextExpectedFund);
+            deviation.resetDeviation();
+            //update loan status
+            if(totalRemainingLoan == 0) {
+                status=eLoanStatus.FINISHED;
+                endLoanYaz = currTimeStamp;
+                payLoanDividendsToLenders();
+            }
+            else if(status == eLoanStatus.RISK) {
+                status=eLoanStatus.ACTIVE;
+            }
+        }
+        else {
+            throw new messageException("You do not have enough money to pay for :" + loanID);
+        }
+    }
 }

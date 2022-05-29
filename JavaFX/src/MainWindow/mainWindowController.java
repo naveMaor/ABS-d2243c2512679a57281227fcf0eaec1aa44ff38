@@ -87,6 +87,7 @@ public class mainWindowController {
     public void ChangeToCustomerCompenent(){
         root.setCenter(customerMainBodyMain);
         customerMainBodyMainController.resetFields();
+        customerMainBodyMainController.loadData();
         //System.out.println(customerName.get());
     }
 

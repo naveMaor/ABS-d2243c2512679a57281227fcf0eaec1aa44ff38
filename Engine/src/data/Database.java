@@ -166,6 +166,16 @@ public class Database implements Serializable {
         }
         return result;
     }
+    public ObservableList<Loan> o_getAllLoansByClientName(String name){
+        List<Loan> loanList = getLoanList();
+        ObservableList <Loan> result =  FXCollections.observableArrayList();
+        for (Loan loan:loanList){
+            if(loan.getBorrowerName().equals(name)){
+                result.add(loan);
+            }
+        }
+        return result;
+    }
 
 
 }

@@ -10,6 +10,7 @@ import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 //
 import exceptions.BalanceException;
+import exceptions.messageException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
@@ -83,11 +84,11 @@ This func gets lenders list and return thus sum of their deposit
 
         // checking if there is the same transaction in the currAccount
         if(accSource.getTnuaList().contains(transactionMinus)){
-            Transaction existingTransaction = accSource.getTnuaList().get(accSource.getTnuaList().lastIndexOf(transactionMinus));
+            List<Transaction> SourceTnuaList = accSource.getTnuaList();
+            Transaction existingTransaction = SourceTnuaList.get(SourceTnuaList.lastIndexOf(transactionMinus));
            //if so adding to already existingTransaction the new amount
             existingTransaction.setSum(existingTransaction.getSum()+(-money));
             existingTransaction.setBalanceAfter(existingTransaction.getBalanceBefore()+existingTransaction.getSum());
-
         }
         else {
             accSource.getTnuaList().add(transactionMinus);
@@ -187,6 +188,13 @@ This func gets lenders list and return thus sum of their deposit
             if((loan.nextYazToPay() == 0)&&((loan.getStatus()== ACTIVE)|| (loan.getStatus()== RISK))){
                 loan.handleLoanAfterTimePromote();
             }
+        }
+    }
+
+    public void paySinglePaymentForLoanList(List<Loan> loanList) throws messageException {
+        for (Loan loan:loanList){
+            loan.setNextYazToPay(loan.nextYazToPay());
+            loan.paySingleLoanPayment();
         }
     }
 
@@ -314,7 +322,8 @@ This func gets lenders list and return thus sum of their deposit
         Loan firstLoanInList = loanslistToInvest.get(0);
         double minimalInvest = firstLoanInList.getMissingMoney();
         double loanMaxInvestedForPercentage = firstLoanInList.getMaxOwnershipMoneyForPercentage();
-        minimalInvest = Math.min(minimalInvest,loanMaxInvestedForPercentage);
+        if(loanMaxInvestedForPercentage>0)
+            minimalInvest = Math.min(minimalInvest,loanMaxInvestedForPercentage);
 
 
         double leftFundForInvestment;
@@ -322,7 +331,8 @@ This func gets lenders list and return thus sum of their deposit
             //checks how much money is needed for loan to become active
             leftFundForInvestment = loan.getMissingMoney();
             loanMaxInvestedForPercentage = loan.getMaxOwnershipMoneyForPercentage();
-            leftFundForInvestment = Math.min(leftFundForInvestment,loanMaxInvestedForPercentage);
+            if(loanMaxInvestedForPercentage>0)
+                leftFundForInvestment = Math.min(leftFundForInvestment,loanMaxInvestedForPercentage);
             //getting minimal
             minimalInvest = Math.min(minimalInvest,leftFundForInvestment);
 /*            if (leftFundForInvestment < minimalInvest)
@@ -376,10 +386,13 @@ This func gets lenders list and return thus sum of their deposit
         Client client = database.getClientByname(clientName);
         double amountOfMoneyPerLoan,minNeededInvestment,investment;
         int loanListSize;
+
         //initialize for every loan their amount of money the client need to invest in order to get to max percentage share
-        for (Loan loan:loanslistToInvest){
-            loan.editMaxInvestedForPercentageOnGivenPercentage(maxPercentage);
-        }
+        if (maxPercentage !=-1)
+            for (Loan loan:loanslistToInvest){
+                maxPercentage =maxPercentage - loan.calculateClientLoanOwningPercentage(client);
+                loan.editMaxOwnershipMoneyForPercentage(maxPercentage);
+            }
         do {
 
             //getting updated list size
@@ -411,6 +424,12 @@ This func gets lenders list and return thus sum of their deposit
             // as long as there is money left to invest , or list of optional investments is not empty
         } while (wantedInvestment != 0 && loanListSize != 0);
 
+
+        //plaster!!!
+        fixTransactionsList(client.getMyAccount().getTnuaList());
+        for (Loan loan:loanslistToInvest){
+            fixTransactionsList(loan.getLoanAccount().getTnuaList());
+        }
   return loanListSize;
 }
 
@@ -465,17 +484,19 @@ This func gets lenders list and return thus sum of their deposit
         ObservableList<Loan> tmp = FXCollections.observableArrayList(getDatabase().getLoanList());
         ObservableList<Loan> result = FXCollections.observableArrayList();
         int clientOpenLoansNumber= client.getOpenLoansNumber();
-        int TotalInvestedPercentage;
+        int TotalInvestedPercentage, clientOwningLoanPercentage;
         for (Loan loan : tmp) {
             TotalInvestedPercentage = loan.calculateTotalOwnersPercentage();
+            clientOwningLoanPercentage = loan.calculateClientLoanOwningPercentage(client);
             if (loan.getStatus() == eLoanStatus.NEW || loan.getStatus() == eLoanStatus.PENDING)//if the loan is new or pending
                 if (!(client.getFullName().equalsIgnoreCase(loan.getBorrowerName()) ))//If the client's name is not the borrower
                     if ((minInterestPerYaz <= loan.getInterestPercentagePerTimeUnit()) || (minInterestPerYaz == -1))
                         if ((minYazTimeFrame <= loan.getOriginalLoanTimeFrame()) || minYazTimeFrame==-1)
                             if (checkCategoryList(loanCategoryUserList, loan.getLoanCategory()))
-                                if((clientOpenLoansNumber<=maxOpenLoans) || (clientOpenLoansNumber==-1))
-                                    if((TotalInvestedPercentage<=maxOwnership) || (maxOwnership==-1))
+                                if((clientOpenLoansNumber<=maxOpenLoans) || (maxOpenLoans==-1))
+                                    if(((TotalInvestedPercentage<=maxOwnership)&& (clientOwningLoanPercentage<maxOwnership)) || (maxOwnership==-1)){
                                         result.add(loan);
+                                    }
         }
 
         return result;
@@ -501,7 +522,17 @@ This func gets lenders list and return thus sum of their deposit
         return list;
     }
 
-
+    public void fixTransactionsList(List<Transaction> transactionList){
+        if(transactionList.size()>1){
+            for (int i=0;i<transactionList.size()-1;i++){
+                Transaction currTransaction = transactionList.get(i);
+                Transaction nextTransaction = transactionList.get(i+1);
+                double currPostBalance = currTransaction.getBalanceAfter();
+                nextTransaction.setBalanceBefore(currPostBalance);
+                nextTransaction.setBalanceAfter(nextTransaction.getBalanceBefore()+nextTransaction.getSum());
+            }
+        }
+    }
 
 }
 

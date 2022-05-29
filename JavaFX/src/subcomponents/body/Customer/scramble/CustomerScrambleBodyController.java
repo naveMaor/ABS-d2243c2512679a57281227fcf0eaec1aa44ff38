@@ -1,12 +1,5 @@
 package subcomponents.body.Customer.scramble;
 
-import customes.Client;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableIntegerValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.util.converter.NumberStringConverter;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import subcomponents.body.Customer.main.CustomerMainBodyController;
@@ -32,7 +24,7 @@ public class CustomerScrambleBodyController {
     private ObservableList<Loan> CheckBoxLoanList =  FXCollections.observableArrayList();
 
     private List<String> choosenCategories;
-    private ObservableList<String> existChoosenCategories;
+    private ObservableList<String> existChoosenCategories = FXCollections.observableArrayList();;
 
     private int amount;
     private int maxOwnership;
@@ -44,8 +36,7 @@ public class CustomerScrambleBodyController {
     @FXML
     private StackPane stackPane;
 
-    @FXML
-    private Button activateScrambleButton;
+
 
     @FXML
     private Label amountToInvestLabel;
@@ -83,8 +74,7 @@ public class CustomerScrambleBodyController {
     @FXML
     private TextField minimumYazTextField;
 
-    @FXML
-    private Button showRelevantLoansListButton;
+
 
     @FXML
     private ListView<String> userChoiceCategoriesListView;
@@ -116,6 +106,8 @@ public class CustomerScrambleBodyController {
     @FXML
     private TableColumn<Loan, String> ColumnCheckBox;
 
+    @FXML
+    private TableColumn<Loan, Double> TotalLoanCost;
 
     @FXML
     private TableView<Loan> ReleventLoansTable;
@@ -137,14 +129,14 @@ public class CustomerScrambleBodyController {
             alert.showAndWait();
         }
         else {
-            ReleventLoansTable.getItems().removeAll(CheckBoxLoanList);
+            //ReleventLoansTable.getItems().removeAll(CheckBoxLoanList);
             engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName,maxOwnership);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
             alert.showAndWait();
-            if (ReleventLoansTable.getItems().size()==0){
-                resetFileds();
-            }
+            resetFileds();
+            resetRelevantLoansTable();
         }
+        customerMainBodyController.loadData();
     }
 
 
@@ -277,7 +269,8 @@ public class CustomerScrambleBodyController {
 
     public void initialize(){
         allCategoriesList = engine.getDatabase().getAllCategories();
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
+        TotalLoanCost.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnCheckBox.setCellValueFactory(new PropertyValueFactory<Loan, String>("select"));
@@ -297,6 +290,10 @@ public class CustomerScrambleBodyController {
     }
 
     public void resetFileds(){
+        ObservableList<Loan> items = ReleventLoansTable.getItems();
+        for (Loan loan:items) {
+            loan.setSelect(false);
+        }
         amountToInvestTextField.clear();
         maxOpenLoansTextField.clear();
         maxOwnershipTextField.clear();

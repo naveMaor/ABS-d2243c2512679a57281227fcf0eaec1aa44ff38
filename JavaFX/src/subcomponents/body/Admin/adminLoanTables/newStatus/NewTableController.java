@@ -100,7 +100,7 @@ public class NewTableController {
 
 
     public void initialize(){
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
@@ -115,7 +115,7 @@ public class NewTableController {
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.NEW);
         NewTable.setItems(loanObservableList);
 
-        mainTablesController.addButtonToTable(NewTable);
+        //mainTablesController.addButtonToTable(NewTable);
     }
 
 

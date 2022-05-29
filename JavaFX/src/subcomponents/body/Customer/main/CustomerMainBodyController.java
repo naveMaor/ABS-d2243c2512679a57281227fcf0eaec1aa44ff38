@@ -5,10 +5,11 @@ import Money.operations.Transaction;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import subcomponents.body.Customer.Information.CustomerInformationBodyCont;
 import subcomponents.body.Customer.Payment.CustomerPaymentBodyController;
@@ -32,14 +33,7 @@ public class CustomerMainBodyController {
     @FXML private Tab informationTabPane;
     @FXML private Tab paymentTabPane;
 
-/*    @FXML
-    private ScrollPane customerInformationBody;
-    @FXML
-    private CustomerInformationBodyCont customerInformationBodyCont;
-    @FXML
-    private ScrollPane customerPaymentBody;
-    @FXML
-    private CustomerIpaymentBodyController customerIpaymentBodyController;*/
+
 
     private SimpleStringProperty customerName = new SimpleStringProperty();
 
@@ -53,13 +47,33 @@ public class CustomerMainBodyController {
 
     private SimpleBooleanProperty runningServiceProperty= new SimpleBooleanProperty();
 
+
     @FXML public void initialize() {
-        if (customerInformationBodyController != null&& customerScrambleBodyController!=null) {
+        if (customerInformationBodyController != null&& customerScrambleBodyController!=null&& customerPaymentBodyController!=null) {
             System.out.println(customerInformationBodyController);
             customerInformationBodyController.setMainController(this);
             System.out.println(customerInformationBodyController);
             customerScrambleBodyController.setMainController(this);
+            customerPaymentBodyController.setMainController(this);
         }
+        paymentTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                        customerPaymentBodyController.loadLoanTableData();
+                    }
+                }
+        );
+        informationTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                        customerInformationBodyController.initializeClientTable();
+                        customerInformationBodyController.loadTransactionsTable();
+                    }
+                }
+        );
+
         customerScrambleBodyController.initialize();
         resetFields();
     }
@@ -99,4 +113,11 @@ public class CustomerMainBodyController {
     public SimpleBooleanProperty runningServicePropertyProperty() {
         return runningServiceProperty;
     }
+
+    public void loadData(){
+        customerInformationBodyController.initializeClientTable();
+        customerInformationBodyController.loadTransactionsTable();
+        customerPaymentBodyController.loadLoanTableData();
+    }
+
 }

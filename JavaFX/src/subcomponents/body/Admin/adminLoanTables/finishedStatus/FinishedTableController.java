@@ -2,13 +2,21 @@ package subcomponents.body.Admin.adminLoanTables.finishedStatus;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import loan.Loan;
 import loan.enums.eLoanStatus;
+import subcomponents.body.Admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
+import subcomponents.body.Admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
 import utills.Engine;
+
+import java.io.IOException;
 
 public class FinishedTableController {
 
@@ -54,12 +62,12 @@ public class FinishedTableController {
 
 
     @FXML
-    private TableView<Loan> RiskTable;
+    private TableView<Loan> FinishedTable;
 
     ObservableList<Loan> loanObservableList;
 
     public void initialize() {
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
@@ -70,9 +78,34 @@ public class FinishedTableController {
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
         FinishedStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("endLoanYaz"));
+        LendersColumn.setCellValueFactory(new PropertyValueFactory<Loan, Button>("infoButton"));
 
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.FINISHED);
-        RiskTable.setItems(loanObservableList);
+        for (Loan loan:loanObservableList){
+            loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+        }
 
+        FinishedTable.setItems(loanObservableList);
+
+    }
+
+    public void ActiveActionHandle(Loan loan){
+        //create stage
+        Stage stage = new Stage();
+        stage.setTitle("lenders info");
+        //load fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/finishedInnerTable.fxml"));
+        AnchorPane finishedInnerTable = null;
+        try {
+            finishedInnerTable = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //get the controller
+        finishedInnerTableController innerTableController = fxmlLoader.getController();
+        innerTableController.initializeTable(loan.getLendersList(),loan.getPaymentsList());
+        Scene scene = new Scene(finishedInnerTable);
+        stage.setScene(scene);
+        stage.show();
     }
 }

@@ -2,17 +2,25 @@ package subcomponents.body.Admin.adminLoanTables.activeStatus;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import loan.Loan;
 import loan.enums.eLoanStatus;
+import subcomponents.body.Admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
 import subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
+import subcomponents.body.Admin.adminLoanTables.pendingStatus.innerTable.PendingInnerTableController;
 import utills.Engine;
 import javafx.util.Callback;
 import javafx.event.ActionEvent;
+
+import java.io.IOException;
 
 
 public class ActiveTableController {
@@ -49,7 +57,7 @@ public class ActiveTableController {
     private TableColumn<Loan, Double> ColumnInterest;
 
     @FXML
-    private TableColumn<Loan, Void> LendersColumn;
+    private TableColumn<Loan, Button> LendersColumn;
 
 
     @FXML
@@ -104,7 +112,7 @@ public class ActiveTableController {
 
 
     public void initializeTable() {
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
         ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
@@ -114,10 +122,35 @@ public class ActiveTableController {
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
+        LendersColumn.setCellValueFactory(new PropertyValueFactory<Loan, Button>("infoButton"));
 
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.ACTIVE);
+        for (Loan loan:loanObservableList){
+            loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+        }
         ActiveTable.setItems(loanObservableList);
-        mainTablesController.addButtonToTable(ActiveTable);
 
+        //mainTablesController.addButtonToTable(ActiveTable);
 
-}}
+}
+public void ActiveActionHandle(Loan loan){
+    //create stage
+    Stage stage = new Stage();
+    stage.setTitle("lenders info");
+    //load fxml
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/ActiveInnerTable.fxml"));
+    AnchorPane activeInnerTable = null;
+    try {
+        activeInnerTable = fxmlLoader.load();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    //get the controller
+    ActiveInnerTableController innerTableController = fxmlLoader.getController();
+    innerTableController.initializeTable(loan.getLendersList(),loan.getPaymentsList());
+    Scene scene = new Scene(activeInnerTable);
+    stage.setScene(scene);
+    stage.show();
+}
+
+}

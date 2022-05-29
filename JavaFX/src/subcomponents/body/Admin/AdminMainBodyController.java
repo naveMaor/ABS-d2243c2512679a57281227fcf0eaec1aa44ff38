@@ -41,7 +41,6 @@ public class AdminMainBodyController {
     @FXML
     void IncreaseYazButtonListener(ActionEvent event) {
         Timeline.promoteStaticCurrTime();
-        engine.filterAndHandleLoansListAfterPromote();
     }
 
     @FXML
