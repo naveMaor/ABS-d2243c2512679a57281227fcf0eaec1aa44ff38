@@ -86,6 +86,7 @@ public class adminClientTableController {
 
 
         List<ClientObj> clientsObjList = engine.getDatabase().getClientsObjList();
+        clientLoansObservableList.clear();
         for (ClientObj clientObj:clientsObjList){
             ClientLoans clientLoans = new ClientLoans(clientObj);
             clientLoansObservableList.add(clientLoans);

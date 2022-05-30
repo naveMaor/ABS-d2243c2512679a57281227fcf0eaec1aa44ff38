@@ -1,14 +1,13 @@
 package subcomponents.body.Customer.Information;
 
 import MainWindow.mainWindowController;
+import Money.operations.Payment;
 import exceptions.BalanceException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import loan.Loan;
@@ -62,10 +61,12 @@ public class CustomerInformationBodyCont {
         clientAsBorrowLoanList.clear();
         clientAsBorrowLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsBorrowLoanList());
         borrowerTable.setItems(clientAsBorrowLoanList);
+        customiseFactory(borrowerLoanStatus);
 
         clientAsLenderLoanList.clear();
         clientAsLenderLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsLenderLoanList());
         lenderTable.setItems(clientAsLenderLoanList);
+        customiseFactory(lenderLoanStatus);
 
     }
 
@@ -104,6 +105,27 @@ public class CustomerInformationBodyCont {
         transactionsController.loadTableData();
     }
 
+    private void customiseFactory(TableColumn<Loan, eLoanStatus> calltypel) {
+        calltypel.setCellFactory(column -> {
+            return new TableCell<Loan, eLoanStatus>() {
+                @Override
+                protected void updateItem(eLoanStatus item, boolean empty) {
+                    super.updateItem(item, empty);
 
+                    setText(empty ? "" : getItem().toString());
+                    setGraphic(null);
+
+                    TableRow<Loan> currentRow = getTableRow();
+
+                    if (!isEmpty()) {
+
+                        if(item==eLoanStatus.RISK)
+                            currentRow.setStyle("-fx-background-color:red");
+
+                    }
+                }
+            };
+        });
+    }
 
 }

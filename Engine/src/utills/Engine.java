@@ -1,5 +1,6 @@
 package utills;
 
+import Money.operations.Payment;
 import customes.Account;
 import customes.Client;
 import customes.Lenders;
@@ -198,8 +199,16 @@ This func gets lenders list and return thus sum of their deposit
     }
     public void payEntirePaymentForLoanList(List<Loan> loanList) throws messageException {
         for (Loan loan:loanList){
-            loan.payEntireLoan();
+                loan.payEntireLoan();
         }
+    }
+
+    public void payPartialAmountForLoan(Loan loan,int amount) throws messageException {
+        if(loan.getStatus() != RISK){
+            throw new messageException("You can only pay partial amount of money for loans that are in risk! :");
+        }
+        else
+            loan.payPartialLoanPayment(amount);
     }
 
 

@@ -1,6 +1,7 @@
 package subcomponents.body.Customer.Payment;
 
 import Money.operations.Payment;
+import customes.Client;
 import exceptions.messageException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -15,7 +16,9 @@ import subcomponents.body.Customer.main.CustomerMainBodyController;
 import time.Timeline;
 import utills.Engine;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CustomerPaymentBodyController {
     private Engine engine=Engine.getInstance();
@@ -23,8 +26,11 @@ public class CustomerPaymentBodyController {
     private ObservableList<Loan> loanListForTable =  FXCollections.observableArrayList();
     private ObservableList<Loan> loanListForTextArea =  FXCollections.observableArrayList();
     private CustomerMainBodyController customerMainBodyController;
-
+    private Map<String, String> clientNameCommentMap =new HashMap<>();
     private SimpleBooleanProperty loadTextAfterYazChange = new SimpleBooleanProperty();
+
+    @FXML
+    private TextField partialAmoutLable;
 
     @FXML
     private ListView<String> LoansListView;
@@ -58,6 +64,9 @@ public class CustomerPaymentBodyController {
     private TableView<Loan> ReleventLoansTable;
 
     @FXML
+    private TableColumn<Loan, eLoanStatus> status;
+
+    @FXML
     void activateBackwardLoanButton(ActionEvent event) {
         List<String> choosenLoans=LoansListView.getSelectionModel().getSelectedItems();
         LoansListView.getItems().removeAll(choosenLoans);
@@ -89,13 +98,14 @@ public class CustomerPaymentBodyController {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         int num = 0;
         for (Loan loan:items){
-            if(loan.getSelect().isSelected()&&loan.getNextExpectedPaymentAmountDataMember()>0&&loan.getNextYazToPay()==0){
-                CheckBoxLoanList.add(loan.getLoanID());
-                num++;
-            }
+            if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK)
+                if (loan.getSelect().isSelected()) {
+                    CheckBoxLoanList.add(loan.getLoanID());
+                    num++;
+                }
         }
         if(num==0){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!\nPlease select by the check box \nYou can only choose loans that has next yaz 0 and loans that you not payed already");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!\nPlease select by the check box \nYou can only choose loans that has next yaz 0 and loans that you not payed already Or loans that are on risk");
             alert.showAndWait();
         }
         else {
@@ -133,6 +143,32 @@ public class CustomerPaymentBodyController {
         LoansListView.getItems().clear();
     }
 
+    @FXML
+    void activatePayPartial(ActionEvent event) {
+        int amount = Integer.parseInt(partialAmoutLable.getText());
+        List<String> loanNameList = LoansListView.getItems();
+        List<Loan> tmp = engine.getDatabase().getLoanList();
+        ObservableList <Loan> loanList = FXCollections.observableArrayList();
+        if(loanNameList.size()!=1){
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Please choose only one loan at a time for paying that partial amount!");
+            alert.showAndWait();
+        }
+        else {
+            for (Loan loan:tmp){
+                if (loanNameList.contains(loan.getLoanID())){
+                    loanList.add(loan);
+                }
+            }
+            try {
+                engine.payPartialAmountForLoan(loanList.get(0),amount);
+            } catch (messageException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
+                alert.showAndWait();            }
+        }
+        loadLoanTableData();
+        LoansListView.getItems().clear();
+    }
+
     private List<Loan> choosenLoans;
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -145,6 +181,7 @@ public class CustomerPaymentBodyController {
         loanId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
         nextYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
         select.setCellValueFactory(new PropertyValueFactory<Loan, String>("select"));
+        status.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
 
     }
 
@@ -168,6 +205,9 @@ public class CustomerPaymentBodyController {
         //because of unexpected bug that the compliler does not run on all over the items i have to write it down again
 
         ReleventLoansTable.setItems(loanListForTable);
+
+        customiseFactory(status);
+
     }
 
     public void loadTextAreaData(){
@@ -175,8 +215,7 @@ public class CustomerPaymentBodyController {
         ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
         int num=1;
         boolean append = false;
-        for (Loan loan:tmp
-        ) {
+        for (Loan loan:tmp) {
             eLoanStatus status = loan.getStatus();
             if((status== eLoanStatus.RISK)||(status==eLoanStatus.ACTIVE) && loan.getNextYazToPay() ==0){
                 append = true;
@@ -186,10 +225,34 @@ public class CustomerPaymentBodyController {
         }
         comment.append("\n");
         if(append&&loadTextAfterYazChange.getValue()){
-            notificationsTextArea.appendText(comment.toString());
-            loadTextAfterYazChange.setValue(false);
+            clientNameCommentMap.put(customerMainBodyController.getCustomerName(), String.valueOf(comment));
+            notificationsTextArea.clear();
+            notificationsTextArea.setText(clientNameCommentMap.get(customerMainBodyController.getCustomerName()));
         }
 
 
+    }
+
+
+    private void customiseFactory(TableColumn<Loan, eLoanStatus> calltypel) {
+        calltypel.setCellFactory(column -> {
+            return new TableCell<Loan, eLoanStatus>() {
+                @Override
+                protected void updateItem(eLoanStatus item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    setText(empty ? "" : getItem().toString());
+                    setGraphic(null);
+
+                    TableRow<Loan> currentRow = getTableRow();
+
+                    if (!isEmpty()) {
+
+                        if(item==eLoanStatus.RISK)
+                            currentRow.setStyle("-fx-background-color:red");
+                    }
+                }
+            };
+        });
     }
 }

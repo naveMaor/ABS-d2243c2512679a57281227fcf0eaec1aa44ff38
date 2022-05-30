@@ -51,6 +51,19 @@ public class Deviation implements Serializable {
         fundDeviation=0;
         skipped = false;
     }
+    public void changeDeviation(double interest, double fund){
+        interestDeviation-=interest;
+        fundDeviation-=fund;
+        if(interestDeviation<=0){
+            interestDeviation=0;
+        }
+        if(fundDeviation<=0){
+            fundDeviation=0;
+        }
+        if(interestDeviation==0&&fundDeviation==0){
+            skipped = false;
+        }
+    }
 
 
 }

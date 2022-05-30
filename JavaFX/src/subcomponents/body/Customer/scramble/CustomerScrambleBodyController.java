@@ -254,8 +254,8 @@ public class CustomerScrambleBodyController {
         stackPane.getChildren().addAll(veil, p);
 
 
-       if (amount>clientBalance){
-            alert = new Alert(Alert.AlertType.ERROR,"Amount must be less then client current balance:\n"+ clientBalance);
+       if (amount>clientBalance||amount==0){
+            alert = new Alert(Alert.AlertType.ERROR,"Amount must be set to less then client current balance:\n"+ clientBalance);
             alert.showAndWait();
         }
         else{

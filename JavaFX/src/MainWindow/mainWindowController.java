@@ -118,17 +118,20 @@ public class mainWindowController {
             errorWindow.initModality(Modality.APPLICATION_MODAL);
             errorWindow.show();
             e.printStackTrace();
+            return;
 
         } catch (JAXBException e) {
             errorWindow= MessageStage(MessageType.Error,"file is corrupted");
             errorWindow.initModality(Modality.APPLICATION_MODAL);
             errorWindow.show();
             e.printStackTrace();
+            return;
         } catch (Exception e) {
             errorWindow= MessageStage(MessageType.Error,e.getMessage());
             errorWindow.initModality(Modality.APPLICATION_MODAL);
             errorWindow.show();
             e.printStackTrace();
+            return;
         }
 
         engine.buildDataFromDescriptor();

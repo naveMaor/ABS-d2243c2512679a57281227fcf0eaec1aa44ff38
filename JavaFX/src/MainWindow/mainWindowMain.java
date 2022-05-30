@@ -32,7 +32,9 @@ public class mainWindowMain extends Application {
 
         primaryStage.setTitle("ABS System");
 
-        Scene scene = new Scene(load, 800, 600);
+        Scene scene = new Scene(load, 1200, 800);
+        primaryStage.setMaximized(true);
+        primaryStage.setFullScreen(true);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
