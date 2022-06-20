@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 
-<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.header.MainHeaderController">
+<BorderPane prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.header.MainHeaderController">
    <center>
-      <HBox prefHeight="61.0" prefWidth="557.0" spacing="5.0">
+      <HBox prefHeight="61.0" prefWidth="600.0" spacing="5.0">
          <children>
             <ComboBox fx:id="ViewByComboBox" editable="true" onAction="#ViewByComboBoxListener" prefHeight="57.0" prefWidth="121.0" promptText="View By" style="-fx-color: #fff18a; -fx-background-color: #fff18a;">
                <effect>

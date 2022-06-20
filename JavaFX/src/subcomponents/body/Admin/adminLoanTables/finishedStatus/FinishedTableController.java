@@ -12,7 +12,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import subcomponents.body.Admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
 import subcomponents.body.Admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
 import utills.Engine;
 

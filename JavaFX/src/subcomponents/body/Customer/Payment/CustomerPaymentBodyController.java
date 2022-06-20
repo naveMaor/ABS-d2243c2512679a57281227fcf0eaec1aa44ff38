@@ -1,7 +1,5 @@
 package subcomponents.body.Customer.Payment;
 
-import Money.operations.Payment;
-import customes.Client;
 import exceptions.messageException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;

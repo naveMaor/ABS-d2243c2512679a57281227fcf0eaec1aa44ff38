@@ -2,11 +2,9 @@ package ClientDTO;
 
 import customes.Account;
 import customes.Client;
-import loan.Loan;
 import loan.enums.eLoanStatus;
 import loanDTO.LoanObj;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.effect.Shadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Admin.adminClientTable.adminClientTableController">
+   <children>
+      <TableView fx:id="adminClientTable" blendMode="MULTIPLY" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+          <TableColumn fx:id="name" prefWidth="75.0" text="name" />
+          <TableColumn fx:id="balance" prefWidth="75.0" text="balance" />
+            <TableColumn fx:id="lender" prefWidth="75.0" text="Client as lender">
+               <columns>
+                  <TableColumn fx:id="lenderNew" prefWidth="75.0" text="new" />
+                  <TableColumn fx:id="lenderPending" prefWidth="75.0" text="pending" />
+                  <TableColumn fx:id="lenderActive" prefWidth="75.0" text="active" />
+                  <TableColumn fx:id="lenderRisk" prefWidth="75.0" text="risk" />
+                  <TableColumn fx:id="lenderFinished" prefWidth="75.0" text="finished" />
+               </columns>
+            </TableColumn>
+            <TableColumn fx:id="borrower" prefWidth="75.0" text="Client as borrower">
+               <columns>
+                  <TableColumn fx:id="borrowerNew" prefWidth="75.0" text="new" />
+                  <TableColumn fx:id="borrowerPending" prefWidth="75.0" text="pending" />
+                  <TableColumn fx:id="borrowerActive" prefWidth="75.0" text="active" />
+                  <TableColumn fx:id="borrowerRisk" prefWidth="75.0" text="risk" />
+                  <TableColumn fx:id="borrowerFinished" prefWidth="75.0" text="finished" />
+               </columns>
+            </TableColumn>
+        </columns>
+         <effect>
+            <Lighting diffuseConstant="0.92">
+               <bumpInput>
+                  <Shadow height="94.97" radius="35.3075" width="48.26">
+                     <color>
+                        <Color red="1.0" green="0.7870370149612427" blue="0.7870370149612427" />
+                     </color>
+                  </Shadow>
+               </bumpInput>
+               <light>
+                  <Light.Distant>
+                     <color>
+                        <Color red="1.0" green="0.9938271641731262" blue="0.9938271641731262" />
+                     </color>
+                  </Light.Distant>
+               </light>
+            </Lighting>
+         </effect>
+      </TableView>
+   </children>
+   <effect>
+      <Glow />
+   </effect>
+</AnchorPane>

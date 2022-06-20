@@ -5,8 +5,7 @@ import Money.operations.Transaction;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+
 public class Account implements Serializable {
     private int ID;
     private double currBalance =0;

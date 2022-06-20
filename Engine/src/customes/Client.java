@@ -106,4 +106,5 @@ public class Client implements Serializable {
         }
         return result;
     }
+
 }

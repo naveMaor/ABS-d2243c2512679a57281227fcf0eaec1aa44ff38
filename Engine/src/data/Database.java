@@ -26,7 +26,6 @@ public class Database implements Serializable {
     }
 
 
-    //todo: check if need to stay static
     private Map <String, List<Loan>> loanMapByCategory = new HashMap<>();
     private Map<String, Client> clientMap =new HashMap<>();
 
@@ -101,8 +100,6 @@ public class Database implements Serializable {
             loanMapByCategory.put(category,new ArrayList<Loan>());
         }
     }
-
-
     public List<String> getAllCategories() {
         List<String> result = new ArrayList<>();
         for (String category:loanMapByCategory.keySet()) {
@@ -177,5 +174,13 @@ public class Database implements Serializable {
         return result;
     }
 
+    public boolean isUserExists(String usernameFromParameter){
+        return clientMap.containsKey(usernameFromParameter);
+    }
+
+    public void addUser(String usernameFromParameter){
+        Client newClient = new Client(usernameFromParameter,0);
+        addClientToClientMap(newClient);
+    }
 
 }

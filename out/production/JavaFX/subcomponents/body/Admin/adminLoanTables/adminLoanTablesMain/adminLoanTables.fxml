@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-text-fill: black;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController">
+   <children>
+      <TabPane nodeOrientation="LEFT_TO_RIGHT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab style="-fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: white; -fx-background-color: #99adff;" text="New">
+               <content>
+                  <AnchorPane style="-fx-border-color: white;">
+                     <children>
+                        <fx:include fx:id="NewTable" source="../newStatus/NewTable.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color red="0.8117647171020508" green="0.9647058844566345" blue="0.7411764860153198" opacity="0.800000011920929" />
+                           </color>
+                        </DropShadow>
+                     </effect></AnchorPane>
+               </content></Tab>
+          <Tab style="-fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: white; -fx-background-color: #c2eaff;" text="Pending">
+               <content>
+                  <fx:include fx:id="PendingTable" source="../pendingStatus/PendingTable.fxml" />
+               </content></Tab>
+            <Tab style="-fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: white; -fx-background-color: #c4f9ff;" text="Active">
+               <content>
+                  <fx:include fx:id="ActiveTable" source="../activeStatus/ActiveTable.fxml" />
+               </content></Tab>
+            <Tab style="-fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: white; -fx-background-color: #dcffe9;" text="Risk">
+               <content>
+                  <fx:include fx:id="RiskTable" source="../riskStatus/RiskTable.fxml" />
+               </content></Tab>
+            <Tab style="-fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: white; -fx-background-color: #beffa1;" text="Finished">
+               <content>
+                  <fx:include fx:id="FinishedTable" source="../finishedStatus/FinishedTable.fxml" />
+               </content></Tab>
+        </tabs>
+      </TabPane>
+   </children>
+   <effect>
+      <Glow level="0.0" />
+   </effect>
+</AnchorPane>

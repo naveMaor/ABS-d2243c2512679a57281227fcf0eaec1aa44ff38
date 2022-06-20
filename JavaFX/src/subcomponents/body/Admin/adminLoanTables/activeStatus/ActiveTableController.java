@@ -15,7 +15,6 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import subcomponents.body.Admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
 import subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
-import subcomponents.body.Admin.adminLoanTables.pendingStatus.innerTable.PendingInnerTableController;
 import utills.Engine;
 import javafx.util.Callback;
 import javafx.event.ActionEvent;

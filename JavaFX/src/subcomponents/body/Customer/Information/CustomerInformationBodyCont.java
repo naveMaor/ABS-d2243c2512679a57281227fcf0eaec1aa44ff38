@@ -1,7 +1,5 @@
 package subcomponents.body.Customer.Information;
 
-import MainWindow.mainWindowController;
-import Money.operations.Payment;
 import exceptions.BalanceException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -12,7 +10,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import subcomponents.body.Admin.adminClientTable.ClientLoans;
 import subcomponents.body.Customer.Information.transactionsTableView.transactionsController;
 import subcomponents.body.Customer.main.CustomerMainBodyController;
 import utills.Engine;

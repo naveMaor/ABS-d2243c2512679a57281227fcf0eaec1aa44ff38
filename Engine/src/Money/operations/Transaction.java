@@ -1,7 +1,5 @@
 package Money.operations;
 
-import time.Timeline;
-
 import java.io.Serializable;
 import java.util.Objects;
 public class Transaction implements Serializable {

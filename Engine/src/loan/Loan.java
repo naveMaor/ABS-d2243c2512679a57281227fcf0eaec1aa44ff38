@@ -22,7 +22,6 @@ public class Loan implements Serializable {
     Engine engine = Engine.getInstance();
 
     //Identification data members:
-
     private String loanCategory;//
     private eLoanStatus status;//
     private String loanID;//shem mezha

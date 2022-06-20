@@ -4,7 +4,6 @@ import ClientDTO.ClientObj;
 import customes.Account;
 import customes.Client;
 import customes.Lenders;
-import data.Database;
 import data.schema.generated.AbsDescriptor;
 import loan.Loan;
 import loan.enums.eDeviationPortion;
@@ -19,8 +18,6 @@ import utills.Engine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import static utills.Engine.*;
 
 public class PrintFuncs {
 

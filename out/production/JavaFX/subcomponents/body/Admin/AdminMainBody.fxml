@@ -29,13 +29,9 @@
             <RowConstraints maxHeight="123.60001220703126" minHeight="44.400000000000006" prefHeight="44.400000000000006" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="123.60001220703126" minHeight="0.0" prefHeight="61.00001831054688" vgrow="SOMETIMES" />
             <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="128.5999969482422" minHeight="15.0" prefHeight="42.599993896484364" vgrow="NEVER" />
-            <RowConstraints maxHeight="131.80001831054688" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="131.80001831054688" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="77.60002441406249" minHeight="20.0" prefHeight="50.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fitHeight="1344.0" fitWidth="1092.0" GridPane.columnSpan="2147483647" GridPane.rowSpan="2147483647">
+            <ImageView fitHeight="1000.0" fitWidth="1092.0" GridPane.columnSpan="2147483647" GridPane.rowSpan="2147483647">
                <image>
                   <Image url="@../../../design/6.jpg" />
                </image>

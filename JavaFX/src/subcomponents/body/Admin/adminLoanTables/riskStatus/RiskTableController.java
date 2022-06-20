@@ -16,7 +16,6 @@ import javafx.util.Callback;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import subcomponents.body.Admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
-import subcomponents.body.Admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
 import subcomponents.body.Admin.adminLoanTables.riskStatus.innerTable.riskInnerTableController;
 import utills.Engine;
 
