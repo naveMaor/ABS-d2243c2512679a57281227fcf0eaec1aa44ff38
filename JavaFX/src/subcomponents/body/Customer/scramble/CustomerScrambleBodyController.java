@@ -184,54 +184,33 @@ public class CustomerScrambleBodyController {
         amount = 0;
         maxOpenLoans = -1;
         try {
-/*            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    minInterest,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    minYaz,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    maxOpenLoans,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    amount,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    maxOwnership,
-                    new NumberStringConverter());*/
             String minInterestText = minimumInterestTextField.getText();
             if(minInterestText.matches("[0-9]+"))
                 minInterest =  Integer.parseInt(minInterestText);
-            //minInterest = Integer.parseInt(minimumInterestTextField.getText());
 
             String maxShareText = maxOwnershipTextField.getText();
             if(maxShareText.matches("[0-9]+"))
                 maxOwnership =  Integer.parseInt(maxShareText);
-            //maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
 
 
             String minYazText = minimumYazTextField.getText();
             if(minYazText.matches("[0-9]+"))
                 minYaz =  Integer.parseInt(minYazText);
-            //minYaz = Integer.parseInt(minimumYazTextField.getText());
 
 
             String investmentAmountText = amountToInvestTextField.getText();
             if(investmentAmountText.matches("[0-9]+"))
                 amount =  Integer.parseInt(investmentAmountText);
-            //amount=Integer.parseInt(amountToInvestTextField.getText());
 
             String maxInvolvedLoansText = maxOpenLoansTextField.getText();
             if(maxInvolvedLoansText.matches("[0-9]+"))
                 maxOpenLoans =  Integer.parseInt(maxInvolvedLoansText);
-            //maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
-
-
         }
         catch (NumberFormatException e){
             alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
             alert.showAndWait();
         }
+        //todo: move this onResponse
         scrambleService service =new scrambleService(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
 
         Region veil = new Region();
@@ -244,7 +223,7 @@ public class CustomerScrambleBodyController {
         p.progressProperty().bind(service.progressProperty());
         veil.visibleProperty().bind(service.runningProperty());
         p.visibleProperty().bind(service.runningProperty());
-
+        //for showing running task
         customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
         customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
         customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());

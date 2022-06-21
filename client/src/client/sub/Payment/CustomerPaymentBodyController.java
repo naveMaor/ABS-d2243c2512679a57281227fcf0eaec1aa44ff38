@@ -70,9 +70,12 @@ public class CustomerPaymentBodyController {
         LoansListView.getItems().removeAll(choosenLoans);
     }
 
-    @FXML
-    void activateCloseEntireLoanButton(ActionEvent event) {
+
+    //todo: add servlet here
+    private void payLoans(PayOption payOption){
         List<String> loanNameList = LoansListView.getItems();
+        //parameter for servlet is loanNameList
+
         List<Loan> tmp = engine.getDatabase().getLoanList();
         ObservableList <Loan> loanList = FXCollections.observableArrayList();
         for (Loan loan:tmp){
@@ -81,6 +84,34 @@ public class CustomerPaymentBodyController {
             }
         }
 
+
+        try {
+            if(payOption==PayOption.entire)
+                engine.payEntirePaymentForLoanList(loanList);
+            else if (payOption==PayOption.single){
+                engine.paySinglePaymentForLoanList(loanList);
+            }
+        } catch (messageException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
+            alert.showAndWait();
+        }
+        loadLoanTableData();
+        LoansListView.getItems().clear();
+    }
+
+
+    @FXML
+    void activateCloseEntireLoanButton(ActionEvent event) {
+/*        List<String> loanNameList = LoansListView.getItems();
+        List<Loan> tmp = engine.getDatabase().getLoanList();
+        ObservableList <Loan> loanList = FXCollections.observableArrayList();
+        for (Loan loan:tmp){
+            if (loanNameList.contains(loan.getLoanID())){
+                loanList.add(loan);
+            }
+        }
+
+
         try {
             engine.payEntirePaymentForLoanList(loanList);
         } catch (messageException e) {
@@ -88,7 +119,8 @@ public class CustomerPaymentBodyController {
             alert.showAndWait();
         }
         loadLoanTableData();
-        LoansListView.getItems().clear();
+        LoansListView.getItems().clear();*/
+        payLoans(PayOption.entire);
     }
 
     @FXML
@@ -120,9 +152,10 @@ public class CustomerPaymentBodyController {
         CheckBoxLoanList.clear();
     }
 
+
     @FXML
     void activatePayLoanSinglePaymentButton(ActionEvent event) {
-        List<String> loanNameList = LoansListView.getItems();
+/*        List<String> loanNameList = LoansListView.getItems();
         List<Loan> tmp = engine.getDatabase().getLoanList();
         ObservableList <Loan> loanList = FXCollections.observableArrayList();
         for (Loan loan:tmp){
@@ -138,7 +171,8 @@ public class CustomerPaymentBodyController {
             alert.showAndWait();
         }
         loadLoanTableData();
-        LoansListView.getItems().clear();
+        LoansListView.getItems().clear();*/
+        payLoans(PayOption.single);
     }
 
     @FXML
@@ -208,6 +242,8 @@ public class CustomerPaymentBodyController {
 
     }
 
+
+    //todo:add get servlet for loan list from database
     public void loadTextAreaData(){
         StringBuilder comment = new StringBuilder("Yaz now:" + Timeline.getCurrTime() + ", you need to pay for these loans:\n");
         ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());

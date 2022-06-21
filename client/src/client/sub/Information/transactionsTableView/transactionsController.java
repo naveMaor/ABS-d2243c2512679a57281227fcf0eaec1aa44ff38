@@ -84,7 +84,7 @@ public class transactionsController {
     }
 
 
-
+    //todo:add servlet for getting client transaction list
     public void loadTableData(){
         String customerName=customerInformationBodyCont.customerNameProperty().get();
         double balance = engine.getDatabase().getClientByname(customerName).getMyAccount().getCurrBalance();

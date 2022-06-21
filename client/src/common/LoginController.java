@@ -105,4 +105,9 @@ public class LoginController {
     public void setChatAppMainController(ChatAppMainController chatAppMainController) {
         this.chatAppMainController = chatAppMainController;
     }*/
+
+    public void setMainController(ClientMainController mainController) {
+        this.clientMainController = mainController;
+    }
+
 }
