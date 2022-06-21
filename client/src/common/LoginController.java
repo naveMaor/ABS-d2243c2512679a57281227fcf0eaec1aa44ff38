@@ -1,5 +1,6 @@
 package common;
 
+import client.main.ClientMainController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -27,6 +28,8 @@ public class LoginController {
     public Label errorMessageLabel;
 
     //private ChatAppMainController chatAppMainController;
+
+    private ClientMainController clientMainController;
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
@@ -77,6 +80,8 @@ public class LoginController {
                     Platform.runLater(() -> {
 /*                        chatAppMainController.updateUserName(userName);
                         chatAppMainController.switchToChatRoom();*/
+                        clientMainController.updateUserName(userName);
+                        clientMainController.switchToClientDesktop();
                     });
                 }
             }

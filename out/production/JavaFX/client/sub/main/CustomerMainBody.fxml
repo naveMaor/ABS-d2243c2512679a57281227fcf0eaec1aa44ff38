@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+
+<ScrollPane fx:id="customerMainBody" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.sub.main.CustomerMainBodyController">
+  <content>
+    <AnchorPane fx:id="customerTabPane" prefHeight="800.0">
+         <children>
+            <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab fx:id="informationTabPane" style="-fx-background-color: #d1e5ff;" text="Information">
+                  <content>
+                    <AnchorPane>
+                           <children>
+                              <fx:include fx:id="customerInformationBody" source="../Information/CustomerInformationBody.fxml" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab onSelectionChanged="#initialize" text="Scramble">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <fx:include fx:id="customerScrambleBody" source="../scramble/CustomerScrambleBody.fxml" />
+                           </children></AnchorPane>
+                  </content>
+                </Tab>
+                  <Tab fx:id="paymentTabPane" style="-fx-background-color: #d1e5ff;" text="Payment">
+                    <content>
+                      <AnchorPane>
+                           <children>
+                              <fx:include fx:id="customerPaymentBody" source="../Payment/CustomerpaymentBody.fxml" />
+                           </children>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="0.15534979104995728" green="0.16044238209724426" blue="0.1666666716337204" opacity="0.8700000047683716" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children></AnchorPane>
+  </content>
+</ScrollPane>
