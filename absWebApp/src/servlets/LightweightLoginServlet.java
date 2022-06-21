@@ -1,6 +1,9 @@
 package servlets;
 
 import data.Database;
+import engine.Engine;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import static constants.Constants.USERNAME;
 @WebServlet(name = "loginShortResponse", urlPatterns = "/loginShortResponse")
 public class LightweightLoginServlet extends HttpServlet {
+
 
 
     @Override
@@ -34,18 +38,18 @@ public class LightweightLoginServlet extends HttpServlet {
                 //normalize the username value
                 usernameFromParameter = usernameFromParameter.trim();
 
-                /*
-                One can ask why not enclose all the synchronizations inside the userManager object ?
-                Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
-                of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
-                (of course there are other more sophisticated and performable means for that (atomic objects etc) but these are not in our scope)
+            /*
+            One can ask why not enclose all the synchronizations inside the userManager object ?
+            Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
+            of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
+            (of course there are other more sophisticated and performable means for that (atomic objects etc) but these are not in our scope)
 
-                The synchronized is on this instance (the servlet).
-                As the servlet is singleton - it is promised that all threads will be synchronized on the very same instance (crucial here)
+            The synchronized is on this instance (the servlet).
+            As the servlet is singleton - it is promised that all threads will be synchronized on the very same instance (crucial here)
 
-                A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
-                do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
-                 */
+            A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
+            do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
+             */
                 synchronized (this) {
                     if (systemDataBase.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
@@ -53,8 +57,7 @@ public class LightweightLoginServlet extends HttpServlet {
                         // stands for unauthorized as there is already such user with this name
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getOutputStream().print(errorMessage);
-                    }
-                    else {
+                    } else {
                         //add the new user to the users list
                         systemDataBase.addUser(usernameFromParameter);
                         //set the username in a session so it will be available on each request

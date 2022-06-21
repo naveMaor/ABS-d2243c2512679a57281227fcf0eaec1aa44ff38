@@ -6,6 +6,8 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="absWebApp" />
+          <element id="module-output" name="Engine" />
+          <element id="module-output" name="dto" />
         </element>
         <element id="directory" name="lib">
           <element id="dir-copy" path="$PROJECT_DIR$/3rd/google-gson-2.1" />

@@ -11,8 +11,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import utills.Engine;
-import utills.scrambleService;
+import engine.Engine;
+import engine.scrambleService;
 
 import java.util.List;
 

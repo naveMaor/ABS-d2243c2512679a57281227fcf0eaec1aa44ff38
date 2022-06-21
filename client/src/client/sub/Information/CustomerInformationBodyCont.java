@@ -12,7 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import utills.Engine;
+import engine.Engine;
 
 public class CustomerInformationBodyCont {
     private Engine engine= Engine.getInstance();
