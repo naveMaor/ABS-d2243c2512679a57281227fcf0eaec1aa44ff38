@@ -17,6 +17,8 @@ public class Constants {
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
     public final static String LOANS_PER_CUSTOMER = FULL_SERVER_PATH + "/LoansPerCustomer";
+    public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoan";
+
 
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     public final static String LOGOUT = FULL_SERVER_PATH + "/chat/logout";

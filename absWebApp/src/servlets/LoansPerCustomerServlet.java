@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import data.Database;
+import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,9 +25,9 @@ public class LoansPerCustomerServlet extends HttpServlet {
         //response.setContentType("text/plain;charset=UTF-8");
 
         String usernameFromSession = SessionUtils.getUsername(request);
-        Database systemDataBase = ServletUtils.getSystemDataBase(getServletContext());
+        Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-        List<Loan> loanList = systemDataBase.getClientByname(usernameFromSession).getClientAsLenderLoanList();
+        List<Loan> loanList = systemEngine.getDatabase().getClientByname(usernameFromSession).getClientAsLenderLoanList();
         Gson gson = new Gson();
         //todo might need to remez to gson that you want a loan list type of json
         String jsonResponse = gson.toJson(loanList);
