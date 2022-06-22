@@ -110,9 +110,13 @@ public class CustomerInformationBodyCont {
                 .build()
                 .toString();
 
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
         //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsync(request, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

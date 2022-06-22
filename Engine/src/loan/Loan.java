@@ -84,8 +84,8 @@ public class Loan implements Serializable {
         this.loanAccount = new Account(Objects.hash(this.loanID) & 0xfffffff, 0);
         this.intristPerPayment = calculateInristPerPayment();
         this.deviation = new Deviation();
-        this.select = new CheckBox();
-        this.infoButton = new Button();
+/*        this.select = new CheckBox();
+        this.infoButton = new Button();*/
         this.missingMoney = this.loanOriginalDepth;
         this.maxOwnershipMoneyForPercentage = 0;
         this.nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);

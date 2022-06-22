@@ -9,10 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.HttpClientUtil;
@@ -58,9 +55,13 @@ public class LoginController {
                 .build()
                 .toString();
 
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
         //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsync(request, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

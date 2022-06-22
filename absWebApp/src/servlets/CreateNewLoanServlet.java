@@ -35,7 +35,7 @@ public class CreateNewLoanServlet extends HttpServlet {
 
         Collection<Part> parts = request.getParts();
 
-        out.println("Total parts : " + parts.size());
+        //out.println("Total parts : " + parts.size());
 
         StringBuilder fileContent = new StringBuilder();
 

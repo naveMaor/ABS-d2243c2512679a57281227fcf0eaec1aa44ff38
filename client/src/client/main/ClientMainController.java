@@ -172,7 +172,7 @@ public class ClientMainController {
                 .post(body)
                 .build();
 
-        HttpClientUtil.runAsync(request.toString(), new Callback() {
+        HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Platform.runLater(() ->
