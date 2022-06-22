@@ -128,11 +128,12 @@ public class CustomerPaymentBodyController {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         int num = 0;
         for (Loan loan:items){
-            if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK)
+            if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK) {
                 if (loan.getSelect().isSelected()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
                 }
+            }
         }
         if(num==0){
             Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!\nPlease select by the check box \nYou can only choose loans that has next yaz 0 and loans that you not payed already Or loans that are on risk");
@@ -146,8 +147,9 @@ public class CustomerPaymentBodyController {
             }
         }
         for (Loan loan:items) {
+
             loan.getSelect().setSelected(false);
-            //loan.setSelect(false);
+
         }
         CheckBoxLoanList.clear();
     }

@@ -68,12 +68,5 @@ public class XmlFile implements Serializable {
             inputStream = new FileInputStream(selectedFile);
             AbsDescriptor descriptor = SchemaBasedJAXB.deserializeFrom(inputStream);
             inputObject= descriptor;
-/*        catch ( FileNotFoundException e) {
-            throw new Exception("Invalid path name, file doesn't exist.");
-        } catch (JAXBException j){
-
-            throw new Exception("Couldn't read file");
-        }*/
-        //isCopySucceeded = true;
     }
 }
