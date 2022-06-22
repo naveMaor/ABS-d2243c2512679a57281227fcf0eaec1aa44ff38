@@ -65,7 +65,7 @@ public class Loan implements Serializable {
     private Button infoButton = new Button();
 
     //constructors
-    public Loan(String LoanId, String loanCategory, double loanOriginalDepth, int originalLoanTimeFrame, int paymentFrequency, int intristPerPayment) {
+    public Loan(String LoanId,String borrowerName, String loanCategory, double loanOriginalDepth, int originalLoanTimeFrame, int paymentFrequency, int intristPerPayment) {
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.loanOriginalDepth = loanOriginalDepth;

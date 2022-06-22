@@ -253,11 +253,11 @@ public class Engine {
 
 
 
-    public void buildDataFromDescriptor() {
+    public void buildDataFromDescriptor(String name) {
         database.clearAll();
         AbsDescriptor descriptor = XmlFile.getInputObject();
         buildCategoriesData(descriptor.getAbsCategories().getAbsCategory());
-        buildLoansData(descriptor.getAbsLoans().getAbsLoan());
+        buildLoansData(descriptor.getAbsLoans().getAbsLoan(),name);
     }
     public void buildCategoriesData(List<String> absCategories) {
         for (String categoryName : absCategories) {
@@ -267,7 +267,7 @@ public class Engine {
 
     public void buildLoansData(List<AbsLoan> absLoanList) {
         for (AbsLoan absLoan : absLoanList) {
-            Loan newLoan = new Loan(absLoan.getId(), absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
+            Loan newLoan = new Loan(absLoan.getId(),name, absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
             database.addLoanToLoanMap(newLoan);
         }
     }

@@ -17,7 +17,8 @@ public class ServletUtils {
 
     public static Database getSystemDataBase(ServletContext servletContext) {
         synchronized (userManagerLock) {
-            Engine engine = Engine.getInstance();
+            Engine engine = new Engine();
+            //            Engine engine = Engine.getInstance();
             if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
                 servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, engine.getDatabase());
             }

@@ -17,7 +17,8 @@ import engine.scrambleService;
 import java.util.List;
 
 public class CustomerScrambleBodyController {
-    private Engine engine=Engine.getInstance();
+//    private Engine engine=Engine.getInstance();
+    private Engine engine = new Engine();
     private CustomerMainBodyController customerMainBodyController;
     private List<String> allCategoriesList;
     private ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();

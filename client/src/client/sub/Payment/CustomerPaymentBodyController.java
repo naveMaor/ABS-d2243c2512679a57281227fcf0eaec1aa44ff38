@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomerPaymentBodyController {
-    private Engine engine=Engine.getInstance();
+//    private Engine engine=Engine.getInstance();
+    private Engine engine = new Engine();
+
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
     private ObservableList<Loan> loanListForTable =  FXCollections.observableArrayList();
     private ObservableList<Loan> loanListForTextArea =  FXCollections.observableArrayList();

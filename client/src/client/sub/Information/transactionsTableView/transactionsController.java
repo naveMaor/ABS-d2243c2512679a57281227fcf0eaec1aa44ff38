@@ -11,7 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import engine.Engine;
 
 public class transactionsController {
-    private Engine engine = Engine.getInstance();
+    //private Engine engine = Engine.getInstance();
+    private Engine engine = new Engine();
     private CustomerInformationBodyCont customerInformationBodyCont;
 
     @FXML

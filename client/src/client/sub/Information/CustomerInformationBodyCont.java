@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerInformationBodyCont {
-    private Engine engine= Engine.getInstance();
+    //private Engine engine= Engine.getInstance();
+    private Engine engine = new Engine();
+
     private CustomerMainBodyController customerMainBodyController;
 
     @FXML
