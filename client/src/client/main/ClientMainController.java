@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
@@ -65,6 +66,8 @@ public class ClientMainController {
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ",currentUserName));
 
 
+
+
         //customerMainBody.setFitToWidth(true); // tried to set the node to middle of the screen
         //CustomerMainBody.setFitToHeight(true);
     }
@@ -79,5 +82,44 @@ public class ClientMainController {
         root.setTop(header);
     }
 
+
+    public void openFileButtonAction() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select words file");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        //Scene scene = new Scene(load, 800, 600);
+        Stage errorWindow;
+        if (selectedFile == null) {
+            return;
+        }
+        try {
+            XmlFile.createInputObjectFromFile(selectedFile);
+            engine.CheckInvalidFile(XmlFile.getInputObject());
+        } catch (FileNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+            return;
+
+        } catch (JAXBException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "file is corrupted");
+            alert.showAndWait();
+            e.printStackTrace();
+            return;
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+            return;
+        }
+
+        engine.buildDataFromDescriptor();
+        String absolutePath = selectedFile.getAbsolutePath();
+/*        selectedFileProperty.set(absolutePath);
+        mainHeaderController.initializeComboBox();
+        adminMainBodyController.initializeAdminTables();
+        isFileSelected.set(true);*/
+    }
 
 }

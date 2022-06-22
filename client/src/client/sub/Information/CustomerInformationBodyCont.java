@@ -21,10 +21,7 @@ import javafx.stage.Stage;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.HttpClientUtil;
@@ -118,24 +115,23 @@ public class CustomerInformationBodyCont {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("not good")
+                        System.out.println("failed to call url information body controller")
                 );
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     Platform.runLater(() -> {
-/*                        chatAppMainController.updateUserName(userName);
-                        chatAppMainController.switchToChatRoom();*/
-                        Type listType = new TypeToken<ArrayList<Loan>>(){}.getType();
                         try {
-                            //List<Loan> loansList = new Gson().fromJson(response.body().string(), listType);
-                            Object s = response.body().string();
+                            if(response.code()==200){
+                                String jsonOfClientString = response.body().string();
+                                // response.body().close();
+                                Loan[] loanList = new Gson().fromJson(jsonOfClientString, Loan[].class);
+                                clientAsBorrowLoanList.addAll(loanList);
+                                borrowerTable.setItems(clientAsBorrowLoanList);
+                                customiseFactory(borrowerLoanStatus);
+                            }
 
-                            List<Loan> loansList = new Gson().fromJson(response.body().string(), listType);
-                            clientAsBorrowLoanList.addAll(loansList);
-                            borrowerTable.setItems(clientAsBorrowLoanList);
-                            customiseFactory(borrowerLoanStatus);
                             //TODO: A LOAN LIST NEEDED HERE ALSO:
 /*                            clientAsLenderLoanList.addAll(loansList);
                             lenderTable.setItems(clientAsLenderLoanList);
@@ -155,7 +151,6 @@ public class CustomerInformationBodyCont {
     }
 
     @FXML public void initialize() {
-        openFileButtonAction();
         if (transactionsController != null) {
             transactionsController.setMainController(this);
         }
@@ -216,45 +211,5 @@ public class CustomerInformationBodyCont {
 
     private Stage primaryStage;
 
-    public void openFileButtonAction() {
-/*        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select words file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));*/
-        File selectedFile = new File("C:\\Users\\Nave\\Desktop\\ex2-small.xml");
-        //Scene scene = new Scene(load, 800, 600);
-        Stage errorWindow;
-        if (selectedFile == null) {
-            return;
-        }
-        try {
-            XmlFile.createInputObjectFromFile(selectedFile);
-            engine.CheckInvalidFile(XmlFile.getInputObject());
-        } catch (FileNotFoundException e) {
-/*            errorWindow= MessageStage(MessageType.Error,e.getMessage());
-            errorWindow.initModality(Modality.APPLICATION_MODAL);
-            errorWindow.show();*/
-            e.printStackTrace();
-            return;
 
-        } catch (JAXBException e) {
-/*            errorWindow= MessageStage(MessageType.Error,"file is corrupted");
-            errorWindow.initModality(Modality.APPLICATION_MODAL);
-            errorWindow.show();*/
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-/*            errorWindow= MessageStage(MessageType.Error,e.getMessage());
-            errorWindow.initModality(Modality.APPLICATION_MODAL);
-            errorWindow.show();*/
-            e.printStackTrace();
-            return;
-        }
-
-        engine.buildDataFromDescriptor();
-        String absolutePath = selectedFile.getAbsolutePath();
-/*        selectedFileProperty.set(absolutePath);
-        mainHeaderController.initializeComboBox();
-        adminMainBodyController.initializeAdminTables();
-        isFileSelected.set(true);*/
-    }
 }

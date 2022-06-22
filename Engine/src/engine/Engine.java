@@ -6,7 +6,6 @@ import customes.Client;
 import customes.Lenders;
 import data.Database;
 import data.File.XmlFile;
-import data.schema.generated.AbsCustomer;
 import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 import exceptions.BalanceException;
@@ -31,6 +30,7 @@ public class Engine {
     Database database = Database.Database();
 
     public Engine() {
+        database = Database.Database();
     }
 
     public static Engine getInstance() {
@@ -229,28 +229,7 @@ public class Engine {
         return true;
     }
 
-    /**
-     * check if there is a loan owner that does not exist
-     */
-    public boolean checkValidLoanOwner(AbsDescriptor descriptor) {
-        List<AbsCustomer> absCustomerList = descriptor.getAbsCustomers().getAbsCustomer();
-        List<AbsLoan> absLoanList = descriptor.getAbsLoans().getAbsLoan();
-        boolean isCustomerExist = false;
 
-        for (AbsLoan absLoan : absLoanList) {
-            for (AbsCustomer absCustomer : absCustomerList) {
-                String customerName = absCustomer.getName();
-                if (absLoan.getAbsOwner().equalsIgnoreCase(customerName)) {
-                    isCustomerExist = true;
-                }
-            }
-            if (!isCustomerExist) {
-                return false;
-            }
-            isCustomerExist = false;
-        }
-        return true;
-    }
 
     /**
      * check if payment frequency is fully divided by the total time of the loan
@@ -272,42 +251,14 @@ public class Engine {
         return true;
     }
 
-    /**
-     * check if there is two customers with the same name and if there are it will return false
-     *
-     * @param descriptor
-     * @return
-     */
-    public boolean checkValidCustomersList(AbsDescriptor descriptor) {
-        List<AbsCustomer> absCustomerList = descriptor.getAbsCustomers().getAbsCustomer();
-        List<String> customersName = new ArrayList<>();
-        for (AbsCustomer absCustomer : absCustomerList) {
-            if (customersName.contains(absCustomer.getName().toLowerCase()))
-                return false;
-            customersName.add(absCustomer.getName().toLowerCase());
-        }
-/*        for (String customersName:customersName){
-            if(customersName.contains(absCustomer.getName()) )
-                return false;
-        }*/
-        return true;
-    }
+
 
     public void buildDataFromDescriptor() {
         database.clearAll();
         AbsDescriptor descriptor = XmlFile.getInputObject();
-        buildCustomersData(descriptor.getAbsCustomers().getAbsCustomer());
         buildCategoriesData(descriptor.getAbsCategories().getAbsCategory());
         buildLoansData(descriptor.getAbsLoans().getAbsLoan());
     }
-
-    public void buildCustomersData(List<AbsCustomer> absCustomerList) {
-        for (AbsCustomer absCustomer : absCustomerList) {
-            Client newClient = new Client(absCustomer.getName(), absCustomer.getAbsBalance());
-            database.addClientToClientMap(newClient);
-        }
-    }
-
     public void buildCategoriesData(List<String> absCategories) {
         for (String categoryName : absCategories) {
             database.addCategory(categoryName);
@@ -316,7 +267,7 @@ public class Engine {
 
     public void buildLoansData(List<AbsLoan> absLoanList) {
         for (AbsLoan absLoan : absLoanList) {
-            Loan newLoan = new Loan(absLoan.getId(), absLoan.getAbsOwner(), absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
+            Loan newLoan = new Loan(absLoan.getId(), absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
             database.addLoanToLoanMap(newLoan);
         }
     }
@@ -457,14 +408,7 @@ public class Engine {
             s += "\nthere is loan category that does not exist";
             isValid = false;
         }
-        if (!checkValidCustomersList(descriptor)) {
-            s += "\nthere are two customers with the same name";
-            isValid = false;
-        }
-        if (!checkValidLoanOwner(descriptor)) {
-            s += "\nthere is a loan with a loan owner name that does not exist";
-            isValid = false;
-        }
+
         if (!checkValidPaymentFrequency(descriptor)) {
             s += "\npayment frequency is not fully divided by the total time of the loan";
             isValid = false;
