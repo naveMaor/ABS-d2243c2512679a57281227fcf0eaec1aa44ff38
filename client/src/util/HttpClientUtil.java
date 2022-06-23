@@ -3,6 +3,9 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
 
 public class HttpClientUtil {
 
@@ -29,6 +32,19 @@ public class HttpClientUtil {
         Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
 
         call.enqueue(callback);
+    }
+
+    public static Response execute(Request request) {
+        Response response;
+        Call call = HttpClientUtil.HTTP_CLIENT.newCall(request);
+        try {
+            response = call.execute();
+            return response;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static void shutdown() {

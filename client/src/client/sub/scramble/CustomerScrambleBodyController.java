@@ -33,6 +33,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.ScrambleRequestObj;
 import sun.jvm.hotspot.memory.LinearAllocBlock;
 import util.Constants;
 import util.HttpClientUtil;
@@ -156,13 +157,12 @@ public class CustomerScrambleBodyController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "NO LOANS SELECTED!");
             alert.showAndWait();
         } else {
-            MediaType JSON
-                    = MediaType.parse("application/json; charset=utf-8");
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             Gson gson = new Gson();
-            String requestString = gson.toJson(existChosenCategories);
-            requestString += gson.toJson(amount);
-            requestString += gson.toJson(clientName);
-            requestString += gson.toJson(maxOwnership);
+            ScrambleRequestObj requestObj = new ScrambleRequestObj(CheckBoxLoanList,amount,clientName,maxOwnership);
+
+            String requestString = gson.toJson(requestObj,ScrambleRequestObj.class);
+
             RequestBody body = RequestBody.create(requestString,JSON);
             String finalUrl = HttpUrl
                     .parse(Constants.SCRAMBLE_LOANS)

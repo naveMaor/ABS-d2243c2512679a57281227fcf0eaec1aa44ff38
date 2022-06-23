@@ -9,7 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.HttpClientUtil;
@@ -18,17 +22,14 @@ import java.io.IOException;
 
 public class LoginController {
 
+    private final StringProperty errorMessageProperty = new SimpleStringProperty();
     @FXML
     public TextField userNameTextField;
 
+    //private ChatAppMainController chatAppMainController;
     @FXML
     public Label errorMessageLabel;
-
-    //private ChatAppMainController chatAppMainController;
-
     private ClientMainController clientMainController;
-
-    private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
     @FXML
     public void initialize() {
@@ -79,8 +80,6 @@ public class LoginController {
                     );
                 } else {
                     Platform.runLater(() -> {
-/*                        chatAppMainController.updateUserName(userName);
-                        chatAppMainController.switchToChatRoom();*/
                         clientMainController.updateUserName(userName);
                         clientMainController.switchToClientDesktop();
                     });
