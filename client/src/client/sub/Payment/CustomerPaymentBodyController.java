@@ -131,7 +131,10 @@ public class CustomerPaymentBodyController {
         int num = 0;
         for (Loan loan:items){
             if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK) {
-                if (loan.getSelect().isSelected()) {
+/*                if (loan.getSelect().isSelected()) {
+                    CheckBoxLoanList.add(loan.getLoanID());
+                    num++;*/
+                    if (loan.getSelect()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
                 }
@@ -150,7 +153,8 @@ public class CustomerPaymentBodyController {
         }
         for (Loan loan:items) {
 
-            loan.getSelect().setSelected(false);
+            //loan.getSelect().setSelected(false);
+            loan.setSelect(false);
 
         }
         CheckBoxLoanList.clear();

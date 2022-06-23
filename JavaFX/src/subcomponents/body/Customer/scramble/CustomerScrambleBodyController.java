@@ -119,10 +119,10 @@ public class CustomerScrambleBodyController {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
         for (Loan loan:items){
-            if(loan.getSelect().isSelected()){
+/*            if(loan.getSelect().isSelected()){
                 CheckBoxLoanList.add(loan);
                 num++;
-            }
+            }*/
         }
         if(num==0){
             Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!");

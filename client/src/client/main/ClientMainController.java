@@ -201,6 +201,7 @@ public class ClientMainController {
                             //Notifications.create().title("Success").text(response.body().string()).hideAfter(Duration.seconds(5)).position(Pos.CENTER).show();
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,response.body().string());
                             alert.showAndWait();
+
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

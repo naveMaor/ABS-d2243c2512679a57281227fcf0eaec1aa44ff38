@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 public class Loan implements Serializable {
-    Engine engine = Engine.getInstance();
+    //Engine engine = Engine.getInstance();
+    private Engine engine;
 
     //Identification data members:
     private String loanCategory;//
@@ -60,12 +61,14 @@ public class Loan implements Serializable {
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
 
     private Account loanAccount;
+    private boolean select = false;
 
-    private CheckBox select = new CheckBox();
-    private Button infoButton = new Button();
+/*    private CheckBox select;
+    private Button infoButton;*/
 
     //constructors
     public Loan(String LoanId,String borrowerName, String loanCategory, double loanOriginalDepth, int originalLoanTimeFrame, int paymentFrequency, int intristPerPayment) {
+        engine = new Engine();
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.loanOriginalDepth = loanOriginalDepth;
@@ -242,17 +245,25 @@ public class Loan implements Serializable {
         return nextYazToPay;
     }
 
-    public CheckBox getSelect() {
+/*    public CheckBox getSelect() {
+        return select;
+    }*/
+
+    public boolean getSelect() {
         return select;
     }
 
-    public void setSelect(Boolean select) {
+/*    public void setSelect(Boolean select) {
         this.select.setSelected(select);
+    }*/
+
+    public void setSelect(Boolean select) {
+        this.select=select;
     }
 
-    public Button getInfoButton() {
+/*    public Button getInfoButton() {
         return infoButton;
-    }
+    }*/
 
     public double getMaxOwnershipMoneyForPercentage() {
         return maxOwnershipMoneyForPercentage;

@@ -30,9 +30,6 @@ public class CreateNewLoanServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-
-        PrintWriter out = response.getWriter();
-
         Collection<Part> parts = request.getParts();
 
         //out.println("Total parts : " + parts.size());
