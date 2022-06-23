@@ -3,6 +3,7 @@ package client.sub.Information.transactionsTableView;
 import Money.operations.Transaction;
 import client.sub.Information.CustomerInformationBodyCont;
 import com.google.gson.Gson;
+import customes.Client;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,8 +21,6 @@ import util.HttpClientUtil;
 import java.io.IOException;
 
 public class transactionsController {
-    //private Engine engine = Engine.getInstance();
-    private Engine engine = new Engine();
     private CustomerInformationBodyCont customerInformationBodyCont;
 
     @FXML
@@ -94,23 +93,20 @@ public class transactionsController {
     }
 
 
-    //todo:add servlet for getting client transaction list
     public void loadTableData(){
         String customerName=customerInformationBodyCont.customerNameProperty().get();
-        double balance = engine.getDatabase().getClientByname(customerName).getMyAccount().getCurrBalance();
+        double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
         createTransactionListRequest();
         transactionsTableView.getItems().clear();
         transactionsTableView.setItems(transactionsObservableList);
         amountTextField.setText("");
         currentBalanceLabel.textProperty().set(String.valueOf(balance));
-        //todo:take the name of the customer from the main controller and pass
     }
 
 
 
 
     private void createTransactionListRequest(){
-        //noinspection ConstantConditions
         String finalUrl = HttpUrl
                 //todo parameter name here
                 .parse(Constants.GET_TRANSACTION_LIST)

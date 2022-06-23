@@ -3,6 +3,7 @@ package client.sub.Information;
 import com.google.gson.Gson;
 import client.sub.Information.transactionsTableView.transactionsController;
 import client.sub.main.CustomerMainBodyController;
+import customes.Client;
 import exceptions.BalanceException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -174,6 +175,7 @@ public class CustomerInformationBodyCont {
                         if(response.code()==200){
                             String jsonOfClientString = response.body().string();
                             // response.body().close();
+                            Gson gson = new Gson();
                             Loan[] loanAsLenderList = new Gson().fromJson(jsonOfClientString, Loan[].class);
                             clientAsLenderLoanList.addAll(loanAsLenderList);
 
@@ -181,11 +183,6 @@ public class CustomerInformationBodyCont {
                             borrowerTable.setItems(clientAsBorrowLoanList);
                             customiseFactory(borrowerLoanStatus);
                         }
-
-                        //TODO: A LOAN LIST NEEDED HERE ALSO:
-/*                            clientAsLenderLoanList.addAll(loansList);
-                            lenderTable.setItems(clientAsLenderLoanList);
-                            customiseFactory(lenderLoanStatus);*/
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -289,5 +286,9 @@ public class CustomerInformationBodyCont {
     });
 
 
+    }
+
+    public Client getCurrClient(){
+        return customerMainBodyController.getCurrClient();
     }
 }

@@ -1,8 +1,10 @@
 package client.main;
 
 import client.sub.main.CustomerMainBodyController;
+import com.google.gson.Gson;
 import com.sun.deploy.cache.JarSigningData;
 import common.LoginController;
+import customes.Client;
 import data.File.XmlFile;
 import engine.Engine;
 import javafx.application.Platform;
@@ -27,6 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -44,6 +47,7 @@ public class ClientMainController {
     @FXML private CustomerMainBodyController customerMainBodyController;
     //Engine engine = Engine.getInstance();
     private Engine engine = new Engine();
+    private Client currClient;
 
 
     public enum MessageType{Error,Successfully,Information};
@@ -53,49 +57,6 @@ public class ClientMainController {
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-
-
-    public void NewLoanButton1(ActionEvent actionEvent) {
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                .parse(Constants.LOGIN_PAGE) //todo: change that constant
-                .newBuilder()
-                .build()
-                .toString();
-
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select words file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml files", "*.xml"));
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        //Scene scene = new Scene(load, 800, 600);
-        Stage errorWindow;
-        if (selectedFile == null) {
-            return;
-        }
-        try {
-            XmlFile.createInputObjectFromFile(selectedFile);
-            engine.CheckInvalidFile(XmlFile.getInputObject());
-        } catch (FileNotFoundException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
-            e.printStackTrace();
-            return;
-
-        } catch (JAXBException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "file is corrupted");
-            alert.showAndWait();
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
-            e.printStackTrace();
-            return;
-        }
-
-        engine.buildDataFromDescriptor(currentUserName.get());
     }
 
 
@@ -120,10 +81,8 @@ public class ClientMainController {
         root.setCenter(null);
         root.setTop(null);
         loginComponentController.setMainController(this);
+        customerMainBodyController.setMainController(this);
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ",currentUserName));
-
-
-
 
         //customerMainBody.setFitToWidth(true); // tried to set the node to middle of the screen
         //CustomerMainBody.setFitToHeight(true);
@@ -135,6 +94,8 @@ public class ClientMainController {
 
     public void switchToClientDesktop(){
         root.setBottom(null);
+        createClientRequest();
+        customerMainBodyController.loadData();
         root.setCenter(clientDesktop);
         root.setTop(header);
     }
@@ -198,10 +159,9 @@ public class ClientMainController {
                     Platform.runLater(() ->
                     {
                         try {
-                            //Notifications.create().title("Success").text(response.body().string()).hideAfter(Duration.seconds(5)).position(Pos.CENTER).show();
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,response.body().string());
                             alert.showAndWait();
-
+                            customerMainBodyController.loadData();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -211,4 +171,50 @@ public class ClientMainController {
             }
         });
 }
+
+
+    private void createClientRequest(){
+        String finalUrl = HttpUrl
+                //todo parameter name here
+                .parse(Constants.GET_CLIENT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        //updateHttpStatusLine("New request is launched for: " + finalUrl);
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to GET CLIENT")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    try {
+                        if(response.code()==200){
+                            String jsonOfClientString = response.body().string();
+                            // response.body().close();
+                            currClient = new Gson().fromJson(jsonOfClientString, Client.class);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        });
+    }
+
+    public Client getCurrClient() {
+        return currClient;
+    }
 }
