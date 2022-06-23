@@ -21,7 +21,7 @@ import engine.Engine;
 
 
 public class CustomerMainBodyController {
-//    Engine engine = Engine.getInstance();
+
     private Engine engine = new Engine();
 
     private ClientMainController mainController;
@@ -37,10 +37,7 @@ public class CustomerMainBodyController {
     @FXML private Tab informationTabPane;
     @FXML private Tab paymentTabPane;
 
-    public Engine getEngine()
-    {
-        return mainController.getEngine();
-    }
+
 
     private SimpleStringProperty customerName = new SimpleStringProperty();
     private SimpleBooleanProperty loadTextAfterYazChange = new SimpleBooleanProperty();
@@ -135,9 +132,11 @@ public class CustomerMainBodyController {
     }
 
     public void loadData(){
-        customerInformationBodyController.initializeClientTable();
-        customerInformationBodyController.loadTransactionsTable();
-        customerPaymentBodyController.loadLoanTableData();
+        synchronized (this) {
+                customerInformationBodyController.initializeClientTable();
+                customerInformationBodyController.loadTransactionsTable();
+                customerPaymentBodyController.loadLoanTableData();
+        }
     }
 
     public Client getCurrClient(){

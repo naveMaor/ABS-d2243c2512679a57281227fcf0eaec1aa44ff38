@@ -93,14 +93,16 @@ public class transactionsController {
     }
 
 
-    public void loadTableData(){
-        String customerName=customerInformationBodyCont.customerNameProperty().get();
-        double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
+    public void loadTableData() {
         createTransactionListRequest();
         transactionsTableView.getItems().clear();
         transactionsTableView.setItems(transactionsObservableList);
         amountTextField.setText("");
-        currentBalanceLabel.textProperty().set(String.valueOf(balance));
+        //TODO FIXXXXQWE123123
+        if (customerInformationBodyCont.getCurrClient() != null) {
+            double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
+            currentBalanceLabel.textProperty().set(String.valueOf(balance));
+        }
     }
 
 

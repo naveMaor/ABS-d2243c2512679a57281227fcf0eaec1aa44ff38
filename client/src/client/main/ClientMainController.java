@@ -93,11 +93,21 @@ public class ClientMainController {
     }
 
     public void switchToClientDesktop(){
-        root.setBottom(null);
-        createClientRequest();
-        customerMainBodyController.loadData();
-        root.setCenter(clientDesktop);
-        root.setTop(header);
+        synchronized (this) {
+            root.setBottom(null);
+            root.setCenter(clientDesktop);
+            root.setTop(header);
+            try {
+                createClientRequest();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            customerMainBodyController.loadData();
+        }
+
+
+
     }
 
 
@@ -149,6 +159,7 @@ public class ClientMainController {
                     Platform.runLater(() ->
                     {
                         try {
+
                             Alert alert = new Alert(Alert.AlertType.ERROR,response.body().string());
                             alert.showAndWait();
                         } catch (IOException e) {
@@ -173,7 +184,7 @@ public class ClientMainController {
 }
 
 
-    private void createClientRequest(){
+    public void createClientRequest() throws IOException {
         String finalUrl = HttpUrl
                 //todo parameter name here
                 .parse(Constants.GET_CLIENT)
@@ -185,33 +196,20 @@ public class ClientMainController {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
+        Response response = HttpClientUtil.execute(request);;
 
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to GET CLIENT")
-                );
+        if(response.code() == 200)
+        {
+            if(currClient == null) {
+                String jsonOfClientString = response.body().string();
+                currClient = new Gson().fromJson(jsonOfClientString, Client.class);
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            currClient = new Gson().fromJson(jsonOfClientString, Client.class);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+            else
+            {
+                System.out.println("failed to GET CLIENT");
             }
+        }
 
-        });
     }
 
     public Client getCurrClient() {
