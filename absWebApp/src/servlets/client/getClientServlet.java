@@ -25,7 +25,6 @@ public class getClientServlet extends HttpServlet {
 
         Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
         Gson gson = new Gson();
-        //todo might need to remez to gson that you want a loan list type of json
         String jsonResponse = gson.toJson(client);
 
         try (PrintWriter out = response.getWriter()) {
