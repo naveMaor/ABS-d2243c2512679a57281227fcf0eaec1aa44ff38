@@ -95,14 +95,6 @@ public class transactionsController {
 
     public void loadTableData() {
         createTransactionListRequest();
-        transactionsTableView.getItems().clear();
-        transactionsTableView.setItems(transactionsObservableList);
-        amountTextField.setText("");
-        //TODO FIXXXXQWE123123
-        if (customerInformationBodyCont.getCurrClient() != null) {
-            double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
-            currentBalanceLabel.textProperty().set(String.valueOf(balance));
-        }
     }
 
 
@@ -137,10 +129,17 @@ public class transactionsController {
                     try {
                         if(response.code()==200){
                             String jsonOfClientString = response.body().string();
-                            // response.body().close();
+                            response.body().close();
                             Transaction[] TransactionList = new Gson().fromJson(jsonOfClientString, Transaction[].class);
                             transactionsObservableList.clear();
                             transactionsObservableList.addAll(TransactionList);
+                            transactionsTableView.getItems().clear();
+                            transactionsTableView.setItems(transactionsObservableList);
+                            amountTextField.setText("");
+                            if (customerInformationBodyCont.getCurrClient() != null) {
+                                double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
+                                currentBalanceLabel.textProperty().set(String.valueOf(balance));
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

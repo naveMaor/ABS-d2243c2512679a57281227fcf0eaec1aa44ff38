@@ -20,7 +20,6 @@ public class ServletUtils {
                 servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new Engine());
             }
         }
-
         return (Engine) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
     }
 

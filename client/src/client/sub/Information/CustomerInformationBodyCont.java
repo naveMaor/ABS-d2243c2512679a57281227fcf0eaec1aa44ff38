@@ -63,34 +63,10 @@ public class CustomerInformationBodyCont {
     ObservableList<Loan> clientAsLenderLoanList = FXCollections.observableArrayList();
     ObservableList<Loan> clientAsBorrowLoanList = FXCollections.observableArrayList();
 
-/*
-    public void initializeClientTable(){
-        clientAsBorrowLoanList.clear();
-        clientAsBorrowLoanList.addAll(engine.getDatabase().getClientByname("Avrum").getClientAsBorrowLoanList());
-        //tmp
-        //clientAsBorrowLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsBorrowLoanList());
-        borrowerTable.setItems(clientAsBorrowLoanList);
-        customiseFactory(borrowerLoanStatus);
-
-
-        clientAsLenderLoanList.clear();
-        //tmp
-        clientAsLenderLoanList.addAll(engine.getDatabase().getClientByname("Avrum").getClientAsLenderLoanList());
-        //clientAsLenderLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsLenderLoanList());
-        lenderTable.setItems(clientAsLenderLoanList);
-        customiseFactory(lenderLoanStatus);
-
-    }*/
 
     public void initializeClientTable(){
-        clientAsLenderLoanList.clear();
-        clientAsBorrowLoanList.clear();
         createLoansAsLenderRequest();
-        lenderTable.setItems(clientAsLenderLoanList);
-        customiseFactory(lenderLoanStatus);
         createLoansAsBorrowerRequest();
-        borrowerTable.setItems(clientAsBorrowLoanList);
-        customiseFactory(borrowerLoanStatus);
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -173,15 +149,14 @@ public class CustomerInformationBodyCont {
                 Platform.runLater(() -> {
                     try {
                         if(response.code()==200){
+                            clientAsLenderLoanList.clear();
                             String jsonOfClientString = response.body().string();
                             // response.body().close();
                             Gson gson = new Gson();
                             Loan[] loanAsLenderList = new Gson().fromJson(jsonOfClientString, Loan[].class);
                             clientAsLenderLoanList.addAll(loanAsLenderList);
-
-                            clientAsBorrowLoanList.addAll(loanAsLenderList);
-                            borrowerTable.setItems(clientAsBorrowLoanList);
-                            customiseFactory(borrowerLoanStatus);
+                            lenderTable.setItems(clientAsLenderLoanList);
+                            customiseFactory(lenderLoanStatus);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -221,10 +196,13 @@ public class CustomerInformationBodyCont {
                 Platform.runLater(() -> {
                     try {
                         if(response.code()==200){
+                            clientAsBorrowLoanList.clear();
                             String jsonOfClientString = response.body().string();
-                            // response.body().close();
+                            response.body().close();
                             Loan[] loanAsBorrowList = new Gson().fromJson(jsonOfClientString, Loan[].class);
                             clientAsBorrowLoanList.addAll(loanAsBorrowList);
+                            borrowerTable.setItems(clientAsBorrowLoanList);
+                            customiseFactory(borrowerLoanStatus);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

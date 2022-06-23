@@ -344,6 +344,28 @@ public class CustomerPaymentBodyController {
         });
     }
 
+    private void payEntirePaymentForLoanList(ObservableList <Loan> loanList){
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        Gson gson = new Gson();
+
+        String requestString = gson.toJson(loanList,Loan[].class);
+
+        RequestBody body = RequestBody.create(requestString,JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.SCRAMBLE_LOANS)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+
+    }
 
 
 }
