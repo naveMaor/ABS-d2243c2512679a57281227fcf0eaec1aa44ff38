@@ -10,7 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import utils.ServletUtils;
 import utils.SessionUtils;
-
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class CreateNewLoanServlet extends HttpServlet {
 
 
         try {
+            //todo: create new checkbox and button here and pass it through the methods
             systemEngine.createNewLoanFromInputStream(file,usernameFromSession);
             response.setStatus(200);
         }catch (JAXBException e){

@@ -16,7 +16,10 @@ public class Constants {
     private final static String FULL_SERVER_PATH = BASE_URL + CONTEXT_PATH;
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/loginShortResponse";
-    public final static String LOANS_PER_CUSTOMER = FULL_SERVER_PATH + "/LoansPerCustomer";
+    public final static String LOANS_AS_LENDER = FULL_SERVER_PATH + "/LoansAsLender";
+    public final static String LOANS_AS_BORROW = FULL_SERVER_PATH + "/LoansAsBorrow";
+    public final static String CREATE_TRANSACTION = FULL_SERVER_PATH + "/CreateTransaction";
+    public final static String GET_TRANSACTION_LIST = FULL_SERVER_PATH + "/TransactionList";
     public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoan";
 
 
