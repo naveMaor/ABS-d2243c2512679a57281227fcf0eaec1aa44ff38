@@ -19,6 +19,7 @@ import loan.enums.eLoanStatus;
 import engine.Engine;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.LoanInformationObj;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -34,34 +35,34 @@ public class CustomerInformationBodyCont {
     private transactionsController transactionsController;
 
     @FXML
-    private TableColumn<Loan, String> borrowerLoanID;
+    private TableColumn<LoanInformationObj, String> borrowerLoanID;
 
     @FXML
-    private TableColumn<Loan, String> lenderLoanID;
+    private TableColumn<LoanInformationObj, String> lenderLoanID;
 
     @FXML
-    private TableColumn<Loan, String> borrowerLoanCategory;
+    private TableColumn<LoanInformationObj, String> borrowerLoanCategory;
 
     @FXML
-    private TableColumn<Loan, String> lenderLoanCat;
+    private TableColumn<LoanInformationObj, String> lenderLoanCat;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> borrowerLoanStatus;
+    private TableColumn<LoanInformationObj, eLoanStatus> borrowerLoanStatus;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> lenderLoanStatus;
+    private TableColumn<LoanInformationObj, eLoanStatus> lenderLoanStatus;
 
     @FXML
-    private TableColumn<Loan, String> lenderBorrowerName;
+    private TableColumn<LoanInformationObj, String> lenderBorrowerName;
 
     @FXML
-    private TableView<Loan> lenderTable;
+    private TableView<LoanInformationObj> lenderTable;
 
     @FXML
-    private TableView<Loan> borrowerTable;
+    private TableView<LoanInformationObj> borrowerTable;
 
-    ObservableList<Loan> clientAsLenderLoanList = FXCollections.observableArrayList();
-    ObservableList<Loan> clientAsBorrowLoanList = FXCollections.observableArrayList();
+    private ObservableList<LoanInformationObj> clientAsLenderLoanList = FXCollections.observableArrayList();
+    private ObservableList<LoanInformationObj> clientAsBorrowLoanList = FXCollections.observableArrayList();
 
 
     public void initializeClientTable(){
@@ -77,13 +78,13 @@ public class CustomerInformationBodyCont {
         if (transactionsController != null) {
             transactionsController.setMainController(this);
         }
-        borrowerLoanID.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        lenderLoanID.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        borrowerLoanCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        lenderLoanCat.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
-        borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
-        lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        borrowerLoanID.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanID"));
+        lenderLoanID.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanID"));
+        borrowerLoanCategory.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanCategory"));
+        lenderLoanCat.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanCategory"));
+        lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("borrowerName"));
+        borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
+        lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
     }
 
     public void createTransaction(int amount) {
@@ -97,9 +98,9 @@ public class CustomerInformationBodyCont {
         transactionsController.loadTableData();
     }
 
-    private void customiseFactory(TableColumn<Loan, eLoanStatus> calltypel) {
+    private void customiseFactory(TableColumn<LoanInformationObj, eLoanStatus> calltypel) {
         calltypel.setCellFactory(column -> {
-            return new TableCell<Loan, eLoanStatus>() {
+            return new TableCell<LoanInformationObj, eLoanStatus>() {
                 @Override
                 protected void updateItem(eLoanStatus item, boolean empty) {
                     super.updateItem(item, empty);
@@ -107,7 +108,7 @@ public class CustomerInformationBodyCont {
                     setText(empty ? "" : getItem().toString());
                     setGraphic(null);
 
-                    TableRow<Loan> currentRow = getTableRow();
+                    TableRow<LoanInformationObj> currentRow = getTableRow();
 
                     if (!isEmpty()) {
 
@@ -153,7 +154,7 @@ public class CustomerInformationBodyCont {
                             String jsonOfClientString = response.body().string();
                             // response.body().close();
                             Gson gson = new Gson();
-                            Loan[] loanAsLenderList = new Gson().fromJson(jsonOfClientString, Loan[].class);
+                            LoanInformationObj[] loanAsLenderList = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
                             clientAsLenderLoanList.addAll(loanAsLenderList);
                             lenderTable.setItems(clientAsLenderLoanList);
                             customiseFactory(lenderLoanStatus);
@@ -199,10 +200,10 @@ public class CustomerInformationBodyCont {
                             clientAsBorrowLoanList.clear();
                             String jsonOfClientString = response.body().string();
                             response.body().close();
-                            Loan[] loanAsBorrowList = new Gson().fromJson(jsonOfClientString, Loan[].class);
+                            LoanInformationObj[] loanAsBorrowList = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
                             clientAsBorrowLoanList.addAll(loanAsBorrowList);
                             borrowerTable.setItems(clientAsBorrowLoanList);
-                            customiseFactory(borrowerLoanStatus);
+                            //customiseFactory(borrowerLoanStatus);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
