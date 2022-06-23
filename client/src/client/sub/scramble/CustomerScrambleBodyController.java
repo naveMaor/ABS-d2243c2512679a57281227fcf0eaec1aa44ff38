@@ -17,7 +17,8 @@ import engine.scrambleService;
 import java.util.List;
 
 public class CustomerScrambleBodyController {
-    private Engine engine=Engine.getInstance();
+//    private Engine engine=Engine.getInstance();
+    private Engine engine = new Engine();
     private CustomerMainBodyController customerMainBodyController;
     private List<String> allCategoriesList;
     private ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();
@@ -119,7 +120,10 @@ public class CustomerScrambleBodyController {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
         for (Loan loan:items){
-            if(loan.getSelect().isSelected()){
+/*            if(loan.getSelect().isSelected()){
+                CheckBoxLoanList.add(loan);
+                num++;*/
+                if(loan.getSelect()){
                 CheckBoxLoanList.add(loan);
                 num++;
             }

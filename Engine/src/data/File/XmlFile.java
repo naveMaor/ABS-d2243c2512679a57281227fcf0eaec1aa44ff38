@@ -69,4 +69,16 @@ public class XmlFile implements Serializable {
             AbsDescriptor descriptor = SchemaBasedJAXB.deserializeFrom(inputStream);
             inputObject= descriptor;
     }
+
+    public static void createInputObjectFromFile2(InputStream selectedFile) throws FileNotFoundException, JAXBException {
+            inputStream = selectedFile;
+            AbsDescriptor descriptor = SchemaBasedJAXB.deserializeFrom(inputStream);
+            inputObject= descriptor;
+    }
+
+    public static void createInput(File selectedFile) throws FileNotFoundException, JAXBException {
+        inputStream = new FileInputStream(selectedFile);
+        AbsDescriptor descriptor = SchemaBasedJAXB.deserializeFrom(inputStream);
+        inputObject= descriptor;
+    }
 }

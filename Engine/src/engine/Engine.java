@@ -16,6 +16,9 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import time.Timeline;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -252,12 +255,16 @@ public class Engine {
     }
 
 
+    public void createNewLoanFromInputStream(InputStream inputStream, String name) throws JAXBException, IOException {
+        XmlFile.createInputObjectFromFile2(inputStream);
+        CheckInvalidFile(XmlFile.getInputObject());
+        buildDataFromDescriptor(name);
+    }
 
-    public void buildDataFromDescriptor() {
-        database.clearAll();
+    public void buildDataFromDescriptor(String name) {
         AbsDescriptor descriptor = XmlFile.getInputObject();
         buildCategoriesData(descriptor.getAbsCategories().getAbsCategory());
-        buildLoansData(descriptor.getAbsLoans().getAbsLoan());
+        buildLoansData(descriptor.getAbsLoans().getAbsLoan(),name);
     }
     public void buildCategoriesData(List<String> absCategories) {
         for (String categoryName : absCategories) {
@@ -265,9 +272,9 @@ public class Engine {
         }
     }
 
-    public void buildLoansData(List<AbsLoan> absLoanList) {
+    public void buildLoansData(List<AbsLoan> absLoanList,String name ) {
         for (AbsLoan absLoan : absLoanList) {
-            Loan newLoan = new Loan(absLoan.getId(), absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
+            Loan newLoan = new Loan(absLoan.getId(),name, absLoan.getAbsCategory(), absLoan.getAbsCapital(), absLoan.getAbsTotalYazTime(), absLoan.getAbsPaysEveryYaz(), absLoan.getAbsIntristPerPayment());
             database.addLoanToLoanMap(newLoan);
         }
     }
@@ -400,7 +407,7 @@ public class Engine {
         return loanListSize;
     }
 
-    public boolean CheckInvalidFile(AbsDescriptor descriptor) throws Exception {
+    public boolean CheckInvalidFile(AbsDescriptor descriptor) throws IOException {
         boolean isValid = true;
         String s = new String();
 
@@ -416,7 +423,7 @@ public class Engine {
 
         if (!isValid) {
             s = "File not valid!\n" + s;
-            throw new Exception(s);
+            throw new IOException(s);
         }
         return isValid;
     }

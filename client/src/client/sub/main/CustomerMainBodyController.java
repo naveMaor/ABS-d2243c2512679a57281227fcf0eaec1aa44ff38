@@ -20,7 +20,9 @@ import engine.Engine;
 
 
 public class CustomerMainBodyController {
-    Engine engine = Engine.getInstance();
+//    Engine engine = Engine.getInstance();
+    private Engine engine = new Engine();
+
     //private mainWindowController mainController;
     private ClientMainController mainController;
     @FXML private ScrollPane customerInformationBody;

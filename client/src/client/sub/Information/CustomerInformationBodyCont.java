@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerInformationBodyCont {
-    private Engine engine= Engine.getInstance();
+    //private Engine engine= Engine.getInstance();
+    private Engine engine = new Engine();
+
     private CustomerMainBodyController customerMainBodyController;
 
     @FXML
@@ -108,9 +110,13 @@ public class CustomerInformationBodyCont {
                 .build()
                 .toString();
 
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
         //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
-        HttpClientUtil.runAsync(finalUrl, new Callback() {
+        HttpClientUtil.runAsync(request, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

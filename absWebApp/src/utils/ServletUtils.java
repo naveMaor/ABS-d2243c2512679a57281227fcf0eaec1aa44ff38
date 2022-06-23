@@ -1,7 +1,5 @@
 package utils;
 
-import customes.Account;
-import data.Database;
 import jakarta.servlet.ServletContext;
 import engine.Engine;
 
@@ -15,15 +13,15 @@ public class ServletUtils {
      */
     private static final Object userManagerLock = new Object();
 
-    public static Database getSystemDataBase(ServletContext servletContext) {
+    public static Engine getSystemEngine(ServletContext servletContext) {
         synchronized (userManagerLock) {
-            Engine engine = Engine.getInstance();
+            //            Engine engine = Engine.getInstance();
             if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
-                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, engine.getDatabase());
+                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new Engine());
             }
         }
 
-        return (Database) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+        return (Engine) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
     }
 
 }

@@ -134,7 +134,7 @@ public class mainWindowController {
             return;
         }
 
-        engine.buildDataFromDescriptor();
+        //engine.buildDataFromDescriptor();
         String absolutePath = selectedFile.getAbsolutePath();
         selectedFileProperty.set(absolutePath);
         mainHeaderController.initializeComboBox();

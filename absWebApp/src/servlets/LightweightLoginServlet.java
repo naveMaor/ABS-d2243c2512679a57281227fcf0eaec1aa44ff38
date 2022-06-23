@@ -2,8 +2,6 @@ package servlets;
 
 import data.Database;
 import engine.Engine;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +22,7 @@ public class LightweightLoginServlet extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
 
         String usernameFromSession = SessionUtils.getUsername(request);
-        Database systemDataBase = ServletUtils.getSystemDataBase(getServletContext());
+        Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         if (usernameFromSession == null) { //user is not logged in yet
 
@@ -51,7 +49,7 @@ public class LightweightLoginServlet extends HttpServlet {
             do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
              */
                 synchronized (this) {
-                    if (systemDataBase.isUserExists(usernameFromParameter)) {
+                    if (systemEngine.getDatabase().isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
 
                         // stands for unauthorized as there is already such user with this name
@@ -59,7 +57,7 @@ public class LightweightLoginServlet extends HttpServlet {
                         response.getOutputStream().print(errorMessage);
                     } else {
                         //add the new user to the users list
-                        systemDataBase.addUser(usernameFromParameter);
+                        systemEngine.getDatabase().addUser(usernameFromParameter);
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,6 +17,7 @@
                      <font>
                         <Font name="System Bold Italic" size="70.0" />
                      </font></Label>
+                  <Button fx:id="NewLoan" layoutX="383.0" layoutY="161.0" mnemonicParsing="false" onAction="#NewLoanButton" text="New Loan" />
                </children>
             </AnchorPane>
          </top>
