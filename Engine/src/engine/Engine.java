@@ -15,7 +15,8 @@ import javafx.collections.ObservableList;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import time.Timeline;
-
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;

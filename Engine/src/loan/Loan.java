@@ -4,7 +4,6 @@ import customes.Account;
 import customes.Client;
 import customes.Lenders;
 import exceptions.messageException;
-import javafx.scene.control.Button;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
 import Money.operations.Payment;
@@ -12,7 +11,7 @@ import Money.operations.Transaction;
 import time.Timeline;
 import engine.Engine;
 import Money.*;
-
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import java.io.Serializable;
 import java.util.ArrayList;

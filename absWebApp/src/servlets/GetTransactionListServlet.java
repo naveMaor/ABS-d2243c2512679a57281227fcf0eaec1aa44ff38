@@ -1,21 +1,23 @@
-package servlets.client;
+package servlets;
 
+import Money.operations.Transaction;
 import com.google.gson.Gson;
-import customes.Client;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import loan.Loan;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
+@WebServlet(name = "GetTransactionListServlet", urlPatterns = "/TransactionList")
+public class GetTransactionListServlet extends HttpServlet {
 
-@WebServlet(name = "ClientServlet", urlPatterns = "/Client")
-public class getClientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
@@ -23,9 +25,10 @@ public class getClientServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-        Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
+        List<Transaction> TransactionList = systemEngine.getClientTransactionsList(usernameFromSession);
+
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(client);
+        String jsonResponse = gson.toJson(TransactionList);
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);

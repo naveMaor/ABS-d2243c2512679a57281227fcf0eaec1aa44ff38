@@ -2,6 +2,9 @@ package client.sub.Information.transactionsTableView;
 
 import Money.operations.Transaction;
 import client.sub.Information.CustomerInformationBodyCont;
+import com.google.gson.Gson;
+import customes.Client;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,10 +12,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import engine.Engine;
+import loan.Loan;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
+import util.Constants;
+import util.HttpClientUtil;
+
+import java.io.IOException;
 
 public class transactionsController {
-    //private Engine engine = Engine.getInstance();
-    private Engine engine = new Engine();
     private CustomerInformationBodyCont customerInformationBodyCont;
 
     @FXML
@@ -85,15 +93,60 @@ public class transactionsController {
     }
 
 
-    //todo:add servlet for getting client transaction list
     public void loadTableData(){
         String customerName=customerInformationBodyCont.customerNameProperty().get();
-        double balance = engine.getDatabase().getClientByname(customerName).getMyAccount().getCurrBalance();
-        transactionsObservableList =engine.getClientTransactionsList(customerName);
+        double balance = customerInformationBodyCont.getCurrClient().getMyAccount().getCurrBalance();
+        createTransactionListRequest();
         transactionsTableView.getItems().clear();
         transactionsTableView.setItems(transactionsObservableList);
         amountTextField.setText("");
         currentBalanceLabel.textProperty().set(String.valueOf(balance));
-        //todo:take the name of the customer from the main controller and pass
     }
+
+
+
+
+    private void createTransactionListRequest(){
+        String finalUrl = HttpUrl
+                //todo parameter name here
+                .parse(Constants.GET_TRANSACTION_LIST)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        //updateHttpStatusLine("New request is launched for: " + finalUrl);
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url transaction list")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    try {
+                        if(response.code()==200){
+                            String jsonOfClientString = response.body().string();
+                            // response.body().close();
+                            Transaction[] TransactionList = new Gson().fromJson(jsonOfClientString, Transaction[].class);
+                            transactionsObservableList.clear();
+                            transactionsObservableList.addAll(TransactionList);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        });
+    }
+
 }

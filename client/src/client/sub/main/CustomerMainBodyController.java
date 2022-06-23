@@ -6,6 +6,7 @@ import client.main.ClientMainController;
 import client.sub.Information.CustomerInformationBodyCont;
 import client.sub.Payment.CustomerPaymentBodyController;
 import client.sub.scramble.CustomerScrambleBodyController;
+import customes.Client;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,7 +24,6 @@ public class CustomerMainBodyController {
 //    Engine engine = Engine.getInstance();
     private Engine engine = new Engine();
 
-    //private mainWindowController mainController;
     private ClientMainController mainController;
     @FXML private ScrollPane customerInformationBody;
     @FXML private CustomerInformationBodyCont customerInformationBodyController;
@@ -139,5 +139,10 @@ public class CustomerMainBodyController {
         customerInformationBodyController.loadTransactionsTable();
         customerPaymentBodyController.loadLoanTableData();
     }
+
+    public Client getCurrClient(){
+        return mainController.getCurrClient();
+    }
+
 
 }
