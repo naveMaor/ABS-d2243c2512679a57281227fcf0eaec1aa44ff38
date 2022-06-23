@@ -37,7 +37,10 @@ public class CustomerMainBodyController {
     @FXML private Tab informationTabPane;
     @FXML private Tab paymentTabPane;
 
-
+    public Engine getEngine()
+    {
+        return mainController.getEngine();
+    }
 
     private SimpleStringProperty customerName = new SimpleStringProperty();
     private SimpleBooleanProperty loadTextAfterYazChange = new SimpleBooleanProperty();

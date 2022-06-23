@@ -1,5 +1,6 @@
 package engine;
 
+import customes.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -19,6 +20,10 @@ public class scrambleService extends Service<ObservableList<Loan>> {
 
     public String getClientName() {
         return clientName;
+    }
+
+    public Client getClient() {
+        return engine.getDatabase().getClientByname(clientName);
     }
 
     public void setClientName(String clientName) {

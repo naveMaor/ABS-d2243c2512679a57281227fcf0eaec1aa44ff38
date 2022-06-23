@@ -21,9 +21,12 @@ public class Constants {
     public final static String CREATE_TRANSACTION = FULL_SERVER_PATH + "/CreateTransaction";
     public final static String GET_TRANSACTION_LIST = FULL_SERVER_PATH + "/TransactionList";
     public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoan";
+    public final static String SCRAMBLE_LOANS = FULL_SERVER_PATH + "/ScrambleLoans";
     public final static String GET_CLIENT = FULL_SERVER_PATH + "/Client";
     public final static String GET_ALL_LOAN_LIST = FULL_SERVER_PATH + "/AllLoanList";
 
+    ///client scramble
+    public final static String RELEVANT_LOANS = FULL_SERVER_PATH + "/relevantLoans";
 
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     public final static String LOGOUT = FULL_SERVER_PATH + "/chat/logout";

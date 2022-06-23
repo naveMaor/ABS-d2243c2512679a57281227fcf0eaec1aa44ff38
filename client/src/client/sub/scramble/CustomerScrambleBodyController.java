@@ -1,42 +1,67 @@
 package client.sub.scramble;
 
 import client.sub.main.CustomerMainBodyController;
+import com.google.gson.Gson;
+import com.oracle.webservices.internal.api.message.ContentType;
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+import engine.Engine;
+import engine.scrambleService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import engine.Engine;
-import engine.scrambleService;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+import sun.jvm.hotspot.memory.LinearAllocBlock;
+import util.Constants;
+import util.HttpClientUtil;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerScrambleBodyController {
-//    private Engine engine=Engine.getInstance();
-    private Engine engine = new Engine();
+    //    private Engine engine=Engine.getInstance();
+    private Engine engine;
     private CustomerMainBodyController customerMainBodyController;
     private List<String> allCategoriesList;
-    private ObservableList<Loan> userFilteredLoanList =  FXCollections.observableArrayList();
-    private ObservableList<Loan> CheckBoxLoanList =  FXCollections.observableArrayList();
+    private ObservableList<Loan> userFilteredLoanList = FXCollections.observableArrayList();
+    private ObservableList<Loan> CheckBoxLoanList = FXCollections.observableArrayList();
 
-    private List<String> choosenCategories;
-    private ObservableList<String> existChoosenCategories = FXCollections.observableArrayList();;
+    private List<String> chosenCategories;
+    private ObservableList<String> existChosenCategories = FXCollections.observableArrayList();
 
     private int amount;
+
     private int maxOwnership;
 
-    private int minInterest ;
+    private int minInterest;
     private int minYaz;
     private int maxOpenLoans;
     private String clientName;
     @FXML
     private StackPane stackPane;
-
 
 
     @FXML
@@ -74,7 +99,6 @@ public class CustomerScrambleBodyController {
 
     @FXML
     private TextField minimumYazTextField;
-
 
 
     @FXML
@@ -119,38 +143,86 @@ public class CustomerScrambleBodyController {
         int num = 0;
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
-        for (Loan loan:items){
+        for (Loan loan : items) {
 /*            if(loan.getSelect().isSelected()){
                 CheckBoxLoanList.add(loan);
                 num++;*/
-                if(loan.getSelect()){
+            if (loan.getSelect()) {
                 CheckBoxLoanList.add(loan);
                 num++;
             }
         }
-        if(num==0){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"NO LOANS SELECTED!");
+        if (num == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "NO LOANS SELECTED!");
             alert.showAndWait();
+        } else {
+            MediaType JSON
+                    = MediaType.parse("application/json; charset=utf-8");
+            Gson gson = new Gson();
+            String requestString = gson.toJson(existChosenCategories);
+            requestString += gson.toJson(amount);
+            requestString += gson.toJson(clientName);
+            requestString += gson.toJson(maxOwnership);
+            RequestBody body = RequestBody.create(requestString,JSON);
+            String finalUrl = HttpUrl
+                    .parse(Constants.SCRAMBLE_LOANS)
+                    .newBuilder()
+                    .build()
+                    .toString();
+
+            Request request = new Request.Builder()
+                    .url(finalUrl)
+                    .post(body)
+                    .build();
+
+            HttpClientUtil.runAsync(request, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Platform.runLater(() ->
+                    {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Unknown Error");
+                        alert.showAndWait();
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.code() != 200) {
+                        Platform.runLater(() ->
+                        {
+                            try {
+                                Alert alert = new Alert(Alert.AlertType.ERROR, response.body().string());
+                                alert.showAndWait();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    } else {
+                        Platform.runLater(() ->
+                        {
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "investing completed");
+                            alert.showAndWait();
+                            resetFileds();
+                            resetRelevantLoansTable();
+                            customerMainBodyController.loadData();
+
+                        });
+                    }
+                    //   return false;
+                }
+            });
         }
-        else {
-            //ReleventLoansTable.getItems().removeAll(CheckBoxLoanList);
-            engine.investing_according_to_agreed_risk_management_methodology(CheckBoxLoanList,amount,clientName,maxOwnership);
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"investing completed");
-            alert.showAndWait();
-            resetFileds();
-            resetRelevantLoansTable();
-        }
-        customerMainBodyController.loadData();
+
     }
 
 
     @FXML
     void activateForwardCategoriesButton(ActionEvent event) {
-        choosenCategories = categoriesOptionsListView.getSelectionModel().getSelectedItems();
-        existChoosenCategories = userChoiceCategoriesListView.getItems();
-        for(String category:choosenCategories){
-            if(!existChoosenCategories.contains(category)){
-                existChoosenCategories.add(category);
+        chosenCategories = categoriesOptionsListView.getSelectionModel().getSelectedItems();
+        existChosenCategories = userChoiceCategoriesListView.getItems();
+        for (String category : chosenCategories) {
+            if (!existChosenCategories.contains(category)) {
+                existChosenCategories.add(category);
                 categoriesOptionsListView.getItems().remove(category);
             }
         }
@@ -159,13 +231,13 @@ public class CustomerScrambleBodyController {
     @FXML
     void activateBackwardCategoriesButton(ActionEvent event) {
         //tsad yamin
-        choosenCategories = userChoiceCategoriesListView.getSelectionModel().getSelectedItems();
+        chosenCategories = userChoiceCategoriesListView.getSelectionModel().getSelectedItems();
         //tsad smal
-        existChoosenCategories = categoriesOptionsListView.getItems();
+        existChosenCategories = categoriesOptionsListView.getItems();
 
-        for(String category:choosenCategories){
-            if(!existChoosenCategories.contains(category)){
-                existChoosenCategories.add(category);
+        for (String category : chosenCategories) {
+            if (!existChosenCategories.contains(category)) {
+                existChosenCategories.add(category);
                 userChoiceCategoriesListView.getItems().remove(category);
             }
         }
@@ -181,97 +253,131 @@ public class CustomerScrambleBodyController {
     void activateShowRelevantLoansListButton(ActionEvent event) {
         clientName = customerMainBodyController.getCustomerName();
         Alert alert;
-        double clientBalance =engine.getDatabase().getClientByname(clientName).getMyAccount().getCurrBalance();
         minInterest = -1;
         maxOwnership = -1;
-        minYaz =-1;
+        minYaz = -1;
         amount = 0;
         maxOpenLoans = -1;
         try {
-/*            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    minInterest,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    minYaz,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    maxOpenLoans,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    amount,
-                    new NumberStringConverter());
-            Bindings.bindBidirectional(minimumInterestTextField.textProperty(),
-                    maxOwnership,
-                    new NumberStringConverter());*/
             String minInterestText = minimumInterestTextField.getText();
-            if(minInterestText.matches("[0-9]+"))
-                minInterest =  Integer.parseInt(minInterestText);
-            //minInterest = Integer.parseInt(minimumInterestTextField.getText());
+            if (minInterestText.matches("[0-9]+"))
+                minInterest = Integer.parseInt(minInterestText);
+
 
             String maxShareText = maxOwnershipTextField.getText();
-            if(maxShareText.matches("[0-9]+"))
-                maxOwnership =  Integer.parseInt(maxShareText);
-            //maxOwnership = Integer.parseInt(maxOwnershipTextField.getText());
+            if (maxShareText.matches("[0-9]+"))
+                maxOwnership = Integer.parseInt(maxShareText);
+
 
 
             String minYazText = minimumYazTextField.getText();
-            if(minYazText.matches("[0-9]+"))
-                minYaz =  Integer.parseInt(minYazText);
-            //minYaz = Integer.parseInt(minimumYazTextField.getText());
+            if (minYazText.matches("[0-9]+"))
+                minYaz = Integer.parseInt(minYazText);
+
 
 
             String investmentAmountText = amountToInvestTextField.getText();
-            if(investmentAmountText.matches("[0-9]+"))
-                amount =  Integer.parseInt(investmentAmountText);
-            //amount=Integer.parseInt(amountToInvestTextField.getText());
+            if (investmentAmountText.matches("[0-9]+"))
+                amount = Integer.parseInt(investmentAmountText);
+
 
             String maxInvolvedLoansText = maxOpenLoansTextField.getText();
-            if(maxInvolvedLoansText.matches("[0-9]+"))
-                maxOpenLoans =  Integer.parseInt(maxInvolvedLoansText);
+            if (maxInvolvedLoansText.matches("[0-9]+"))
+                maxOpenLoans = Integer.parseInt(maxInvolvedLoansText);
             //maxOpenLoans = Integer.parseInt(maxOpenLoansTextField.getText());
 
 
-        }
-        catch (NumberFormatException e){
-            alert = new Alert(Alert.AlertType.ERROR,"invalid parameters");
+        } catch (NumberFormatException e) {
+            alert = new Alert(Alert.AlertType.ERROR, "invalid parameters");
             alert.showAndWait();
         }
-        scrambleService service =new scrambleService(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
-
-        Region veil = new Region();
-        veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
-        veil.setPrefSize(400, 440);
-        ProgressIndicator p = new ProgressIndicator();
-        p.setMaxSize(140, 140);
-        p.setStyle(" -fx-progress-color: orange;");
-
-        p.progressProperty().bind(service.progressProperty());
-        veil.visibleProperty().bind(service.runningProperty());
-        p.visibleProperty().bind(service.runningProperty());
-
-        customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
-        customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
-        customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
-
-        ReleventLoansTable.itemsProperty().bind(service.valueProperty());
-
-        stackPane.getChildren().addAll(veil, p);
 
 
-       if (amount>clientBalance||amount==0){
-            alert = new Alert(Alert.AlertType.ERROR,"Amount must be set to less then client current balance:\n"+ clientBalance);
-            alert.showAndWait();
-        }
-        else{
-           service.start();
-        }
+        Gson gson = new Gson();
+        String jsonExistChosenCategories = gson.toJson(existChosenCategories);
+
+
+        String finalUrl = HttpUrl
+                .parse(Constants.RELEVANT_LOANS)
+                .newBuilder()
+                .addQueryParameter("username",clientName )
+                .addQueryParameter("minInterest", String.valueOf(minInterest))
+                .addQueryParameter("minYaz", String.valueOf(minYaz))
+                .addQueryParameter("maxOpenLoans", String.valueOf(maxOpenLoans))
+                .addQueryParameter("existChoosenCategories", jsonExistChosenCategories)
+                .addQueryParameter("maxOwnership", String.valueOf(maxOwnership))
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+            HttpClientUtil.runAsync(request, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call show relevant loans body controller")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    try {
+                        if(response.code()==200){
+                            String jsonOfClientString = response.body().string();
+                            // response.body().close();
+                            scrambleService service= new Gson().fromJson(jsonOfClientString, scrambleService.class);
+                            Region veil = new Region();
+                            veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
+                            veil.setPrefSize(400, 440);
+                            ProgressIndicator p = new ProgressIndicator();
+                            p.setMaxSize(140, 140);
+                            p.setStyle(" -fx-progress-color: orange;");
+
+
+                            p.progressProperty().bind(service.progressProperty());
+                            veil.visibleProperty().bind(service.runningProperty());
+                            p.visibleProperty().bind(service.runningProperty());
+
+                            customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
+                            customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
+                            customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
+
+                            ReleventLoansTable.itemsProperty().bind(service.valueProperty());
+
+                            stackPane.getChildren().addAll(veil, p);
+
+                            double clientBalance = service.getClient().getMyAccount().getCurrBalance();
+
+                            if (amount > clientBalance || amount == 0) {
+                                Alert a = new Alert(Alert.AlertType.ERROR, "Amount must be set to less then client current balance:\n" + clientBalance);
+                                a.showAndWait();
+                            } else {
+                                service.start();
+                            }
+                        }
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        });
+
+
+
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;
     }
 
-    public void initialize(){
+    public void initialize() {
+        engine = new Engine();
         allCategoriesList = engine.getDatabase().getAllCategories();
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
         TotalLoanCost.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
@@ -283,19 +389,13 @@ public class CustomerScrambleBodyController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
-        //resetFileds();
+
     }
 
-    public void loadReleventLoansTable(){
 
-        userFilteredLoanList = engine.O_getLoansToInvestList(clientName,minInterest,minYaz,maxOpenLoans,existChoosenCategories,maxOwnership);
-        resetRelevantLoansTable();
-        //ReleventLoansTable.setItems(userFilteredLoanList);
-    }
-
-    public void resetFileds(){
+    public void resetFileds() {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
-        for (Loan loan:items) {
+        for (Loan loan : items) {
             loan.setSelect(false);
         }
         amountToInvestTextField.clear();
@@ -306,7 +406,8 @@ public class CustomerScrambleBodyController {
         categoriesOptionsListView.getItems().addAll(allCategoriesList);
         userChoiceCategoriesListView.getItems().removeAll(allCategoriesList);
     }
-    public void resetRelevantLoansTable(){
+
+    public void resetRelevantLoansTable() {
         ReleventLoansTable.getItems().clear();
     }
 }
