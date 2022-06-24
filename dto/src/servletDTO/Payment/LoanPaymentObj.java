@@ -1,4 +1,4 @@
-package servletDTO;
+package servletDTO.Payment;
 
 import loan.enums.eLoanStatus;
 

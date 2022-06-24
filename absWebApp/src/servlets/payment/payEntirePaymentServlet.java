@@ -12,7 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import servletDTO.LoanPaymentObj;
+import servletDTO.Payment.LoanPaymentObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -28,6 +28,7 @@ public class payEntirePaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
+        //stam
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
         Scanner s = new Scanner(request.getInputStream(), "UTF-8");

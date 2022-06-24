@@ -15,8 +15,8 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import servletDTO.LoanInformationObj;
-import servletDTO.LoanPaymentObj;
+import servletDTO.Payment.LoanPaymentObj;
+import servletDTO.Payment.PartialPaymentObj;
 import time.Timeline;
 import engine.Engine;
 import util.Constants;
@@ -27,6 +27,7 @@ import java.util.*;
 
 public class CustomerPaymentBodyController {
 //    private Engine engine=Engine.getInstance();
+    //stam
     private Engine engine = new Engine();
 
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
@@ -81,19 +82,18 @@ public class CustomerPaymentBodyController {
 
     private List<Loan> PayLoanstmp = new ArrayList<>();
 
-    //todo: add servlet here
     private void payLoans(PayOption payOption){
         if(payOption==PayOption.entire)
-            payEntirePaymentForLoanList();
+            payEntirePaymentForLoanListRequest();
         else if (payOption==PayOption.single){
-            paySinglePaymentForLoanList();
+            paySinglePaymentForLoanListRequest();
         }
         //loadLoanTableData();
         LoansListView.getItems().clear();
     }
 
 
-    private void payEntirePaymentForLoanList(){
+    private void payEntirePaymentForLoanListRequest(){
         List<String> loanNameList = LoansListView.getItems();
 
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
@@ -117,25 +117,26 @@ public class CustomerPaymentBodyController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("failed to call url information body")
+                        System.out.println("failed to call url payment body")
                 );
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Platform.runLater(() -> {
-                        if(response.code()==200){
-                            String jsonOfClientString = null;
-                            try {
-                                jsonOfClientString = response.body().string();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            response.body().close();
+                    String jsonOfClientString = null;
+                    try {
+                        jsonOfClientString = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    response.body().close();
+
+                    if(response.code()==200){
                             loadReleventLoansTable(jsonOfClientString);
                         }
                         else {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
                             alert.showAndWait();
                         }
                 });
@@ -146,7 +147,7 @@ public class CustomerPaymentBodyController {
     }
 
 
-    private void paySinglePaymentForLoanList(){
+    private void paySinglePaymentForLoanListRequest(){
         List<String> loanNameList = LoansListView.getItems();
 
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
@@ -170,25 +171,26 @@ public class CustomerPaymentBodyController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("failed to call url information body")
+                        System.out.println("failed to call url payment body")
                 );
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Platform.runLater(() -> {
+                    String jsonOfClientString = null;
+                    try {
+                        jsonOfClientString = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    response.body().close();
+
                     if(response.code()==200){
-                        String jsonOfClientString = null;
-                        try {
-                            jsonOfClientString = response.body().string();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        response.body().close();
                         loadReleventLoansTable(jsonOfClientString);
                     }
                     else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
                         alert.showAndWait();
                     }
                 });
@@ -205,7 +207,6 @@ public class CustomerPaymentBodyController {
         LoanPaymentObj[] availableLoans = new Gson().fromJson(jsonOfClientString, LoanPaymentObj[].class);
         loanListForTable.addAll(Arrays.asList(availableLoans));
         ReleventLoansTable.setItems(loanListForTable);
-
     }
 
 
@@ -242,10 +243,10 @@ public class CustomerPaymentBodyController {
 /*                if (loan.getSelect().isSelected()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;*/
-//                    if (loan.getSelect()) {
-//                    CheckBoxLoanList.add(loan.getLoanID());
-//                    num++;
-//                }
+/*                    if (loan.getSelect()) {
+                    CheckBoxLoanList.add(loan.getLoanID());
+                    num++;
+                }*/
             }
         }
         if(num==0){
@@ -294,30 +295,65 @@ public class CustomerPaymentBodyController {
     @FXML
     void activatePayPartial(ActionEvent event) {
         int amount = Integer.parseInt(partialAmoutLable.getText());
-        List<String> loanNameList = LoansListView.getItems();
-        List<Loan> tmp = engine.getDatabase().getLoanList();
-        ObservableList <Loan> loanList = FXCollections.observableArrayList();
-        if(loanNameList.size()!=1){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Please choose only one loan at a time for paying that partial amount!");
-            alert.showAndWait();
-        }
-        else {
-            for (Loan loan:tmp){
-                if (loanNameList.contains(loan.getLoanID())){
-                    loanList.add(loan);
-                }
-            }
-            try {
-                engine.payPartialAmountForLoan(loanList.get(0),amount);
-            } catch (messageException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
-                alert.showAndWait();            }
-        }
+        payPartialAmountForLoan(amount);
+
         //loadLoanTableData();
         LoansListView.getItems().clear();
     }
 
-    private List<Loan> choosenLoans;
+
+    private void payPartialAmountForLoan(int amount){
+        String[] loanNameList = LoansListView.getItems().toArray(new String[0]);
+
+        PartialPaymentObj partialPaymentObj = new PartialPaymentObj(loanNameList,amount);
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(partialPaymentObj,PartialPaymentObj.class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.PAY_PARTIAL_PAYMENT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url payment body")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    String jsonOfClientString = null;
+                    try {
+                        jsonOfClientString = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    response.body().close();
+
+                    if(response.code()==200){
+                        loadReleventLoansTable(jsonOfClientString);
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                        alert.showAndWait();
+                    }
+                });
+            }
+    });
+    }
+
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;
@@ -383,7 +419,6 @@ public class CustomerPaymentBodyController {
 
     }
 
-
     private void customiseFactory(TableColumn<LoanPaymentObj, eLoanStatus> calltypel) {
         calltypel.setCellFactory(column -> {
             return new TableCell<LoanPaymentObj, eLoanStatus>() {
@@ -405,9 +440,5 @@ public class CustomerPaymentBodyController {
             };
         });
     }
-
-
-
-
 
 }
