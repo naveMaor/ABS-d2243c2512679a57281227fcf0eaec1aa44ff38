@@ -27,6 +27,8 @@ public class Constants {
     public final static String PAY_PARTIAL_PAYMENT = FULL_SERVER_PATH + "/PayPartialPayment";
     public final static String GET_CLIENT = FULL_SERVER_PATH + "/Client";
     public final static String GET_ALL_LOAN_LIST = FULL_SERVER_PATH + "/AllLoanList";
+    //stam
+
 
     ///client scramble
     public final static String RELEVANT_LOANS = FULL_SERVER_PATH + "/RelevantLoans";

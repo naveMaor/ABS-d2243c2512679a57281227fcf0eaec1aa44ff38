@@ -27,6 +27,7 @@ import java.util.*;
 
 public class CustomerPaymentBodyController {
 //    private Engine engine=Engine.getInstance();
+    //stam
     private Engine engine = new Engine();
 
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
