@@ -127,7 +127,7 @@ public class RiskTableController {
 
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.RISK);
         for (Loan loan:loanObservableList){
-            loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+            //loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
         }
 
         RiskTable.setItems(loanObservableList);

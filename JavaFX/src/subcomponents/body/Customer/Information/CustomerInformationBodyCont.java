@@ -56,12 +56,14 @@ public class CustomerInformationBodyCont {
 
     public void initializeClientTable(){
         clientAsBorrowLoanList.clear();
-        clientAsBorrowLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsBorrowLoanList());
+        Loan loan = new Loan("nae","t","cat",1,1,1,1);
+        //clientAsBorrowLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsBorrowLoanList());
+        clientAsBorrowLoanList.add(loan);
         borrowerTable.setItems(clientAsBorrowLoanList);
         customiseFactory(borrowerLoanStatus);
 
         clientAsLenderLoanList.clear();
-        clientAsLenderLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsLenderLoanList());
+        //clientAsLenderLoanList.addAll(engine.getDatabase().getClientByname(customerNameProperty().get()).getClientAsLenderLoanList());
         lenderTable.setItems(clientAsLenderLoanList);
         customiseFactory(lenderLoanStatus);
 
@@ -82,6 +84,7 @@ public class CustomerInformationBodyCont {
         lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
         borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
         lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        initializeClientTable();
     }
 
     public void createTransaction(int amount){

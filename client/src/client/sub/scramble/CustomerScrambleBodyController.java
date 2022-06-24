@@ -203,7 +203,7 @@ public class CustomerScrambleBodyController {
                             alert.showAndWait();
                             resetFileds();
                             resetRelevantLoansTable();
-                            customerMainBodyController.loadData();
+                            //customerMainBodyController.loadData();
 
                         });
                     }
