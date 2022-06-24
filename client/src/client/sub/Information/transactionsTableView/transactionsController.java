@@ -97,13 +97,9 @@ public class transactionsController {
         currentBalanceLabel.textProperty().bind(Bindings.concat(balance));
     }
 
-
     public void loadTableData() {
         createTransactionListRequest();
     }
-
-
-
 
     private void createTransactionListRequest(){
         String finalUrl = HttpUrl

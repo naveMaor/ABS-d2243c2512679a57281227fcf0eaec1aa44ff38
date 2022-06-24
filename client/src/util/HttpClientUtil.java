@@ -1,15 +1,17 @@
 package util;
 import com.google.gson.Gson;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 
 public class HttpClientUtil {
-
     public final  static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public final static Gson GSON_INST = new Gson();
-
-
     private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
     private final static OkHttpClient HTTP_CLIENT =
             new OkHttpClient.Builder()

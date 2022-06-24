@@ -1,48 +1,38 @@
 package servlets.client.scramble;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import engine.scrambleService;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import servletDTO.RelevantLoansRequestObj;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import static constants.Constants.USERNAME;
-
-@WebServlet(name = "ShowRelevantLoansServlet", urlPatterns = "/relevantLoans")
+@WebServlet(name = "ShowRelevantLoansServlet", urlPatterns = "/RelevantLoans")
 public class ShowRelevantLoansServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/plain;charset=UTF-8");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("application/json");
 
+        Scanner s = new Scanner(request.getInputStream(), "UTF-8");
+        String reqBodyAsString = s.hasNext() ? s.next() : null;
 
-        String usernameFromParameter = request.getParameter(USERNAME);
-        int minInterestParameter = Integer.parseInt(request.getParameter("minInterest"));
-        int minYazParameter = Integer.parseInt(request.getParameter("minYaz"));
-        int maxOpenLoansParameter = Integer.parseInt(request.getParameter("maxOpenLoans"));
-        String jsonExistChosenCategories = request.getParameter("existChoosenCategories");
-        String[] ChoosenCategoriesString = new Gson().fromJson(jsonExistChosenCategories, String[].class);
-        ObservableList<String> existChoosenCategories = FXCollections.observableArrayList();
-        existChoosenCategories.addAll(ChoosenCategoriesString);
-        int maxOwnership = Integer.parseInt(request.getParameter("maxOwnership"));
+        RelevantLoansRequestObj scrambleRequest = new Gson().fromJson(reqBodyAsString, RelevantLoansRequestObj.class);
 
-        if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
+        scrambleService service = new scrambleService(scrambleRequest.getClientName(), scrambleRequest.getMinInterest(), scrambleRequest.getMinYaz(), scrambleRequest.getMaxOpenLoans(), scrambleRequest.getChosenCategories(), scrambleRequest.getMaxOwnership());
 
-        } else {
-            usernameFromParameter = usernameFromParameter.trim();
-        }
-        scrambleService service = new scrambleService(usernameFromParameter, minInterestParameter, minYazParameter, maxOpenLoansParameter, existChoosenCategories, maxOwnership);
-
-        Gson gson = new Gson();
-        //todo might need to remez to gson that you want a loan list type of json
-        String jsonResponse = gson.toJson(service);
+        Gson gsonResponse = new Gson();
+        String jsonResponse = gsonResponse.toJson(service);
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);
@@ -51,4 +41,18 @@ public class ShowRelevantLoansServlet extends HttpServlet {
         System.out.println("On login, request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);
     }
+
+    private List<String> parseBody(String reqBodyAsString) {
+        if (reqBodyAsString != null || !reqBodyAsString.isEmpty()) {
+            JsonArray jsonArray = new JsonParser().parse(reqBodyAsString).getAsJsonArray();
+
+            List<String> list = new ArrayList<>();
+            jsonArray.forEach(jsonElement -> {
+                list.add(jsonElement.getAsString());
+            });
+            return list;
+        }
+        return null;
+    }
 }
+

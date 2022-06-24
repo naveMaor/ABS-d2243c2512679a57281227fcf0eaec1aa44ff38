@@ -184,7 +184,6 @@ public class CustomerInformationBodyCont {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
         HttpClientUtil.runAsync(request, new Callback() {
 
