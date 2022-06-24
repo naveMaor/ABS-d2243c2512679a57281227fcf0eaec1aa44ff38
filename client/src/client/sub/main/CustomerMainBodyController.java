@@ -18,6 +18,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import engine.Engine;
+import servletDTO.ClientDTOforServlet;
 
 
 public class CustomerMainBodyController {
@@ -141,7 +142,7 @@ public class CustomerMainBodyController {
         }
     }
 
-    public Client getCurrClient(){
+    public ClientDTOforServlet getCurrClient(){
         return mainController.getCurrClient();
     }
 

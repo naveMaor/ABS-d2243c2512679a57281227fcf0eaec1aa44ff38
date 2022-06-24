@@ -1,13 +1,13 @@
 package data;
 
-import ClientDTO.ClientObj;
+import old.ClientObj;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
 import customes.Client;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
-import loanDTO.LoanObj;
+import old.LoanObj;
 import time.Timeline;
 
 import java.io.Serializable;

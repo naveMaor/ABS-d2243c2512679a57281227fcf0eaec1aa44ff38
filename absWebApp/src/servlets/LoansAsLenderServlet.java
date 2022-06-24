@@ -7,11 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
+import servletDTO.LoanInformationObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "LoansAsLenderServlet", urlPatterns = "/LoansAsLender")
@@ -25,9 +27,13 @@ public class LoansAsLenderServlet extends HttpServlet {
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         List<Loan> loanList = systemEngine.getDatabase().getClientByname(usernameFromSession).getClientAsLenderLoanList();
+        List<LoanInformationObj> loanInformationObjList =new ArrayList<>();
 
+        for(Loan loan:loanList){
+            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus()));
+        }
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(loanList);
+        String jsonResponse = gson.toJson(loanInformationObjList);
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);

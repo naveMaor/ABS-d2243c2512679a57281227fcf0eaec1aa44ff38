@@ -1,5 +1,6 @@
 package servletDTO;
 
+import loan.Loan;
 import loan.enums.eLoanStatus;
 
 import java.io.Serializable;
@@ -18,6 +19,9 @@ public class LoanInformationObj implements Serializable {
 
     }
 
+    public String getLoanID() {
+        return loanID;
+    }
 
     public void setLoanID(String loanID) {
         this.loanID = loanID;
@@ -45,5 +49,13 @@ public class LoanInformationObj implements Serializable {
 
     public void setBorrowerName(String borrowerName) {
         this.borrowerName = borrowerName;
+    }
+
+
+    public LoanInformationObj(Loan loan) {
+        this.borrowerName = loan.getBorrowerName();
+        this.loanCategory = loan.getLoanCategory();
+        this.loanID = loan.getLoanID();
+        this.status = loan.getStatus();
     }
 }
