@@ -23,6 +23,7 @@ public class Constants {
     public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoan";
     public final static String SCRAMBLE_LOANS = FULL_SERVER_PATH + "/ScrambleLoans";
     public final static String PAY_ENTIRE_PAYMENT = FULL_SERVER_PATH + "/PayEntirePayment";
+    public final static String PAY_SINGLE_PAYMENT = FULL_SERVER_PATH + "/PaySinglePayment";
     public final static String GET_CLIENT = FULL_SERVER_PATH + "/Client";
     public final static String GET_ALL_LOAN_LIST = FULL_SERVER_PATH + "/AllLoanList";
 
