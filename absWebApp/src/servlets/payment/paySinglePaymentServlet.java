@@ -12,7 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import servletDTO.LoanPaymentObj;
+import servletDTO.Payment.LoanPaymentObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -25,6 +25,7 @@ import java.util.Scanner;
 
 @WebServlet(name = "paySinglePaymentServlet", urlPatterns = "/PaySinglePayment")
 public class paySinglePaymentServlet extends HttpServlet {
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
         String usernameFromSession = SessionUtils.getUsername(request);

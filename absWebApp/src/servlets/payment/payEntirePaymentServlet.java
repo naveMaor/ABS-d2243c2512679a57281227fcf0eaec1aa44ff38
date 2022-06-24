@@ -12,7 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import servletDTO.LoanPaymentObj;
+import servletDTO.Payment.LoanPaymentObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
