@@ -18,19 +18,32 @@ public class LoanInformationObj implements Serializable {
 
     }
 
+
+    public void setLoanID(String loanID) {
+        this.loanID = loanID;
+    }
+
     public String getLoanCategory() {
         return loanCategory;
+    }
+
+    public void setLoanCategory(String loanCategory) {
+        this.loanCategory = loanCategory;
     }
 
     public eLoanStatus getStatus() {
         return status;
     }
 
-    public String getLoanID() {
-        return loanID;
+    public void setStatus(eLoanStatus status) {
+        this.status = status;
     }
 
     public String getBorrowerName() {
         return borrowerName;
+    }
+
+    public void setBorrowerName(String borrowerName) {
+        this.borrowerName = borrowerName;
     }
 }

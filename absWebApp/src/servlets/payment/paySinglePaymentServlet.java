@@ -23,9 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-@WebServlet(name = "payEntirePaymentServlet", urlPatterns = "/PayEntirePayment")
-public class payEntirePaymentServlet extends HttpServlet {
-    @Override
+@WebServlet(name = "paySinglePaymentServlet", urlPatterns = "/PaySinglePayment")
+public class paySinglePaymentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
         String usernameFromSession = SessionUtils.getUsername(request);
@@ -47,9 +46,9 @@ public class payEntirePaymentServlet extends HttpServlet {
                 loanList.add(loan);
             }
         }
-        //pay Entire payment
+        //pay Single payment
         try {
-            systemEngine.payEntirePaymentForLoanList(loanList);
+            systemEngine.paySinglePaymentForLoanList(loanList);
         } catch (messageException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getOutputStream().print(e.getMessage());
@@ -77,4 +76,7 @@ public class payEntirePaymentServlet extends HttpServlet {
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);
 
-    }}
+}
+
+
+}

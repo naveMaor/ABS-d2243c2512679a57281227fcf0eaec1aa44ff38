@@ -15,6 +15,8 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.LoanInformationObj;
+import servletDTO.LoanPaymentObj;
 import time.Timeline;
 import engine.Engine;
 import util.Constants;
@@ -28,7 +30,7 @@ public class CustomerPaymentBodyController {
     private Engine engine = new Engine();
 
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
-    private ObservableList<Loan> loanListForTable =  FXCollections.observableArrayList();
+    private ObservableList<LoanPaymentObj> loanListForTable =  FXCollections.observableArrayList();
     private ObservableList<Loan> loanListForTextArea =  FXCollections.observableArrayList();
     private CustomerMainBodyController customerMainBodyController;
     private Map<String, String> clientNameCommentMap =new HashMap<>();
@@ -41,20 +43,20 @@ public class CustomerPaymentBodyController {
     private ListView<String> LoansListView;
 
     @FXML
-    private TableColumn<Loan, Double> currPay;
+    private TableColumn<LoanPaymentObj, Double> currPay;
 
     @FXML
-    private TableColumn<Loan, Double> leftPay;
+    private TableColumn<LoanPaymentObj, Double> leftPay;
 
     @FXML
     private Button closeEntireLoanButton;
 
     @FXML
-    private TableColumn<Loan, String> loanId;
+    private TableColumn<LoanPaymentObj, String> loanId;
 
 
     @FXML
-    private TableColumn<Loan, Integer> nextYaz;
+    private TableColumn<LoanPaymentObj, Integer> nextYaz;
 
     @FXML
     private TextArea notificationsTextArea;
@@ -63,13 +65,13 @@ public class CustomerPaymentBodyController {
     private Button pay;
 
     @FXML
-    private TableColumn<Loan, String> select;
+    private TableColumn<LoanPaymentObj, String> select;
 
     @FXML
-    private TableView<Loan> ReleventLoansTable;
+    private TableView<LoanPaymentObj> ReleventLoansTable;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> status;
+    private TableColumn<LoanPaymentObj, eLoanStatus> status;
 
     @FXML
     void activateBackwardLoanButton(ActionEvent event) {
@@ -81,27 +83,136 @@ public class CustomerPaymentBodyController {
 
     //todo: add servlet here
     private void payLoans(PayOption payOption){
-        List<String> loanNameList = LoansListView.getItems();
-        createAllLoanListRequest();
-        ObservableList <Loan> loanList = FXCollections.observableArrayList();
-        for (Loan loan:PayLoanstmp){
-            if (loanNameList.contains(loan.getLoanID())){
-                loanList.add(loan);
-            }
-        }
         try {
             if(payOption==PayOption.entire)
-                engine.payEntirePaymentForLoanList(loanList);
+                payEntirePaymentForLoanList();
             else if (payOption==PayOption.single){
-                engine.paySinglePaymentForLoanList(loanList);
+                paySinglePaymentForLoanList();
             }
         } catch (messageException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
             alert.showAndWait();
         }
-        loadLoanTableData();
+        //loadLoanTableData();
         LoansListView.getItems().clear();
     }
+
+
+    private void payEntirePaymentForLoanList(){
+        List<String> loanNameList = LoansListView.getItems();
+
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.PAY_ENTIRE_PAYMENT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url information body")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                        if(response.code()==200){
+                            String jsonOfClientString = null;
+                            try {
+                                jsonOfClientString = response.body().string();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            response.body().close();
+                            loadReleventLoansTable(jsonOfClientString);
+                        }
+                        else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.showAndWait();
+                        }
+                });
+            }
+
+        });
+
+    }
+
+
+    private void paySinglePaymentForLoanList(){
+        List<String> loanNameList = LoansListView.getItems();
+
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.PAY_SINGLE_PAYMENT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url information body")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    if(response.code()==200){
+                        String jsonOfClientString = null;
+                        try {
+                            jsonOfClientString = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        response.body().close();
+                        loadReleventLoansTable(jsonOfClientString);
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.showAndWait();
+                    }
+                });
+            }
+
+        });
+
+    }
+
+
+
+    private void loadReleventLoansTable(String jsonOfClientString){
+        loanListForTable.clear();
+        LoanPaymentObj[] availableLoans = new Gson().fromJson(jsonOfClientString, LoanPaymentObj[].class);
+        loanListForTable.addAll(Arrays.asList(availableLoans));
+        ReleventLoansTable.setItems(loanListForTable);
+
+    }
+
 
 
     @FXML
@@ -129,9 +240,9 @@ public class CustomerPaymentBodyController {
 
     @FXML
     void activateForwardLoanButton(ActionEvent event) {
-        ObservableList<Loan> items = ReleventLoansTable.getItems();
+        ObservableList<LoanPaymentObj> items = ReleventLoansTable.getItems();
         int num = 0;
-        for (Loan loan:items){
+        for (LoanPaymentObj loan:items){
             if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK) {
 /*                if (loan.getSelect().isSelected()) {
                     CheckBoxLoanList.add(loan.getLoanID());
@@ -153,10 +264,10 @@ public class CustomerPaymentBodyController {
                 }
             }
         }
-        for (Loan loan:items) {
+        for (LoanPaymentObj loan:items) {
 
             //loan.getSelect().setSelected(false);
-            loan.setSelect(false);
+            //loan.setSelect(false);
 
         }
         CheckBoxLoanList.clear();
@@ -207,7 +318,7 @@ public class CustomerPaymentBodyController {
                 Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
                 alert.showAndWait();            }
         }
-        loadLoanTableData();
+        //loadLoanTableData();
         LoansListView.getItems().clear();
     }
 
@@ -218,12 +329,12 @@ public class CustomerPaymentBodyController {
     }
 
     public void initialize() {
-        currPay.setCellValueFactory(new PropertyValueFactory<Loan, Double>("nextExpectedPaymentAmountDataMember"));
-        leftPay.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalRemainingLoan"));
-        loanId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        nextYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
-        select.setCellValueFactory(new PropertyValueFactory<Loan, String>("select"));
-        status.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        currPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("nextExpectedPaymentAmountDataMember"));
+        leftPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("totalRemainingLoan"));
+        loanId.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, String>("loanID"));
+        nextYaz.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Integer>("nextYazToPay"));
+        select.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, String>("select"));
+        status.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, eLoanStatus>("status"));
 
     }
 
@@ -231,7 +342,7 @@ public class CustomerPaymentBodyController {
         loadTextAfterYazChange.bindBidirectional(yazChanged);
     }
 
-    public void loadLoanTableData(){
+/*    public void loadLoanTableData(){
         loadTextAreaData();
         loanListForTable.clear();
         ReleventLoansTable.getItems().clear();
@@ -250,7 +361,7 @@ public class CustomerPaymentBodyController {
 
         customiseFactory(status);
 
-    }
+    }*/
 
 
     //todo:add get servlet for loan list from database
@@ -278,9 +389,9 @@ public class CustomerPaymentBodyController {
     }
 
 
-    private void customiseFactory(TableColumn<Loan, eLoanStatus> calltypel) {
+    private void customiseFactory(TableColumn<LoanPaymentObj, eLoanStatus> calltypel) {
         calltypel.setCellFactory(column -> {
-            return new TableCell<Loan, eLoanStatus>() {
+            return new TableCell<LoanPaymentObj, eLoanStatus>() {
                 @Override
                 protected void updateItem(eLoanStatus item, boolean empty) {
                     super.updateItem(item, empty);
@@ -300,72 +411,8 @@ public class CustomerPaymentBodyController {
         });
     }
 
-    private void createAllLoanListRequest(){
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                //todo parameter name here
-                .parse(Constants.LOANS_AS_BORROW)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url get all loan list")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            Loan[] AllLoanList = new Gson().fromJson(jsonOfClientString, Loan[].class);
-                            PayLoanstmp.clear();
-                            PayLoanstmp.addAll(Arrays.asList(AllLoanList));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
-    }
-
-    private void payEntirePaymentForLoanList(ObservableList <Loan> loanList){
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        Gson gson = new Gson();
-
-        String requestString = gson.toJson(loanList,Loan[].class);
-
-        RequestBody body = RequestBody.create(requestString,JSON);
-
-        String finalUrl = HttpUrl
-                .parse(Constants.SCRAMBLE_LOANS)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .post(body)
-                .build();
 
 
-
-    }
 
 
 }

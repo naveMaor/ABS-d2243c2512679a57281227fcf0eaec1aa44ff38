@@ -196,23 +196,26 @@ public class ClientMainController {
                 .url(finalUrl)
                 .build();
 
-        Response response = HttpClientUtil.execute(request);;
+        Response response = HttpClientUtil.execute(request);
 
         if(response.code() == 200)
         {
-            if(currClient == null) {
                 String jsonOfClientString = response.body().string();
                 currClient = new Gson().fromJson(jsonOfClientString, Client.class);
-            }
-            else
-            {
-                System.out.println("failed to GET CLIENT");
-            }
+        }
+        else
+        {
+            System.out.println("failed to GET CLIENT");
         }
 
     }
 
     public Client getCurrClient() {
+        try {
+            createClientRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return currClient;
     }
 }
