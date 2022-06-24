@@ -68,14 +68,8 @@ public class CustomerInformationBodyCont {
 
 
     public void initializeClientTable(){
-
-
-        LoanInformationObj loanInformationObj = new LoanInformationObj("stam","category",eLoanStatus.NEW,"borrower");
-        clientAsBorrowLoanList.clear();
-        clientAsBorrowLoanList.addAll(loanInformationObj);
-        borrowerTable.setItems(clientAsBorrowLoanList);
-        //createLoansAsLenderRequest();
-        //createLoansAsBorrowerRequest();
+        createLoansAsLenderRequest();
+        createLoansAsBorrowerRequest();
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -98,9 +92,7 @@ public class CustomerInformationBodyCont {
         initializeClientTable();
     }
 
-    public void createTransaction(int amount) {
-        createTransactionRequest(amount);
-    }
+
     public SimpleStringProperty customerNameProperty() {
         return customerMainBodyController.customerNameProperty();
     }
@@ -225,58 +217,7 @@ public class CustomerInformationBodyCont {
         });
     }
 
-    private void createTransactionRequest(int amount){
-        String finalUrl = HttpUrl
-                //todo parameter amount
-                .parse(Constants.CREATE_TRANSACTION)
-                .newBuilder()
-                .addQueryParameter("amount", String.valueOf(amount))
-                .build()
-                .toString();
 
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to create transaction")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                Platform.runLater(() ->{
-
-                if(response.code() != 200){
-                            Alert alert = new Alert(Alert.AlertType.ERROR,"Balance can not be minus!");
-                            alert.showAndWait();
-                }
-                else
-                    {
-                        try {
-                            //Notifications.create().title("Success").text(response.body().string()).hideAfter(Duration.seconds(5)).position(Pos.CENTER).show();
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,response.body().string());
-                            alert.showAndWait();
-
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-            });
-
-        }
-    });
-
-
-    }
 
     public Client getCurrClient(){
         return customerMainBodyController.getCurrClient();

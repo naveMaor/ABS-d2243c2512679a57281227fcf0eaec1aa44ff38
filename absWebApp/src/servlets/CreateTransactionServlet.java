@@ -1,5 +1,6 @@
 package servlets;
 
+import Money.operations.Transaction;
 import com.google.gson.Gson;
 import engine.Engine;
 import exceptions.BalanceException;
@@ -32,7 +33,17 @@ public class CreateTransactionServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        List<Transaction> TransactionList = systemEngine.getClientTransactionsList(usernameFromSession);
+
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(TransactionList);
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(jsonResponse);
+            out.flush();
+        }
         System.out.println("request URI is: " + request.getRequestURI());
+
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
