@@ -19,6 +19,7 @@ import loan.enums.eLoanStatus;
 import engine.Engine;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.ClientDTOforServlet;
 import servletDTO.LoanInformationObj;
 import util.Constants;
 import util.HttpClientUtil;
@@ -89,7 +90,6 @@ public class CustomerInformationBodyCont {
         lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<>("borrowerName"));
         borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        initializeClientTable();
     }
 
 
@@ -218,7 +218,7 @@ public class CustomerInformationBodyCont {
 
 
 
-    public Client getCurrClient(){
+    public ClientDTOforServlet getCurrClient(){
         return customerMainBodyController.getCurrClient();
     }
 }

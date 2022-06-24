@@ -2,7 +2,7 @@ package customes;
 
 import loan.Loan;
 import loan.enums.eLoanStatus;
-import loanDTO.LoanObj;
+import old.LoanObj;
 
 import java.io.Serializable;
 import java.util.ArrayList;

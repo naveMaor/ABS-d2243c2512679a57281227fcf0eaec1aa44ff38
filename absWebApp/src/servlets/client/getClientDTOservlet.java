@@ -1,23 +1,21 @@
-package servlets;
+package servlets.client;
 
 import com.google.gson.Gson;
+import customes.Client;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import loan.Loan;
-import servletDTO.LoanInformationObj;
+import servletDTO.ClientDTOforServlet;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
-@WebServlet(name = "LoansAsBorrowServlet", urlPatterns = "/LoansAsBorrow")
-public class LoansAsBorrowServlet extends HttpServlet {
+@WebServlet(name = "getClientDTOservlet", urlPatterns = "/ClientDTO")
+public class getClientDTOservlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -26,15 +24,13 @@ public class LoansAsBorrowServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
+        Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
 
-        List<Loan> loanList = systemEngine.getDatabase().getClientByname(usernameFromSession).getClientAsBorrowLoanList();
-        List<LoanInformationObj> loanInformationObjList =new ArrayList<>();
+        ClientDTOforServlet clientDTOforServlet = new ClientDTOforServlet(client);
 
-        for(Loan loan:loanList){
-            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus()));
-        }
+
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(loanInformationObjList);
+        String jsonResponse = gson.toJson(clientDTOforServlet);
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);

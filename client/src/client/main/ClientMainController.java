@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -47,7 +48,7 @@ public class ClientMainController {
     @FXML private CustomerMainBodyController customerMainBodyController;
     //Engine engine = Engine.getInstance();
     private Engine engine = new Engine();
-    private Client currClient;
+    private ClientDTOforServlet currClient;
 
 
     public enum MessageType{Error,Successfully,Information};
@@ -98,7 +99,7 @@ public class ClientMainController {
             root.setCenter(clientDesktop);
             root.setTop(header);
             try {
-                createClientRequest();
+                createClientDTORequest();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,7 +185,7 @@ public class ClientMainController {
 }
 
 
-    public void createClientRequest() throws IOException {
+/*    public void createClientRequest() throws IOException {
         String finalUrl = HttpUrl
                 //todo parameter name here
                 .parse(Constants.GET_CLIENT)
@@ -208,11 +209,38 @@ public class ClientMainController {
             System.out.println("failed to GET CLIENT");
         }
 
+    }*/
+
+
+    public void createClientDTORequest() throws IOException {
+        String finalUrl = HttpUrl
+                //todo parameter name here
+                .parse(Constants.GET_CLIENT_DTO)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        Response response = HttpClientUtil.execute(request);
+
+        if(response.code() == 200)
+        {
+                String jsonOfClientString = response.body().string();
+                currClient = new Gson().fromJson(jsonOfClientString, ClientDTOforServlet.class);
+        }
+        else
+        {
+            System.out.println("failed to GET CLIENT");
+        }
+
     }
 
-    public Client getCurrClient() {
+    public ClientDTOforServlet getCurrClient() {
         try {
-            createClientRequest();
+            createClientDTORequest();
         } catch (IOException e) {
             e.printStackTrace();
         }

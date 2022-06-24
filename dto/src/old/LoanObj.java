@@ -1,4 +1,4 @@
-package loanDTO;
+package old;
 
 import Money.Deviation;
 import Money.operations.Payment;

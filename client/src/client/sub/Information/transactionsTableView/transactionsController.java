@@ -17,6 +17,7 @@ import engine.Engine;
 import loan.Loan;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -201,7 +202,7 @@ public class transactionsController {
 
 
     private void updatedData(String jsonOfClientString){
-        Client client= customerInformationBodyCont.getCurrClient();
+        ClientDTOforServlet client= customerInformationBodyCont.getCurrClient();
         Transaction[] TransactionList = new Gson().fromJson(jsonOfClientString, Transaction[].class);
         transactionsObservableList.clear();
         transactionsObservableList.addAll(Arrays.asList(TransactionList));

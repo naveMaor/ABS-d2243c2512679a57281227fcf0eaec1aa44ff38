@@ -1,6 +1,6 @@
 package subcomponents.body.Admin.adminClientTable;
 
-import ClientDTO.ClientObj;
+import old.ClientObj;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

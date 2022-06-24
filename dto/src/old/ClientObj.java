@@ -1,9 +1,9 @@
-package ClientDTO;
+package old;
 
 import customes.Account;
 import customes.Client;
 import loan.enums.eLoanStatus;
-import loanDTO.LoanObj;
+import old.LoanObj;
 
 import java.util.ArrayList;
 import java.util.List;

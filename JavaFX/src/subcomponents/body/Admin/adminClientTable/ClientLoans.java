@@ -1,6 +1,6 @@
 package subcomponents.body.Admin.adminClientTable;
 
-import ClientDTO.ClientObj;
+import old.ClientObj;
 import loan.enums.eLoanStatus;
 
 public class ClientLoans {
