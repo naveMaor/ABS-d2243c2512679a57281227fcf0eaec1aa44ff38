@@ -213,8 +213,6 @@ public class transactionsController {
         amountTextField.setText("");
         double TmpBalance = client.getMyAccount().getCurrBalance();
         balance.set(TmpBalance);
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.showAndWait();
     }
 
 }

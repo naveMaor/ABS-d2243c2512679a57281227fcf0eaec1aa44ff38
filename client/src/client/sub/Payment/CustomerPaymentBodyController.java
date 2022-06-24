@@ -82,7 +82,7 @@ public class CustomerPaymentBodyController {
     //todo: add servlet here
     private void payLoans(PayOption payOption){
         List<String> loanNameList = LoansListView.getItems();
-        createAllLoanListRequest();
+        //createAllLoanListRequest();
         ObservableList <Loan> loanList = FXCollections.observableArrayList();
         for (Loan loan:PayLoanstmp){
             if (loanNameList.contains(loan.getLoanID())){
@@ -102,6 +102,28 @@ public class CustomerPaymentBodyController {
         loadLoanTableData();
         LoansListView.getItems().clear();
     }
+
+
+    private void payEntirePaymentForLoanList(){
+        List<String> loanNameList = LoansListView.getItems();
+
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.PAY_ENTIRE_PAYMENT)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+    }
+
 
 
     @FXML
@@ -300,72 +322,8 @@ public class CustomerPaymentBodyController {
         });
     }
 
-    private void createAllLoanListRequest(){
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                //todo parameter name here
-                .parse(Constants.LOANS_AS_BORROW)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url get all loan list")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            Loan[] AllLoanList = new Gson().fromJson(jsonOfClientString, Loan[].class);
-                            PayLoanstmp.clear();
-                            PayLoanstmp.addAll(Arrays.asList(AllLoanList));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
-    }
-
-    private void payEntirePaymentForLoanList(ObservableList <Loan> loanList){
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        Gson gson = new Gson();
-
-        String requestString = gson.toJson(loanList,Loan[].class);
-
-        RequestBody body = RequestBody.create(requestString,JSON);
-
-        String finalUrl = HttpUrl
-                .parse(Constants.SCRAMBLE_LOANS)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .post(body)
-                .build();
 
 
-
-    }
 
 
 }
