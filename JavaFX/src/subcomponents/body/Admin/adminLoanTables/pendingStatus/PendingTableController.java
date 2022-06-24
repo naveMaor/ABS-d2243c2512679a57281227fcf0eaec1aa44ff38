@@ -125,7 +125,7 @@ public class PendingTableController {
 
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.PENDING);
         for (Loan loan:loanObservableList){
-            loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+            //loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
         }
         PendingTable.getItems().clear();
         PendingTable.setItems(loanObservableList);

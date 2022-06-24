@@ -81,7 +81,7 @@ public class FinishedTableController {
 
         loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.FINISHED);
         for (Loan loan:loanObservableList){
-            loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+            //loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
         }
 
         FinishedTable.setItems(loanObservableList);

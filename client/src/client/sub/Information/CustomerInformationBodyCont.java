@@ -24,6 +24,8 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerInformationBodyCont {
 
@@ -66,8 +68,14 @@ public class CustomerInformationBodyCont {
 
 
     public void initializeClientTable(){
-        createLoansAsLenderRequest();
-        createLoansAsBorrowerRequest();
+
+
+        LoanInformationObj loanInformationObj = new LoanInformationObj("stam","category",eLoanStatus.NEW,"borrower");
+        clientAsBorrowLoanList.clear();
+        clientAsBorrowLoanList.addAll(loanInformationObj);
+        borrowerTable.setItems(clientAsBorrowLoanList);
+        //createLoansAsLenderRequest();
+        //createLoansAsBorrowerRequest();
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -75,16 +83,19 @@ public class CustomerInformationBodyCont {
     }
 
     @FXML public void initialize() {
+        clientAsLenderLoanList = FXCollections.observableArrayList();
+        clientAsBorrowLoanList = FXCollections.observableArrayList();
         if (transactionsController != null) {
             transactionsController.setMainController(this);
         }
-        borrowerLoanID.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanID"));
-        lenderLoanID.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanID"));
-        borrowerLoanCategory.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanCategory"));
-        lenderLoanCat.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanCategory"));
-        lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("borrowerName"));
-        borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
-        lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
+        borrowerLoanID.setCellValueFactory(new PropertyValueFactory<>("loanID"));
+        lenderLoanID.setCellValueFactory(new PropertyValueFactory<>("loanID"));
+        borrowerLoanCategory.setCellValueFactory(new PropertyValueFactory<>("loanCategory"));
+        lenderLoanCat.setCellValueFactory(new PropertyValueFactory<>("loanCategory"));
+        lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<>("borrowerName"));
+        borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        initializeClientTable();
     }
 
     public void createTransaction(int amount) {
@@ -188,7 +199,7 @@ public class CustomerInformationBodyCont {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("failed to call url information body controller")
+                        System.out.println("failed to call url information body")
                 );
             }
 

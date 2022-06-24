@@ -11,8 +11,8 @@ public class LoanInformationObj {
 
     private String borrowerName;
 
-    public LoanInformationObj(String ID, String category, eLoanStatus status, String borrowerName) {
-        this.loanID = ID;
+    public LoanInformationObj(String loanID, String category, eLoanStatus status, String borrowerName) {
+        this.loanID = loanID;
         this.loanCategory = category;
         this.status = status;
         this.borrowerName = borrowerName;
