@@ -2,7 +2,7 @@ package client.sub.scramble;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
-import engine.scrambleService;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -299,6 +299,7 @@ public class CustomerScrambleBodyController {
 
 
 
+
         HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -314,7 +315,9 @@ public class CustomerScrambleBodyController {
                         if (response.code() == 200) {
                             String jsonOfClientString = response.body().string();
                             response.body().close();
-                            scrambleService service = new Gson().fromJson(jsonOfClientString, scrambleService.class);
+                            ObservableList<Loan> filterLoans = FXCollections.observableArrayList();
+                            Loan[] responseLoans = new Gson().fromJson(jsonOfClientString, Loan[].class);
+                            filterLoans.addAll(responseLoans);
                             Region veil = new Region();
                             veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
                             veil.setPrefSize(400, 440);
@@ -323,26 +326,14 @@ public class CustomerScrambleBodyController {
                             p.setStyle(" -fx-progress-color: orange;");
 
 
-                            p.progressProperty().bind(service.progressProperty());
-                            veil.visibleProperty().bind(service.runningProperty());
-                            p.visibleProperty().bind(service.runningProperty());
+                            ReleventLoansTable.setItems(filterLoans);
 
-                            customerMainBodyController.getInformationTabPane().disableProperty().bind(service.runningProperty());
-                            customerMainBodyController.getPaymentTabPane().disableProperty().bind(service.runningProperty());
-                            customerMainBodyController.runningServicePropertyProperty().bind(service.runningProperty());
+                        }
+                        else
+                        {
+                            Alert a = new Alert(Alert.AlertType.ERROR, response.body().string());
+                            a.showAndWait();
 
-                            ReleventLoansTable.itemsProperty().bind(service.valueProperty());
-
-                            stackPane.getChildren().addAll(veil, p);
-
-                            double clientBalance = service.getClient().getMyAccount().getCurrBalance();
-
-                            if (amount > clientBalance || amount == 0) {
-                                Alert a = new Alert(Alert.AlertType.ERROR, "Amount must be set to less then client current balance:\n" + clientBalance);
-                                a.showAndWait();
-                            } else {
-                                service.start();
-                            }
                         }
 
 
