@@ -92,13 +92,9 @@ public class transactionsController {
         yaz.setCellValueFactory(new PropertyValueFactory<Transaction, Integer>("timeOfMovement"));
     }
 
-
     public void loadTableData() {
         createTransactionListRequest();
     }
-
-
-
 
     private void createTransactionListRequest(){
         String finalUrl = HttpUrl

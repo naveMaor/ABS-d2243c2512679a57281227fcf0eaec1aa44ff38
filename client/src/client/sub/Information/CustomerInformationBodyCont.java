@@ -68,14 +68,8 @@ public class CustomerInformationBodyCont {
 
 
     public void initializeClientTable(){
-
-
-        LoanInformationObj loanInformationObj = new LoanInformationObj("stam","category",eLoanStatus.NEW,"borrower");
-        clientAsBorrowLoanList.clear();
-        clientAsBorrowLoanList.addAll(loanInformationObj);
-        borrowerTable.setItems(clientAsBorrowLoanList);
-        //createLoansAsLenderRequest();
-        //createLoansAsBorrowerRequest();
+        createLoansAsLenderRequest();
+        createLoansAsBorrowerRequest();
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -192,7 +186,6 @@ public class CustomerInformationBodyCont {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
         HttpClientUtil.runAsync(request, new Callback() {
 

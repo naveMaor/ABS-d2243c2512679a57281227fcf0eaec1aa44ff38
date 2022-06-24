@@ -2,9 +2,6 @@ package client.sub.scramble;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
-import com.oracle.webservices.internal.api.message.ContentType;
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
-import engine.Engine;
 import engine.scrambleService;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,24 +25,26 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.RelevantLoansRequestObj;
 import servletDTO.ScrambleRequestObj;
 import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class CustomerScrambleBodyController {
-    //    private Engine engine=Engine.getInstance();
-    private Engine engine;
+
     private CustomerMainBodyController customerMainBodyController;
-    private List<String> allCategoriesList;
+    private Set<String> allCategoriesList;
     private ObservableList<Loan> userFilteredLoanList = FXCollections.observableArrayList();
     private ObservableList<Loan> CheckBoxLoanList = FXCollections.observableArrayList();
 
@@ -156,13 +155,10 @@ public class CustomerScrambleBodyController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "NO LOANS SELECTED!");
             alert.showAndWait();
         } else {
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-            Gson gson = new Gson();
-            ScrambleRequestObj requestObj = new ScrambleRequestObj(CheckBoxLoanList,amount,clientName,maxOwnership);
 
-            String requestString = gson.toJson(requestObj,ScrambleRequestObj.class);
-
-            RequestBody body = RequestBody.create(requestString,JSON);
+            ScrambleRequestObj requestObj = new ScrambleRequestObj(CheckBoxLoanList, amount, clientName, maxOwnership);
+            String requestString = HttpClientUtil.GSON_INST.toJson(requestObj, ScrambleRequestObj.class);
+            RequestBody body = RequestBody.create(requestString, HttpClientUtil.JSON);
             String finalUrl = HttpUrl
                     .parse(Constants.SCRAMBLE_LOANS)
                     .newBuilder()
@@ -201,7 +197,7 @@ public class CustomerScrambleBodyController {
                         {
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "investing completed");
                             alert.showAndWait();
-                            resetFileds();
+                            resetFields();
                             resetRelevantLoansTable();
                             //customerMainBodyController.loadData();
 
@@ -242,12 +238,6 @@ public class CustomerScrambleBodyController {
         }
     }
 
-/*    @FXML
-    void activateMinimumInterestTextField(ActionEvent event) {
-
-    }*/
-
-
     @FXML
     void activateShowRelevantLoansListButton(ActionEvent event) {
         clientName = customerMainBodyController.getCustomerName();
@@ -268,11 +258,9 @@ public class CustomerScrambleBodyController {
                 maxOwnership = Integer.parseInt(maxShareText);
 
 
-
             String minYazText = minimumYazTextField.getText();
             if (minYazText.matches("[0-9]+"))
                 minYaz = Integer.parseInt(minYazText);
-
 
 
             String investmentAmountText = amountToInvestTextField.getText();
@@ -290,29 +278,28 @@ public class CustomerScrambleBodyController {
             alert = new Alert(Alert.AlertType.ERROR, "invalid parameters");
             alert.showAndWait();
         }
+        clientName = customerMainBodyController.getCurrClient().getFullName();
+        List<String> n = existChosenCategories;
+        RelevantLoansRequestObj requestObj = new  RelevantLoansRequestObj(clientName,n,minInterest,minYaz, maxOpenLoans,maxOwnership) ;
 
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(requestObj,RelevantLoansRequestObj.class);
 
-        Gson gson = new Gson();
-        String jsonExistChosenCategories = gson.toJson(existChosenCategories);
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
-
-        String finalUrl = HttpUrl
-                .parse(Constants.RELEVANT_LOANS)
+        String finalUrl = Objects.requireNonNull(HttpUrl
+                .parse(Constants.RELEVANT_LOANS))
                 .newBuilder()
-                .addQueryParameter("username",clientName )
-                .addQueryParameter("minInterest", String.valueOf(minInterest))
-                .addQueryParameter("minYaz", String.valueOf(minYaz))
-                .addQueryParameter("maxOpenLoans", String.valueOf(maxOpenLoans))
-                .addQueryParameter("existChoosenCategories", jsonExistChosenCategories)
-                .addQueryParameter("maxOwnership", String.valueOf(maxOwnership))
                 .build()
                 .toString();
 
         Request request = new Request.Builder()
                 .url(finalUrl)
+                .post(body)
                 .build();
 
-            HttpClientUtil.runAsync(request, new Callback() {
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
@@ -324,10 +311,10 @@ public class CustomerScrambleBodyController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 Platform.runLater(() -> {
                     try {
-                        if(response.code()==200){
+                        if (response.code() == 200) {
                             String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            scrambleService service= new Gson().fromJson(jsonOfClientString, scrambleService.class);
+                            response.body().close();
+                            scrambleService service = new Gson().fromJson(jsonOfClientString, scrambleService.class);
                             Region veil = new Region();
                             veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
                             veil.setPrefSize(400, 440);
@@ -368,7 +355,6 @@ public class CustomerScrambleBodyController {
         });
 
 
-
     }
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
@@ -376,8 +362,8 @@ public class CustomerScrambleBodyController {
     }
 
     public void initialize() {
-        engine = new Engine();
-        allCategoriesList = engine.getDatabase().getAllCategories();
+        allCategoriesList = new HashSet<>();
+        getAllCategories();
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
         TotalLoanCost.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
@@ -391,8 +377,58 @@ public class CustomerScrambleBodyController {
 
     }
 
+    private void getAllCategories() {
 
-    public void resetFileds() {
+        String finalUrl = HttpUrl
+                .parse(Constants.CATEGORIES)
+                .newBuilder()
+                .addQueryParameter("username", clientName)
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to create transaction")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                Platform.runLater(() -> {
+
+                    if (response.code() != 200) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Categories Not return from server!");
+                        alert.showAndWait();
+                    } else {
+                        try {
+                            String jsonOfClientString = response.body().string();
+                            response.body().close();
+                            String[] cat = new Gson().fromJson(jsonOfClientString, String[].class);
+                            allCategoriesList.clear();
+                            categoriesOptionsListView.getItems().clear();
+                            allCategoriesList.addAll(Arrays.asList(cat));
+                            categoriesOptionsListView.getItems().addAll(allCategoriesList);
+
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                });
+
+            }
+        });
+    }
+
+    public void resetFields() {
         ObservableList<Loan> items = ReleventLoansTable.getItems();
         for (Loan loan : items) {
             loan.setSelect(false);
@@ -402,8 +438,7 @@ public class CustomerScrambleBodyController {
         maxOwnershipTextField.clear();
         minimumInterestTextField.clear();
         minimumYazTextField.clear();
-        categoriesOptionsListView.getItems().addAll(allCategoriesList);
-        userChoiceCategoriesListView.getItems().removeAll(allCategoriesList);
+        userChoiceCategoriesListView.getItems().removeAll();
     }
 
     public void resetRelevantLoansTable() {

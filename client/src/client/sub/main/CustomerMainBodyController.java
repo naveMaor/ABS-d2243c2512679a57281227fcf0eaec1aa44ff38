@@ -111,7 +111,7 @@ public class CustomerMainBodyController {
 
 
     public void resetFields(){
-        customerScrambleBodyController.resetFileds();
+        customerScrambleBodyController.resetFields();
         customerScrambleBodyController.resetRelevantLoansTable();
     }
 

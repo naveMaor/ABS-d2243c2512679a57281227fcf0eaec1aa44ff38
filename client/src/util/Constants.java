@@ -26,7 +26,8 @@ public class Constants {
     public final static String GET_ALL_LOAN_LIST = FULL_SERVER_PATH + "/AllLoanList";
 
     ///client scramble
-    public final static String RELEVANT_LOANS = FULL_SERVER_PATH + "/relevantLoans";
+    public final static String RELEVANT_LOANS = FULL_SERVER_PATH + "/RelevantLoans";
+    public final static String CATEGORIES = FULL_SERVER_PATH + "/Categories";
 
     public final static String USERS_LIST = FULL_SERVER_PATH + "/userslist";
     public final static String LOGOUT = FULL_SERVER_PATH + "/chat/logout";
