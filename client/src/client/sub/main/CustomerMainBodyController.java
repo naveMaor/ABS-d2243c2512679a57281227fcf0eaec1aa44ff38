@@ -72,7 +72,7 @@ public class CustomerMainBodyController {
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        customerPaymentBodyController.loadLoanTableData();
+//                        customerPaymentBodyController.loadLoanTableData();
                     }
                 }
         );
@@ -135,7 +135,7 @@ public class CustomerMainBodyController {
         synchronized (this) {
                 customerInformationBodyController.initializeClientTable();
                 customerInformationBodyController.loadTransactionsTable();
-                customerPaymentBodyController.loadLoanTableData();
+//                customerPaymentBodyController.loadLoanTableData();
         }
     }
 

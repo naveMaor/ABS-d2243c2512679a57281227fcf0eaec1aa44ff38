@@ -83,15 +83,10 @@ public class CustomerPaymentBodyController {
 
     //todo: add servlet here
     private void payLoans(PayOption payOption){
-        try {
-            if(payOption==PayOption.entire)
-                payEntirePaymentForLoanList();
-            else if (payOption==PayOption.single){
-                paySinglePaymentForLoanList();
-            }
-        } catch (messageException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
-            alert.showAndWait();
+        if(payOption==PayOption.entire)
+            payEntirePaymentForLoanList();
+        else if (payOption==PayOption.single){
+            paySinglePaymentForLoanList();
         }
         //loadLoanTableData();
         LoansListView.getItems().clear();
@@ -247,10 +242,10 @@ public class CustomerPaymentBodyController {
 /*                if (loan.getSelect().isSelected()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;*/
-                    if (loan.getSelect()) {
-                    CheckBoxLoanList.add(loan.getLoanID());
-                    num++;
-                }
+//                    if (loan.getSelect()) {
+//                    CheckBoxLoanList.add(loan.getLoanID());
+//                    num++;
+//                }
             }
         }
         if(num==0){
