@@ -26,7 +26,7 @@ public class ShowRelevantLoansServlet extends HttpServlet {
         response.setContentType("application/json");
         String errorResponse = "";
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-        Scanner s = new Scanner(request.getInputStream(), "UTF-8");
+        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");;
         String reqBodyAsString = s.hasNext() ? s.next() : null;
         RelevantLoansRequestObj scrambleRequest = new Gson().fromJson(reqBodyAsString, RelevantLoansRequestObj.class);
 
@@ -42,6 +42,7 @@ public class ShowRelevantLoansServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getOutputStream().print(errorResponse);
             } else {
+                //TODO RETURN RES TO GET LOANS
                 ObservableList<Loan> filterLoans = systemEngine.O_getLoansToInvestList(scrambleRequest.getClientName(), scrambleRequest.getMinInterest(), scrambleRequest.getMinYaz(), scrambleRequest.getMaxOpenLoans(), scrambleRequest.getChosenCategories(), scrambleRequest.getMaxOwnership());
                 if (filterLoans.size() != 0) {
                     List<LoanInformationObj> loans = new ArrayList<>();

@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
@@ -46,8 +45,8 @@ public class CustomerScrambleBodyController {
 
     private CustomerMainBodyController customerMainBodyController;
     private Set<String> allCategoriesList;
-    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
-    private ObservableList<LoanInformationObj> CheckBoxLoanList = FXCollections.observableArrayList();
+//    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
+    private ObservableList<LoanInformationObj> LoansToInvestList = FXCollections.observableArrayList();
 
     private List<String> chosenCategories;
     private ObservableList<String> existChosenCategories = FXCollections.observableArrayList();
@@ -139,16 +138,13 @@ public class CustomerScrambleBodyController {
 
 
     @FXML
-    void activateActivateScrambleButton(ActionEvent event) {
+    void activateScrambleButton(ActionEvent event) {
         int num = 0;
         ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
         for (LoanInformationObj loan : items) {
-/*            if(loan.getSelect().isSelected()){
-                CheckBoxLoanList.add(loan);
-                num++;*/
             if (loan.getSelect()) {
-                CheckBoxLoanList.add(loan);
+                LoansToInvestList.add(loan);
                 num++;
             }
         }
@@ -156,9 +152,10 @@ public class CustomerScrambleBodyController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "NO LOANS SELECTED!");
             alert.showAndWait();
         } else {
-
-            ScrambleRequestObj requestObj = new ScrambleRequestObj(CheckBoxLoanList, amount, clientName, maxOwnership);
+            clientName = customerMainBodyController.getCurrClient().getFullName();
+            ScrambleRequestObj requestObj = new ScrambleRequestObj(LoansToInvestList, amount, clientName, maxOwnership);
             String requestString = HttpClientUtil.GSON_INST.toJson(requestObj, ScrambleRequestObj.class);
+
             RequestBody body = RequestBody.create(requestString, HttpClientUtil.JSON);
             String finalUrl = HttpUrl
                     .parse(Constants.SCRAMBLE_LOANS)
@@ -406,6 +403,7 @@ public class CustomerScrambleBodyController {
                             String[] cat = new Gson().fromJson(jsonOfClientString, String[].class);
                             allCategoriesList.clear();
                             allCategoriesList.addAll(Arrays.asList(cat));
+                            categoriesOptionsListView.getItems().clear();
                             categoriesOptionsListView.getItems().addAll(allCategoriesList);
 
                         } catch (IOException e) {
