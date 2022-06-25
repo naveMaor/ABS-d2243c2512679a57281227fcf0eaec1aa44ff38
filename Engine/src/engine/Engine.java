@@ -125,9 +125,7 @@ public class Engine {
         return result;
     }
 
-    //NIKOL: this should probably be part of one of the classes.
-    //NIKOL: what are you doing here? why do you need a list where all the values are the same?
-    //SHAI: in what context this function is used? check if a certain category is in sent Arraylist ?
+
     public boolean checkCategoryList(ObservableList<String> loanCategoryArrayList, String category) {
         boolean result = false;
         for (String s : loanCategoryArrayList) {
@@ -233,6 +231,19 @@ public class Engine {
         return true;
     }
 
+    /**
+     * check if there is a already loan with the same name
+     */
+    public boolean checkValidLoanName(AbsDescriptor descriptor) {
+        List<AbsLoan> absLoanList = descriptor.getAbsLoans().getAbsLoan();
+        List<String> loanList = database.getLoanNameList();
+        for (AbsLoan absLoan : absLoanList) {
+            if(loanList.contains(absLoan.getId()))
+                return false;
+        }
+        return true;
+    }
+
 
 
     /**
@@ -279,6 +290,55 @@ public class Engine {
             database.addLoanToLoanMap(newLoan);
         }
     }
+
+    public void addNewLoanFromUser(Loan loan) throws IOException {
+        checkValidLoanFromUser(loan);
+        database.addCategory(loan.getLoanCategory());
+        database.addLoanToLoanMap(loan);
+    }
+
+
+    private boolean checkValidLoanFromUser(Loan loan) throws IOException {
+        boolean isValid = true;
+        String s = new String();
+
+        if(!checkValidLoanNameFromUser(loan.getLoanID())){
+            s += "\nthere is already a loan with the same name";
+            isValid = false;
+        }
+
+
+        if (!checkValidPaymentFrequencyFromUser(loan)) {
+            s += "\npayment frequency is not fully divided by the total time of the loan";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            throw new IOException(s);
+        }
+        return isValid;
+    }
+
+
+    private boolean checkValidLoanNameFromUser(String loanName){
+        List<String> loanList = database.getLoanNameList();
+            if(loanList.contains(loanName))
+                return false;
+
+        return true;
+    }
+
+    public boolean checkValidPaymentFrequencyFromUser(Loan loan){
+        int totalYazTime;
+        int paysEveryYaz;
+
+            totalYazTime = loan.getOriginalLoanTimeFrame();
+            paysEveryYaz = loan.getPaymentFrequency();
+            if ((totalYazTime % paysEveryYaz) != 0)
+                return false;
+        return true;
+    }
+
 
     public double getBalanceFromClientName(String name) {
         return database.getClientByname(name).getMyAccount().getCurrBalance();
@@ -411,6 +471,12 @@ public class Engine {
     public boolean CheckInvalidFile(AbsDescriptor descriptor) throws IOException {
         boolean isValid = true;
         String s = new String();
+
+        if(!checkValidLoanName(descriptor)){
+            s += "\nthere is already a loan with the same name";
+            isValid = false;
+        }
+
 
         if (!checkValidCategories(descriptor)) {
             s += "\nthere is loan category that does not exist";

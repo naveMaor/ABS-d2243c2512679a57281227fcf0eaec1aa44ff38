@@ -20,7 +20,8 @@ public class Constants {
     public final static String LOANS_AS_BORROW = FULL_SERVER_PATH + "/LoansAsBorrow";
     public final static String CREATE_TRANSACTION = FULL_SERVER_PATH + "/CreateTransaction";
     public final static String GET_TRANSACTION_LIST = FULL_SERVER_PATH + "/TransactionList";
-    public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoan";
+    public final static String NEW_LOAN_FROM_FILE = FULL_SERVER_PATH + "/CreateNewLoanFromFile";
+    public final static String NEW_LOAN_FROM_USER = FULL_SERVER_PATH + "/NewLoanFromUser";
     public final static String SCRAMBLE_LOANS = FULL_SERVER_PATH + "/ScrambleLoans";
     public final static String PAY_ENTIRE_PAYMENT = FULL_SERVER_PATH + "/PayEntirePayment";
     public final static String PAY_SINGLE_PAYMENT = FULL_SERVER_PATH + "/PaySinglePayment";

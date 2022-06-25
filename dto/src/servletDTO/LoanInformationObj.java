@@ -49,6 +49,17 @@ public class LoanInformationObj implements Serializable {
         this.status = loan.getStatus();
     }
 
+
+    public LoanInformationObj(String loanCategory, String loanID, String borrowerName, Double loanOriginalDepth, Double interestPercentagePerTimeUnit, Integer paymentFrequency, Integer originalLoanTimeFrame) {
+        this.loanCategory = loanCategory;
+        this.loanID = loanID;
+        this.borrowerName = borrowerName;
+        this.loanOriginalDepth = loanOriginalDepth;
+        this.interestPercentagePerTimeUnit = interestPercentagePerTimeUnit;
+        this.paymentFrequency = paymentFrequency;
+        this.originalLoanTimeFrame = originalLoanTimeFrame;
+    }
+
     public Double getLoanOriginalDepth() {
         return loanOriginalDepth;
     }

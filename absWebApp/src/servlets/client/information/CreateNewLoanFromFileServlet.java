@@ -10,20 +10,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import utils.ServletUtils;
 import utils.SessionUtils;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Scanner;
 
-@WebServlet(name = "CreateNewLoanServlet", urlPatterns = "/CreateNewLoan")
+@WebServlet(name = "CreateNewLoanFromFileServlet", urlPatterns = "/CreateNewLoanFromFile")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
-public class CreateNewLoanServlet extends HttpServlet {
+public class CreateNewLoanFromFileServlet extends HttpServlet {
 
 
     @Override
@@ -45,16 +43,21 @@ public class CreateNewLoanServlet extends HttpServlet {
 
 
         try {
-            //todo: create new checkbox and button here and pass it through the methods
             systemEngine.createNewLoanFromInputStream(file,usernameFromSession);
-            response.setStatus(200);
         }catch (JAXBException e){
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.getOutputStream().print(e.getMessage());
+            return;
         }catch (IOException e) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.getOutputStream().print(e.getMessage());
+            return;
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getOutputStream().print(e.getMessage());
+            return;
         }
+        response.setStatus(200);
 
     }
 
