@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: MainWindow.mainWindowMain
-Class-Path: lib/Engine.jar;lib/dto.jar
-
