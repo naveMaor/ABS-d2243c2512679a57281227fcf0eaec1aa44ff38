@@ -17,7 +17,8 @@
                      <font>
                         <Font name="System Bold Italic" size="70.0" />
                      </font></Label>
-                  <Button fx:id="NewLoan" layoutX="383.0" layoutY="161.0" mnemonicParsing="false" onAction="#NewLoanButton" text="New Loan" />
+                  <Button fx:id="NewLoan" layoutX="219.0" layoutY="160.0" mnemonicParsing="false" onAction="#NewLoanButton" text="New loan from file" />
+                  <Button layoutX="467.0" layoutY="160.0" mnemonicParsing="false" onAction="#NewManualLoanButton" text="New manual loan" />
                </children>
             </AnchorPane>
          </top>

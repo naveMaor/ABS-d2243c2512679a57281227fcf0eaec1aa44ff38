@@ -1,5 +1,6 @@
 package client.main;
 
+import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import com.sun.deploy.cache.JarSigningData;
@@ -13,9 +14,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,6 +41,7 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 
 public class ClientMainController {
     private Stage primaryStage;
@@ -49,6 +53,30 @@ public class ClientMainController {
     //Engine engine = Engine.getInstance();
     private Engine engine = new Engine();
     private ClientDTOforServlet currClient;
+    private NewLoanWindowController newLoanWindowController;
+
+    public void NewManualLoanButton(ActionEvent actionEvent) {
+        Stage Newstage = new Stage();
+        Newstage.setMinHeight(600);
+        Newstage.setMinWidth(600);
+        Newstage.setTitle("Add new loan");
+
+        URL newLoanWindow = getClass().getResource("newLoanWindow/NewLoanWindow.fxml");
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(newLoanWindow);
+            Parent root = fxmlLoader.load();
+            newLoanWindowController = fxmlLoader.getController();
+
+            newLoanWindowController.setMainController(this);
+
+            Scene scene = new Scene(root, 700, 600);
+            Newstage.setScene(scene);
+            Newstage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public enum MessageType{Error,Successfully,Information};
@@ -173,7 +201,7 @@ public class ClientMainController {
                         try {
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,response.body().string());
                             alert.showAndWait();
-                            customerMainBodyController.loadData();
+                            loadData();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -245,5 +273,9 @@ public class ClientMainController {
             e.printStackTrace();
         }
         return currClient;
+    }
+
+    public void loadData(){
+        customerMainBodyController.loadData();
     }
 }
