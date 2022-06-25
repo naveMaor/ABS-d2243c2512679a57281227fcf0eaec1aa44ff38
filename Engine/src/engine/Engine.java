@@ -314,7 +314,6 @@ public class Engine {
         }
 
         if (!isValid) {
-            s = "File not valid!\n" + s;
             throw new IOException(s);
         }
         return isValid;

@@ -45,11 +45,17 @@ public class CreateNewLoanFromFileServlet extends HttpServlet {
         try {
             systemEngine.createNewLoanFromInputStream(file,usernameFromSession);
         }catch (JAXBException e){
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,e.getMessage());
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.getOutputStream().print(e.getMessage());
+            return;
         }catch (IOException e) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE,e.getMessage());
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.getOutputStream().print(e.getMessage());
+            return;
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,e.getMessage());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getOutputStream().print(e.getMessage());
+            return;
         }
         response.setStatus(200);
 

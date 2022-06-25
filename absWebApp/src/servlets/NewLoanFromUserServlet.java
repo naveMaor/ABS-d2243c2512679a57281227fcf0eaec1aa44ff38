@@ -32,8 +32,9 @@ public class NewLoanFromUserServlet extends HttpServlet {
             systemEngine.addNewLoanFromUser(newLoan);
         }
         catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println(e.getMessage());
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.getOutputStream().print(e.getMessage());
+            return;
         }
         response.setStatus(200);
 
