@@ -2,6 +2,7 @@ package client.sub.Payment;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
+import customes.Client;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.ClientDTOforServlet;
 import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 import servletDTO.Payment.PartialPaymentObj;
@@ -346,7 +348,7 @@ public class CustomerPaymentBodyController {
 
     //todo:add get servlet for loan list from database
     public void loadTextAreaData(){
-        StringBuilder comment = new StringBuilder("Yaz now:" + Timeline.getCurrTime() + ", you need to pay for these loans:\n");
+/*        StringBuilder comment = new StringBuilder("Yaz now:" + Timeline.getCurrTime() + ", you need to pay for these loans:\n");
         ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
         int num=1;
         boolean append = false;
@@ -363,7 +365,11 @@ public class CustomerPaymentBodyController {
             clientNameCommentMap.put(customerMainBodyController.getCustomerName(), String.valueOf(comment));
             notificationsTextArea.clear();
             notificationsTextArea.setText(clientNameCommentMap.get(customerMainBodyController.getCustomerName()));
-        }
+        }*/
+
+        ClientDTOforServlet clientDTOforServlet = customerMainBodyController.getCurrClient();
+        notificationsTextArea.clear();
+        notificationsTextArea.setText(clientDTOforServlet.getNotification());
 
 
     }
@@ -418,8 +424,7 @@ public class CustomerPaymentBodyController {
                 Platform.runLater(() -> {
                     try {
                         if(response.code()==200){
-
-                            loadTextAreaData();
+                            //todo add update notification from client
                             loanListForTable.clear();
                             ReleventLoansTable.getItems().clear();
                             String jsonOfClientString = response.body().string();
