@@ -12,7 +12,7 @@ import servletDTO.Payment.LoanPaymentObj;
 
 public class AddCheckBoxCell {
 
-    public static void addCheckBoxCellPayment(TableView<?> ReleventLoansTable){
+    public static void addCheckBoxCellPayment(TableView<?> LoansTable){
         TableColumn select = new TableColumn("select");
         select.setMinWidth(50);
         select.setPrefWidth(50);

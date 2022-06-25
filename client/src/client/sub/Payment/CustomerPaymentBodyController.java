@@ -130,12 +130,12 @@ public class CustomerPaymentBodyController {
                     response.body().close();
 
                     if(response.code()==200){
-                            loadReleventLoansTable(jsonOfClientString);
-                        }
-                        else {
-                            Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
-                            alert.showAndWait();
-                        }
+                        loadReleventLoansTable(jsonOfClientString);
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                        alert.showAndWait();
+                    }
                 });
             }
 
@@ -215,7 +215,6 @@ public class CustomerPaymentBodyController {
     }
 
 
-    //todo: handle check box here
     @FXML
     void activateForwardLoanButton(ActionEvent event) {
         ObservableList<LoanPaymentObj> items = ReleventLoansTable.getItems();
@@ -225,7 +224,7 @@ public class CustomerPaymentBodyController {
                 if (loan.selectProperty().getValue()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
-                    }
+                }
             }
         }
         if(num==0){
@@ -308,7 +307,7 @@ public class CustomerPaymentBodyController {
                     }
                 });
             }
-    });
+        });
     }
 
 
