@@ -4,20 +4,17 @@ import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 import servletDTO.Payment.PartialPaymentObj;
 import time.Timeline;
@@ -133,12 +130,12 @@ public class CustomerPaymentBodyController {
                     response.body().close();
 
                     if(response.code()==200){
-                            loadReleventLoansTable(jsonOfClientString);
-                        }
-                        else {
-                            Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
-                            alert.showAndWait();
-                        }
+                        loadReleventLoansTable(jsonOfClientString);
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                        alert.showAndWait();
+                    }
                 });
             }
 
@@ -218,7 +215,6 @@ public class CustomerPaymentBodyController {
     }
 
 
-    //todo: handle check box here
     @FXML
     void activateForwardLoanButton(ActionEvent event) {
         ObservableList<LoanPaymentObj> items = ReleventLoansTable.getItems();
@@ -228,7 +224,7 @@ public class CustomerPaymentBodyController {
                 if (loan.selectProperty().getValue()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
-                    }
+                }
             }
         }
         if(num==0){
@@ -311,7 +307,7 @@ public class CustomerPaymentBodyController {
                     }
                 });
             }
-    });
+        });
     }
 
 
@@ -320,7 +316,7 @@ public class CustomerPaymentBodyController {
     }
 
     public void initialize() {
-        LoanPaymentObj loanPaymentObj = new LoanPaymentObj(200,500,"stam",0,eLoanStatus.ACTIVE);
+        //LoanPaymentObj loanPaymentObj = new LoanPaymentObj(200,500,"stam",0,eLoanStatus.ACTIVE);
 
         currPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("nextExpectedPaymentAmountDataMember"));
         leftPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("totalRemainingLoan"));
@@ -333,7 +329,7 @@ public class CustomerPaymentBodyController {
         AddCheckBoxCell.addCheckBoxCell(ReleventLoansTable);
 
 
-        ReleventLoansTable.getItems().add(loanPaymentObj);
+        //ReleventLoansTable.getItems().add(loanPaymentObj);
 
     }
 
@@ -341,26 +337,11 @@ public class CustomerPaymentBodyController {
         loadTextAfterYazChange.bindBidirectional(yazChanged);
     }
 
-/*    public void loadLoanTableData(){
+    public void loadLoanTableData(){
         loadTextAreaData();
-        loanListForTable.clear();
-        ReleventLoansTable.getItems().clear();
+        updatePaymentLoanListRequest();
 
-        ObservableList<Loan> tmp =  engine.getDatabase().o_getAllLoansByClientName(customerMainBodyController.getCustomerName());
-        for (Loan loan:tmp
-             ) {
-            eLoanStatus status = loan.getStatus();
-            if((status== eLoanStatus.RISK)||(status==eLoanStatus.ACTIVE)){
-                loanListForTable.add(loan);
-            }
-        }
-        //because of unexpected bug that the compliler does not run on all over the items i have to write it down again
-
-        ReleventLoansTable.setItems(loanListForTable);
-
-        customiseFactory(status);
-
-    }*/
+    }
 
 
     //todo:add get servlet for loan list from database
@@ -409,6 +390,53 @@ public class CustomerPaymentBodyController {
         });
     }
 
+
+    private void updatePaymentLoanListRequest(){
+
+        String finalUrl = HttpUrl
+                .parse(Constants.GET_PAYMENT_LOAN_LIST)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url payment load table")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    try {
+                        if(response.code()==200){
+
+                            loadTextAreaData();
+                            loanListForTable.clear();
+                            ReleventLoansTable.getItems().clear();
+                            String jsonOfClientString = response.body().string();
+                            response.body().close();
+                            LoanPaymentObj[] tmp = new Gson().fromJson(jsonOfClientString, LoanPaymentObj[].class);
+                            loanListForTable.addAll(tmp);
+                            ReleventLoansTable.setItems(loanListForTable);
+                            customiseFactory(status);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        });
+    }
 
 
 }
