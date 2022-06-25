@@ -1,5 +1,7 @@
 package servletDTO.Payment;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import loan.enums.eLoanStatus;
 
 import java.io.Serializable;
@@ -9,7 +11,8 @@ public class LoanPaymentObj implements Serializable {
     private double totalRemainingLoan;
     private String loanID;
     private int nextYazToPay;
-    private eLoanStatus status;//
+    private eLoanStatus status;
+    private final BooleanProperty select = new SimpleBooleanProperty();
 
 
     public double getNextExpectedPaymentAmountDataMember() {
@@ -58,9 +61,17 @@ public class LoanPaymentObj implements Serializable {
         this.loanID = loanID;
         this.nextYazToPay = nextYazToPay;
         this.status = status;
+    }
 
+    public boolean isSelect() {
+        return select.get();
+    }
 
+    public BooleanProperty selectProperty() {
+        return select;
+    }
 
-
+    public void setSelect(boolean select) {
+        this.select.set(select);
     }
 }

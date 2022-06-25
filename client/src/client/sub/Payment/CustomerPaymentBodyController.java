@@ -2,14 +2,17 @@ package client.sub.Payment;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
-import exceptions.messageException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import loan.Loan;
 import loan.enums.eLoanStatus;
@@ -20,14 +23,13 @@ import servletDTO.Payment.PartialPaymentObj;
 import time.Timeline;
 import engine.Engine;
 import util.Constants;
+import util.AddCheckBoxCell;
 import util.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.*;
 
 public class CustomerPaymentBodyController {
-//    private Engine engine=Engine.getInstance();
-    //stam
     private Engine engine = new Engine();
 
     private ObservableList<String> CheckBoxLoanList =  FXCollections.observableArrayList();
@@ -65,8 +67,6 @@ public class CustomerPaymentBodyController {
     @FXML
     private Button pay;
 
-    @FXML
-    private TableColumn<LoanPaymentObj, String> select;
 
     @FXML
     private TableView<LoanPaymentObj> ReleventLoansTable;
@@ -94,7 +94,7 @@ public class CustomerPaymentBodyController {
 
 
     private void payEntirePaymentForLoanListRequest(){
-        List<String> loanNameList = LoansListView.getItems();
+        String[] loanNameList = LoansListView.getItems().toArray(new String[0]);
 
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
 
@@ -117,7 +117,7 @@ public class CustomerPaymentBodyController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("failed to call url payment body")
+                        System.out.println("failed to call url pay Entire Payment")
                 );
             }
 
@@ -148,7 +148,7 @@ public class CustomerPaymentBodyController {
 
 
     private void paySinglePaymentForLoanListRequest(){
-        List<String> loanNameList = LoansListView.getItems();
+        String[] loanNameList = LoansListView.getItems().toArray(new String[0]);
 
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanNameList,String[].class);
 
@@ -207,46 +207,28 @@ public class CustomerPaymentBodyController {
         LoanPaymentObj[] availableLoans = new Gson().fromJson(jsonOfClientString, LoanPaymentObj[].class);
         loanListForTable.addAll(Arrays.asList(availableLoans));
         ReleventLoansTable.setItems(loanListForTable);
+        LoansListView.getItems().clear();
     }
 
 
 
     @FXML
     void activateCloseEntireLoanButton(ActionEvent event) {
-/*        List<String> loanNameList = LoansListView.getItems();
-        List<Loan> tmp = engine.getDatabase().getLoanList();
-        ObservableList <Loan> loanList = FXCollections.observableArrayList();
-        for (Loan loan:tmp){
-            if (loanNameList.contains(loan.getLoanID())){
-                loanList.add(loan);
-            }
-        }
-
-
-        try {
-            engine.payEntirePaymentForLoanList(loanList);
-        } catch (messageException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
-            alert.showAndWait();
-        }
-        loadLoanTableData();
-        LoansListView.getItems().clear();*/
         payLoans(PayOption.entire);
     }
 
+
+    //todo: handle check box here
     @FXML
     void activateForwardLoanButton(ActionEvent event) {
         ObservableList<LoanPaymentObj> items = ReleventLoansTable.getItems();
         int num = 0;
         for (LoanPaymentObj loan:items){
             if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK) {
-/*                if (loan.getSelect().isSelected()) {
-                    CheckBoxLoanList.add(loan.getLoanID());
-                    num++;*/
-/*                    if (loan.getSelect()) {
+                if (loan.selectProperty().getValue()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
-                }*/
+                    }
             }
         }
         if(num==0){
@@ -260,11 +242,8 @@ public class CustomerPaymentBodyController {
                 }
             }
         }
-        for (LoanPaymentObj loan:items) {
-
-            //loan.getSelect().setSelected(false);
-            //loan.setSelect(false);
-
+        for (LoanPaymentObj loanPaymentObj:items) {
+            loanPaymentObj.selectProperty().setValue(false);
         }
         CheckBoxLoanList.clear();
     }
@@ -272,37 +251,18 @@ public class CustomerPaymentBodyController {
 
     @FXML
     void activatePayLoanSinglePaymentButton(ActionEvent event) {
-/*        List<String> loanNameList = LoansListView.getItems();
-        List<Loan> tmp = engine.getDatabase().getLoanList();
-        ObservableList <Loan> loanList = FXCollections.observableArrayList();
-        for (Loan loan:tmp){
-            if (loanNameList.contains(loan.getLoanID())){
-                loanList.add(loan);
-            }
-        }
-
-        try {
-            engine.paySinglePaymentForLoanList(loanList);
-        } catch (messageException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
-            alert.showAndWait();
-        }
-        loadLoanTableData();
-        LoansListView.getItems().clear();*/
         payLoans(PayOption.single);
     }
 
     @FXML
     void activatePayPartial(ActionEvent event) {
         int amount = Integer.parseInt(partialAmoutLable.getText());
-        payPartialAmountForLoan(amount);
-
+        payPartialAmountForLoanRequest(amount);
         //loadLoanTableData();
-        LoansListView.getItems().clear();
     }
 
 
-    private void payPartialAmountForLoan(int amount){
+    private void payPartialAmountForLoanRequest(int amount){
         String[] loanNameList = LoansListView.getItems().toArray(new String[0]);
 
         PartialPaymentObj partialPaymentObj = new PartialPaymentObj(loanNameList,amount);
@@ -360,12 +320,20 @@ public class CustomerPaymentBodyController {
     }
 
     public void initialize() {
+        LoanPaymentObj loanPaymentObj = new LoanPaymentObj(200,500,"stam",0,eLoanStatus.ACTIVE);
+
         currPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("nextExpectedPaymentAmountDataMember"));
         leftPay.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Double>("totalRemainingLoan"));
         loanId.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, String>("loanID"));
         nextYaz.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Integer>("nextYazToPay"));
-        select.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, String>("select"));
+        //select.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, Boolean>("select"));
         status.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, eLoanStatus>("status"));
+
+
+        AddCheckBoxCell.addCheckBoxCell(ReleventLoansTable);
+
+
+        ReleventLoansTable.getItems().add(loanPaymentObj);
 
     }
 
@@ -440,5 +408,7 @@ public class CustomerPaymentBodyController {
             };
         });
     }
+
+
 
 }
