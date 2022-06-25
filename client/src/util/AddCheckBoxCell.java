@@ -38,7 +38,7 @@ public class AddCheckBoxCell {
 
                     }
                 });
-
+    ////asdadasdasd
                 return new SimpleObjectProperty<CheckBox>(checkBox);
 
             }
