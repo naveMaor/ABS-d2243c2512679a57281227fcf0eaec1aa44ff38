@@ -205,6 +205,7 @@ public class CustomerInformationBodyCont {
                             LoanInformationObj[] loanAsBorrowList = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
                             clientAsBorrowLoanList.addAll(loanAsBorrowList);
                             borrowerTable.setItems(clientAsBorrowLoanList);
+                            customerMainBodyController.resetFields();
                             //customiseFactory(borrowerLoanStatus);
                         }
                     } catch (IOException e) {

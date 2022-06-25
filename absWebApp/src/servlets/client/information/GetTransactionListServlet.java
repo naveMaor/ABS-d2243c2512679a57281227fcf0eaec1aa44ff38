@@ -1,5 +1,6 @@
-package servlets;
+package servlets.client.information;
 
+import Money.operations.Transaction;
 import com.google.gson.Gson;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,8 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "GetAllLoanListServlet", urlPatterns = "/AllLoanList")
-public class GetAllLoanListServlet extends HttpServlet {
+@WebServlet(name = "GetTransactionListServlet", urlPatterns = "/TransactionList")
+public class GetTransactionListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -24,10 +25,10 @@ public class GetAllLoanListServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-        List<Loan> loanList = systemEngine.getDatabase().getLoanList();
+        List<Transaction> TransactionList = systemEngine.getClientTransactionsList(usernameFromSession);
 
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(loanList);
+        String jsonResponse = gson.toJson(TransactionList);
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);

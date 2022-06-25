@@ -88,7 +88,6 @@ public class CustomerMainBodyController {
                 }
         );
         customerPaymentBodyController.bindProperties(loadTextAfterYazChange);
-        customerScrambleBodyController.initialize();
         resetFields();
     }
 

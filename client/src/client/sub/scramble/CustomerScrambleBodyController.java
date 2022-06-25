@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
@@ -19,18 +20,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import loan.Loan;
 import loan.enums.eLoanStatus;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import servletDTO.LoanInformationObj;
 import servletDTO.RelevantLoansRequestObj;
 import servletDTO.ScrambleRequestObj;
+import util.AddCheckBoxCell;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -45,8 +46,8 @@ public class CustomerScrambleBodyController {
 
     private CustomerMainBodyController customerMainBodyController;
     private Set<String> allCategoriesList;
-    private ObservableList<Loan> userFilteredLoanList = FXCollections.observableArrayList();
-    private ObservableList<Loan> CheckBoxLoanList = FXCollections.observableArrayList();
+    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
+    private ObservableList<LoanInformationObj> CheckBoxLoanList = FXCollections.observableArrayList();
 
     private List<String> chosenCategories;
     private ObservableList<String> existChosenCategories = FXCollections.observableArrayList();
@@ -104,45 +105,45 @@ public class CustomerScrambleBodyController {
     private ListView<String> userChoiceCategoriesListView;
 
     @FXML
-    private TableColumn<Loan, Double> ColumnAmount;
+    private TableColumn<LoanInformationObj, Double> ColumnAmount;
 
     @FXML
-    private TableColumn<Loan, String> ColumnCategory;
+    private TableColumn<LoanInformationObj, String> ColumnCategory;
 
     @FXML
-    private TableColumn<Loan, String> ColumnId;
+    private TableColumn<LoanInformationObj, String> ColumnId;
 
     @FXML
-    private TableColumn<Loan, Double> ColumnInterest;
+    private TableColumn<LoanInformationObj, Double> ColumnInterest;
 
     @FXML
-    private TableColumn<Loan, String> ColumnName;
+    private TableColumn<LoanInformationObj, String> ColumnName;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnPayEvery;
+    private TableColumn<LoanInformationObj, Integer> ColumnPayEvery;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> ColumnStatus;
+    private TableColumn<LoanInformationObj, eLoanStatus> ColumnStatus;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnTotalYaz;
+    private TableColumn<LoanInformationObj, Integer> ColumnTotalYaz;
+
+//    @FXML
+//    private TableColumn<LoanInformationObj, CheckBox> ColumnCheckBox;
 
     @FXML
-    private TableColumn<Loan, String> ColumnCheckBox;
+    private TableColumn<LoanInformationObj, Double> TotalLoanCost;
 
     @FXML
-    private TableColumn<Loan, Double> TotalLoanCost;
-
-    @FXML
-    private TableView<Loan> ReleventLoansTable;
+    private TableView<LoanInformationObj> ReleventLoansTable;
 
 
     @FXML
     void activateActivateScrambleButton(ActionEvent event) {
         int num = 0;
-        ObservableList<Loan> items = ReleventLoansTable.getItems();
+        ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
         clientName = customerMainBodyController.getCustomerName();
-        for (Loan loan : items) {
+        for (LoanInformationObj loan : items) {
 /*            if(loan.getSelect().isSelected()){
                 CheckBoxLoanList.add(loan);
                 num++;*/
@@ -199,7 +200,6 @@ public class CustomerScrambleBodyController {
                             alert.showAndWait();
                             resetFields();
                             resetRelevantLoansTable();
-                            //customerMainBodyController.loadData();
 
                         });
                     }
@@ -280,7 +280,7 @@ public class CustomerScrambleBodyController {
         }
         clientName = customerMainBodyController.getCurrClient().getFullName();
         List<String> n = existChosenCategories;
-        RelevantLoansRequestObj requestObj = new  RelevantLoansRequestObj(clientName,n,minInterest,minYaz, maxOpenLoans,maxOwnership) ;
+        RelevantLoansRequestObj requestObj = new  RelevantLoansRequestObj(clientName,amount,n,minInterest,minYaz, maxOpenLoans,maxOwnership) ;
 
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(requestObj,RelevantLoansRequestObj.class);
 
@@ -313,10 +313,10 @@ public class CustomerScrambleBodyController {
                 Platform.runLater(() -> {
                     try {
                         if (response.code() == 200) {
-                            String jsonOfClientString = response.body().string();
-                            response.body().close();
-                            ObservableList<Loan> filterLoans = FXCollections.observableArrayList();
-                            Loan[] responseLoans = new Gson().fromJson(jsonOfClientString, Loan[].class);
+                            String jsonOfClientString = Objects.requireNonNull(response.body()).string();
+                            Objects.requireNonNull(response.body()).close();
+                            ObservableList<LoanInformationObj> filterLoans = FXCollections.observableArrayList();
+                            LoanInformationObj[] responseLoans = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
                             filterLoans.addAll(responseLoans);
                             Region veil = new Region();
                             veil.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4)");
@@ -324,8 +324,6 @@ public class CustomerScrambleBodyController {
                             ProgressIndicator p = new ProgressIndicator();
                             p.setMaxSize(140, 140);
                             p.setStyle(" -fx-progress-color: orange;");
-
-
                             ReleventLoansTable.setItems(filterLoans);
 
                         }
@@ -353,18 +351,21 @@ public class CustomerScrambleBodyController {
     }
 
     public void initialize() {
+
         allCategoriesList = new HashSet<>();
         getAllCategories();
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
-        TotalLoanCost.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
-        ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        ColumnCheckBox.setCellValueFactory(new PropertyValueFactory<Loan, String>("select"));
-        ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        ColumnName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
-        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
-        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
-        ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        resetFields();
+        AddCheckBoxCell.addCheckBoxCellScramble(ReleventLoansTable);
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("loanOriginalDepth"));
+        TotalLoanCost.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("interestPercentagePerTimeUnit"));
+        ColumnCategory.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanCategory"));
+        ColumnId.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("loanID"));
+        ColumnName.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, String>("borrowerName"));
+        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("paymentFrequency"));
+        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("originalLoanTimeFrame"));
+        ColumnStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
+
 
     }
 
@@ -404,7 +405,6 @@ public class CustomerScrambleBodyController {
                             response.body().close();
                             String[] cat = new Gson().fromJson(jsonOfClientString, String[].class);
                             allCategoriesList.clear();
-                            categoriesOptionsListView.getItems().clear();
                             allCategoriesList.addAll(Arrays.asList(cat));
                             categoriesOptionsListView.getItems().addAll(allCategoriesList);
 
@@ -420,8 +420,8 @@ public class CustomerScrambleBodyController {
     }
 
     public void resetFields() {
-        ObservableList<Loan> items = ReleventLoansTable.getItems();
-        for (Loan loan : items) {
+        ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
+        for (LoanInformationObj loan : items) {
             loan.setSelect(false);
         }
         amountToInvestTextField.clear();
@@ -430,6 +430,9 @@ public class CustomerScrambleBodyController {
         minimumInterestTextField.clear();
         minimumYazTextField.clear();
         userChoiceCategoriesListView.getItems().removeAll();
+        categoriesOptionsListView.getItems().clear();
+        userChoiceCategoriesListView.getItems().clear();
+        getAllCategories();
     }
 
     public void resetRelevantLoansTable() {
