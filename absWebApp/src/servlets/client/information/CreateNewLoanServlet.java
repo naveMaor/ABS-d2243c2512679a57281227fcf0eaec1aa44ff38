@@ -1,4 +1,4 @@
-package servlets;
+package servlets.client.information;
 
 import engine.Engine;
 import jakarta.servlet.ServletException;

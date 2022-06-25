@@ -467,7 +467,7 @@ public class Engine {
                                     }
         }
 
-        return result;
+        return tmp;
     }
 
 
