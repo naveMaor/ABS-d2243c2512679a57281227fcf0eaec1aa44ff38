@@ -1,4 +1,4 @@
-package servlets;
+package servlets.client.information;
 
 import data.Database;
 import engine.Engine;

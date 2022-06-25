@@ -56,7 +56,22 @@ public class Database implements Serializable {
             result.addAll(loanList);
         }
         return result;
+
     }
+
+    public Loan getLoanById(String loanId) {
+        List<Loan> loansList = new ArrayList<>(getLoanList());
+        for(Loan loan: loansList)
+        {
+            if(loanId.equals(loan.getLoanID()))
+            {
+                return loan;
+            }
+        }
+        return null;
+
+    }
+
     public void addLoanToLoanMap(Loan newLoanNode){
             String category= newLoanNode.getLoanCategory();
             if(loanMapByCategory.containsKey(category))

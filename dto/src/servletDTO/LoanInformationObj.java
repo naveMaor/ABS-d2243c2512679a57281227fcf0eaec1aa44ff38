@@ -10,13 +10,63 @@ public class LoanInformationObj implements Serializable {
     private eLoanStatus status;
     private String loanID;
     private String borrowerName;
+    private Double loanOriginalDepth;
+    private Double totalLoanCostInterestPlusOriginalDepth;
+    private Double interestPercentagePerTimeUnit;
+    private boolean select;
+    private Integer paymentFrequency;
+    private Integer originalLoanTimeFrame;
 
-    public LoanInformationObj(String LoanId,String borrowerName, String loanCategory, eLoanStatus status) {
+    public LoanInformationObj(String loanCategory, eLoanStatus status, String loanID, String borrowerName, Double loanOriginalDepth, Double totalLoanCostInterestPlusOriginalDepth, Double interestPercentagePerTimeUnit, boolean select, Integer paymentFrequency, Integer originalLoanTimeFrame) {
+        this.loanCategory = loanCategory;
+        this.status = status;
+        this.loanID = loanID;
+        this.borrowerName = borrowerName;
+        this.loanOriginalDepth = loanOriginalDepth;
+        this.totalLoanCostInterestPlusOriginalDepth = totalLoanCostInterestPlusOriginalDepth;
+        this.interestPercentagePerTimeUnit = interestPercentagePerTimeUnit;
+        this.select = select;
+        this.paymentFrequency = paymentFrequency;
+        this.originalLoanTimeFrame = originalLoanTimeFrame;
+    }
+
+    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status) {
         this.loanID = LoanId;
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.status = status;
 
+    }
+
+    public LoanInformationObj(Loan loan) {
+        this.borrowerName = loan.getBorrowerName();
+        this.loanCategory = loan.getLoanCategory();
+        this.loanID = loan.getLoanID();
+        this.status = loan.getStatus();
+    }
+
+    public Double getLoanOriginalDepth() {
+        return loanOriginalDepth;
+    }
+
+    public Double getTotalLoanCostInterestPlusOriginalDepth() {
+        return totalLoanCostInterestPlusOriginalDepth;
+    }
+
+    public Double getInterestPercentagePerTimeUnit() {
+        return interestPercentagePerTimeUnit;
+    }
+
+    public Boolean getSelect() {
+        return select;
+    }
+
+    public Integer getPaymentFrequency() {
+        return paymentFrequency;
+    }
+
+    public Integer getOriginalLoanTimeFrame() {
+        return originalLoanTimeFrame;
     }
 
     public String getLoanID() {
@@ -51,11 +101,7 @@ public class LoanInformationObj implements Serializable {
         this.borrowerName = borrowerName;
     }
 
-
-    public LoanInformationObj(Loan loan) {
-        this.borrowerName = loan.getBorrowerName();
-        this.loanCategory = loan.getLoanCategory();
-        this.loanID = loan.getLoanID();
-        this.status = loan.getStatus();
+    public void setSelect(boolean b) {
+        select= b;
     }
 }
