@@ -33,7 +33,7 @@ public class payPartialPaymentServlet extends HttpServlet {
         //stam
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-        Scanner s = new Scanner(request.getInputStream(), "UTF-8");
+        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");;
         String reqBodyAsString = s.hasNext() ? s.next() : null;
 
         //create tmp variables

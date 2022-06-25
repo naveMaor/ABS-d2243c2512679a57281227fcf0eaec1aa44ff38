@@ -63,7 +63,7 @@
                   <Label layoutX="288.0" layoutY="8.0" prefHeight="18.0" prefWidth="117.0" text="Available categories" />
                   <Label layoutX="32.0" layoutY="70.0" text="Min interest" />
                   <Label layoutX="43.0" layoutY="133.0" text="Min Yaz" />
-                  <Button layoutX="476.0" layoutY="196.0" mnemonicParsing="false" onAction="#activateActivateScrambleButton" prefHeight="52.0" style="-fx-border-color: grey;" text="Sramble selected" />
+                  <Button layoutX="476.0" layoutY="196.0" mnemonicParsing="false" onAction="#activateScrambleButton" prefHeight="52.0" style="-fx-border-color: grey;" text="Sramble selected" />
                   <ScrollPane layoutX="287.0" layoutY="28.0" prefHeight="150.0" prefWidth="124.0">
                      <content>
                         <ListView fx:id="categoriesOptionsListView" prefHeight="147.0" prefWidth="121.0" style="-fx-border-color: grey;" />
