@@ -17,6 +17,10 @@ public class LoanInformationObj implements Serializable {
     private Integer paymentFrequency;
     private Integer originalLoanTimeFrame;
 
+    public void setSelect(boolean select) {
+        this.select = select;
+    }
+
     public LoanInformationObj(String loanCategory, eLoanStatus status, String loanID, String borrowerName, Double loanOriginalDepth, Double totalLoanCostInterestPlusOriginalDepth, Double interestPercentagePerTimeUnit, boolean select, Integer paymentFrequency, Integer originalLoanTimeFrame) {
         this.loanCategory = loanCategory;
         this.status = status;
@@ -101,7 +105,4 @@ public class LoanInformationObj implements Serializable {
         this.borrowerName = borrowerName;
     }
 
-    public void setSelect(boolean b) {
-        select= b;
-    }
 }

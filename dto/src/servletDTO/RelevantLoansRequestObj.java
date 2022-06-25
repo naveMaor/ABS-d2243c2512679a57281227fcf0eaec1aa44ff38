@@ -9,7 +9,7 @@ import java.util.List;
 public class RelevantLoansRequestObj {
 
     private String clientName;
-    private int amountToInvest;
+    private int amount;
     private List<String> ChosenCategories;
     private int minInterest;
     private int minYaz;
@@ -17,7 +17,7 @@ public class RelevantLoansRequestObj {
     private int maxOwnership;
 
     public int getAmountToInvest() {
-        return amountToInvest;
+        return amount;
     }
 
     public RelevantLoansRequestObj(String clientName, int amountToInvest, List<String> chosenCategories, int minInterest, int minYaz, int maxOpenLoans, int maxOwnership) {
@@ -27,7 +27,7 @@ public class RelevantLoansRequestObj {
         this.minYaz = minYaz;
         this.maxOpenLoans = maxOpenLoans;
         this.maxOwnership = maxOwnership;
-        this.amountToInvest = amountToInvest;
+        this.amount=amountToInvest;
     }
 
 
