@@ -13,6 +13,7 @@ public class ClientDTOforServlet {
     private Account myAccount;
     private List<LoanInformationObj> clientAsLenderLoanList = new ArrayList<>();//
     private List<LoanInformationObj> clientAsBorrowLoanList = new ArrayList<>();//
+    private String notification;
 
     public String getFullName() {
         return fullName;
@@ -55,5 +56,13 @@ public class ClientDTOforServlet {
         for (Loan loan:client.getClientAsBorrowLoanList()){
             this.clientAsBorrowLoanList.add(new LoanInformationObj(loan));
         }
+    }
+
+    public String getNotification() {
+        return notification;
+    }
+
+    public void setNotification(String notification) {
+        this.notification = notification;
     }
 }

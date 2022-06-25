@@ -1,4 +1,4 @@
-package servlets;
+package servlets.information;
 
 import com.google.gson.Gson;
 import engine.Engine;
