@@ -74,7 +74,7 @@ public class CustomerMainBodyController {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
                         //todo: load table data here
-                        //customerPaymentBodyController.loadLoanTableData();
+                        customerPaymentBodyController.loadLoanTableData();
                     }
                 }
         );
@@ -137,7 +137,7 @@ public class CustomerMainBodyController {
                 customerInformationBodyController.initializeClientTable();
                 customerInformationBodyController.loadTransactionsTable();
                 //todo:load table data here
-                //customerPaymentBodyController.loadLoanTableData();
+                customerPaymentBodyController.loadLoanTableData();
         }
     }
 

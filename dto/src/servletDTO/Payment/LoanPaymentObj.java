@@ -13,7 +13,7 @@ public class LoanPaymentObj implements Serializable {
     private String loanID;
     private int nextYazToPay;
     private eLoanStatus status;
-    private final BooleanProperty select = new SimpleBooleanProperty();
+    private boolean select =false;
 
 
     public double getNextExpectedPaymentAmountDataMember() {
@@ -64,18 +64,6 @@ public class LoanPaymentObj implements Serializable {
         this.status = status;
     }
 
-    public boolean isSelect() {
-        return select.get();
-    }
-
-    public BooleanProperty selectProperty() {
-        return select;
-    }
-
-    public void setSelect(boolean select) {
-        this.select.set(select);
-    }
-
 
     public LoanPaymentObj(Loan loan) {
         this.nextExpectedPaymentAmountDataMember = loan.getNextExpectedPaymentAmountDataMember();
@@ -83,5 +71,14 @@ public class LoanPaymentObj implements Serializable {
         this.loanID = loan.getLoanID();
         this.nextYazToPay = loan.getNextYazToPay();
         this.status = loan.getStatus();
+    }
+
+
+    public boolean isSelect() {
+        return select;
+    }
+
+    public void setSelect(Boolean bool){
+        this.select =bool;
     }
 }

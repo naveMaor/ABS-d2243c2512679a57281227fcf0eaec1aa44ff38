@@ -28,7 +28,6 @@ public class payEntirePaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
-        //stam
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
         Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");;

@@ -223,7 +223,7 @@ public class CustomerPaymentBodyController {
         int num = 0;
         for (LoanPaymentObj loan:items){
             if (((loan.getNextExpectedPaymentAmountDataMember() > 0) && (loan.getNextYazToPay() == 0)) || loan.getStatus() == eLoanStatus.RISK) {
-                if (loan.selectProperty().getValue()) {
+                if (loan.isSelect()) {
                     CheckBoxLoanList.add(loan.getLoanID());
                     num++;
                 }
@@ -241,7 +241,7 @@ public class CustomerPaymentBodyController {
             }
         }
         for (LoanPaymentObj loanPaymentObj:items) {
-            loanPaymentObj.selectProperty().setValue(false);
+            loanPaymentObj.setSelect(false);
         }
         CheckBoxLoanList.clear();
     }
