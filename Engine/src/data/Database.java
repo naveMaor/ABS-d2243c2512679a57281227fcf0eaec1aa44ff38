@@ -25,7 +25,6 @@ public class Database implements Serializable {
         return single_instance;
     }
 
-
     private Map <String, List<Loan>> loanMapByCategory = new HashMap<>();
     private Map<String, Client> clientMap =new HashMap<>();
 
@@ -35,6 +34,7 @@ public class Database implements Serializable {
     public void setClientMap(Map<String, Client> clientMap) {
         clientMap = clientMap;
     }
+
 
     public Map<String, List<Loan>> getLoanMapByCategory() {
         return loanMapByCategory;
