@@ -1,16 +1,22 @@
 package util;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 
-public class AddCheckBoxCell {
+import java.util.function.Consumer;
+
+public class AddJavaFXCell {
+
+    private BooleanProperty booleanProperty =new SimpleBooleanProperty();
 
     public static void addCheckBoxCellPayment(TableView<?> LoansTable){
         TableColumn select = new TableColumn("select");
@@ -84,6 +90,47 @@ public class AddCheckBoxCell {
 
     }
 
+
+    public static void addSellButtonToTable(TableView<LoanInformationObj> lenderTable, Consumer<LoanInformationObj> SellLoan) {
+        TableColumn<LoanInformationObj, Void> colBtn = new TableColumn("Sell");
+        Button Sellbtn;
+        Callback<TableColumn<LoanInformationObj, Void>, TableCell<LoanInformationObj, Void>> cellFactory = new Callback<TableColumn<LoanInformationObj, Void>, TableCell<LoanInformationObj, Void>>() {
+            @Override
+            public TableCell<LoanInformationObj, Void> call(final TableColumn<LoanInformationObj, Void> param) {
+                final TableCell<LoanInformationObj, Void> cell = new TableCell<LoanInformationObj, Void>() {
+
+                    private Button btn = new Button("Action");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            LoanInformationObj data = getTableView().getItems().get(getIndex());
+                            if(data.isOnSale()){
+                                btn.setDisable(true);
+                            }
+                            else {
+                                SellLoan.accept(data);
+                                btn.setDisable(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        colBtn.setCellFactory(cellFactory);
+
+        lenderTable.getColumns().add(colBtn);
+    }
 
 
 }
