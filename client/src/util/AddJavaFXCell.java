@@ -103,13 +103,8 @@ public class AddJavaFXCell {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             LoanInformationObj data = getTableView().getItems().get(getIndex());
-                            if(data.isOnSale()){
-                                btn.setDisable(true);
-                            }
-                            else {
                                 SellLoan.accept(data);
                                 btn.setDisable(true);
-                            }
                         });
                     }
 
