@@ -16,6 +16,8 @@ public class LoanInformationObj implements Serializable {
     private boolean select;
     private Integer paymentFrequency;
     private Integer originalLoanTimeFrame;
+    private double totalRemainingFund;
+    private boolean onSale;
 
     public void setSelect(boolean select) {
         this.select = select;
@@ -34,12 +36,13 @@ public class LoanInformationObj implements Serializable {
         this.originalLoanTimeFrame = originalLoanTimeFrame;
     }
 
-    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status) {
+    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double totalRemainingFund, boolean onSale) {
         this.loanID = LoanId;
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.status = status;
-
+        this.totalRemainingFund = totalRemainingFund;
+        this.onSale = onSale;
     }
 
     public LoanInformationObj(Loan loan) {
@@ -47,6 +50,8 @@ public class LoanInformationObj implements Serializable {
         this.loanCategory = loan.getLoanCategory();
         this.loanID = loan.getLoanID();
         this.status = loan.getStatus();
+        this.totalRemainingFund = loan.getTotalRemainingFund();
+        this.onSale = loan.isOnSale();
     }
 
 
@@ -115,5 +120,23 @@ public class LoanInformationObj implements Serializable {
     public void setBorrowerName(String borrowerName) {
         this.borrowerName = borrowerName;
     }
+
+
+    public double getTotalRemainingFund() {
+        return totalRemainingFund;
+    }
+
+    public void setTotalRemainingFund(double totalRemainingFund) {
+        this.totalRemainingFund = totalRemainingFund;
+    }
+
+    public boolean isOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(boolean onSale) {
+        this.onSale = onSale;
+    }
+
 
 }

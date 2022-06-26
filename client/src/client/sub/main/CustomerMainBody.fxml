@@ -46,7 +46,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab onSelectionChanged="#initialize" text="Buy loan">
+                  <Tab fx:id="buyLoanTabPane" text="Buy loan">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>

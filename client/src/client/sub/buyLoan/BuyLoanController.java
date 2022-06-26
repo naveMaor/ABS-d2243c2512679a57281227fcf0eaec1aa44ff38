@@ -53,7 +53,7 @@ public class BuyLoanController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
-        addSellButton();
+        addBuyButton();
     }
 
     public void loadTableData(){
@@ -68,7 +68,7 @@ public class BuyLoanController {
 
     }
 
-    private void addSellButton(){
+    private void addBuyButton(){
         buyLoanRequest();
     }
 
