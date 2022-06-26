@@ -150,7 +150,6 @@ public class transactionsController {
 
     private void createTransactionRequest(int amount){
         String finalUrl = HttpUrl
-                //todo parameter amount
                 .parse(Constants.CREATE_TRANSACTION)
                 .newBuilder()
                 .addQueryParameter("amount", String.valueOf(amount))
@@ -161,7 +160,6 @@ public class transactionsController {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
         HttpClientUtil.runAsync(request, new Callback() {
 
