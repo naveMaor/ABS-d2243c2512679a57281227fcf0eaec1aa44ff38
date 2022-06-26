@@ -6,8 +6,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.sub.buyLoan.BuyLoanController">
    <children>
       <TableView fx:id="ReleventLoansTable" editable="true" layoutX="10.0" layoutY="10.0" prefHeight="200.0">
          <columns>

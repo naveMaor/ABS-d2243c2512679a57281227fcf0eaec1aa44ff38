@@ -5,8 +5,8 @@ import Money.operations.Transaction;
 import client.main.ClientMainController;
 import client.sub.Information.CustomerInformationBodyCont;
 import client.sub.Payment.CustomerPaymentBodyController;
+import client.sub.buyLoan.BuyLoanController;
 import client.sub.scramble.CustomerScrambleBodyController;
-import customes.Client;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,6 +34,9 @@ public class CustomerMainBodyController {
 
     @FXML private AnchorPane customerPaymentBody;
     @FXML private CustomerPaymentBodyController customerPaymentBodyController;
+
+    @FXML private AnchorPane buyLoan;
+    @FXML private BuyLoanController buyLoanController;
 
     @FXML private Tab informationTabPane;
     @FXML private Tab paymentTabPane;
@@ -68,6 +71,7 @@ public class CustomerMainBodyController {
             System.out.println(customerInformationBodyController);
             customerScrambleBodyController.setMainController(this);
             customerPaymentBodyController.setMainController(this);
+            buyLoanController.setMainController(this);
         }
         paymentTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<Tab>() {
