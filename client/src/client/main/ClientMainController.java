@@ -55,6 +55,19 @@ public class ClientMainController {
     private ClientDTOforServlet currClient;
     private NewLoanWindowController newLoanWindowController;
 
+    @FXML
+    private Label welcomeLable;
+    @FXML
+    private Button NewLoan;
+    @FXML
+    private Label currentYazLable;
+
+
+
+    private StringProperty currentUserName = new SimpleStringProperty();
+    private StringProperty currentYaz = new SimpleStringProperty();
+
+
     public void NewManualLoanButton(ActionEvent actionEvent) {
         Stage Newstage = new Stage();
         Newstage.setMinHeight(600);
@@ -79,20 +92,11 @@ public class ClientMainController {
     }
 
 
-    public enum MessageType{Error,Successfully,Information};
-
-    private StringProperty currentUserName = new SimpleStringProperty();
-
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
 
-    @FXML
-    private Label welcomeLable;
-    @FXML
-    private Button NewLoan;
 
 
     Node header ;
@@ -112,6 +116,7 @@ public class ClientMainController {
         loginComponentController.setMainController(this);
         customerMainBodyController.setMainController(this);
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ",currentUserName));
+        currentYazLable.textProperty().bind(Bindings.concat(currentYaz));
 
         //customerMainBody.setFitToWidth(true); // tried to set the node to middle of the screen
         //CustomerMainBody.setFitToHeight(true);
@@ -119,6 +124,10 @@ public class ClientMainController {
 
     public void updateUserName(String userName) {
         currentUserName.set(userName);
+    }
+
+    public void updateYaz(int yaz){
+        currentYaz.set(String.valueOf(yaz));
     }
 
     public void switchToClientDesktop(){

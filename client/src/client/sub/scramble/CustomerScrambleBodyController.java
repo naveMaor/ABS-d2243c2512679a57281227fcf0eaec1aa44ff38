@@ -384,7 +384,7 @@ public class CustomerScrambleBodyController {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                        System.out.println("failed to create transaction")
+                        System.out.println("failed to get categories from server")
                 );
             }
 
