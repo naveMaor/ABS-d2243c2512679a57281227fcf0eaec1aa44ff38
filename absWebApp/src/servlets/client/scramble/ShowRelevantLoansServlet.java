@@ -26,8 +26,8 @@ public class ShowRelevantLoansServlet extends HttpServlet {
         response.setContentType("application/json");
         String errorResponse = "";
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");;
-        String reqBodyAsString = s.hasNext() ? s.next() : null;
+        Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
+        String reqBodyAsString = s.hasNext() ? s.next() : "";
         RelevantLoansRequestObj scrambleRequest = new Gson().fromJson(reqBodyAsString, RelevantLoansRequestObj.class);
 
 

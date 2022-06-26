@@ -31,7 +31,7 @@ public class ScrambleLoansServlet extends HttpServlet {
         response.setContentType("application/json");
         String errorResponse = "";
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-        Scanner s = new Scanner(request.getInputStream(), "UTF-8").useDelimiter("\\A");
+        Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next():"" ;
         ScrambleRequestObj scrambleRequest = new Gson().fromJson(reqBodyAsString, ScrambleRequestObj.class);
 
