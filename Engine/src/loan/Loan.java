@@ -59,9 +59,11 @@ public class Loan implements Serializable {
 
     //remaining Loan data:
     private double totalRemainingLoan = totalLoanCostInterestPlusOriginalDepth;//fund+interest
+    private double totalRemainingFund;
 
     private Account loanAccount;
     private boolean select = false;
+
 
 /*    private CheckBox select;
     private Button infoButton;*/
@@ -84,6 +86,7 @@ public class Loan implements Serializable {
         this.originalInterest = calculateInterest();
         this.totalLoanCostInterestPlusOriginalDepth = this.originalInterest + this.loanOriginalDepth;
         this.totalRemainingLoan = this.totalLoanCostInterestPlusOriginalDepth;
+        this.totalRemainingFund = loanOriginalDepth;
         this.loanAccount = new Account(Objects.hash(this.loanID) & 0xfffffff, 0);
         this.intristPerPayment = calculateInristPerPayment();
         this.deviation = new Deviation();
@@ -217,6 +220,8 @@ public class Loan implements Serializable {
         return this.originalInterest / (originalLoanTimeFrame / paymentFrequency);
     }
 
+
+
     public Deviation getDeviation() {
         return deviation;
     }
@@ -245,9 +250,11 @@ public class Loan implements Serializable {
         return nextYazToPay;
     }
 
-/*    public CheckBox getSelect() {
-        return select;
-    }*/
+    public double getTotalRemainingFund() {
+        return totalRemainingFund;
+    }
+
+
 
     public boolean getSelect() {
         return select;
@@ -378,6 +385,7 @@ public class Loan implements Serializable {
         totalRemainingLoan -= (interest + fund);
         payedInterest += interest;
         payedFund += fund;
+        totalRemainingFund =  loanOriginalDepth-payedFund;
     }
 
     /**
@@ -479,9 +487,15 @@ public class Loan implements Serializable {
         return (int) ((totalRaisedDeposit / loanOriginalDepth) * 100);
     }
 
-    public int calculateClientLoanOwningPercentage(Client client) {
+    public int calculateClientLoanOwningPercentage(String clientName) {
+        Client client = engine.getDatabase().getClientByname(clientName);
         double clientOwningSum = -1;
+
         for (Lenders lender : lendersList) {
+            //plaster
+            if(lender==null){
+                return -2;
+            }
             if (lender.getFullName().equals(client.getFullName())) {
                 clientOwningSum = lender.getDeposit();
             }

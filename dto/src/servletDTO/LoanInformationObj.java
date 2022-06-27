@@ -1,5 +1,6 @@
 package servletDTO;
 
+import customes.Client;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 
@@ -16,6 +17,8 @@ public class LoanInformationObj implements Serializable {
     private boolean select;
     private Integer paymentFrequency;
     private Integer originalLoanTimeFrame;
+    private double price;
+    private boolean onSale;
 
     public void setSelect(boolean select) {
         this.select = select;
@@ -34,19 +37,23 @@ public class LoanInformationObj implements Serializable {
         this.originalLoanTimeFrame = originalLoanTimeFrame;
     }
 
-    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status) {
+    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double price) {
         this.loanID = LoanId;
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.status = status;
-
+        this.price = price;
     }
 
-    public LoanInformationObj(Loan loan) {
+    public LoanInformationObj(Loan loan, String client) {
         this.borrowerName = loan.getBorrowerName();
         this.loanCategory = loan.getLoanCategory();
         this.loanID = loan.getLoanID();
         this.status = loan.getStatus();
+        //this.onSale = loan.isOnSale();
+        if(loan.calculateClientLoanOwningPercentage(client)!=-2){
+            this.price = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
+        }
     }
 
 
@@ -115,5 +122,22 @@ public class LoanInformationObj implements Serializable {
     public void setBorrowerName(String borrowerName) {
         this.borrowerName = borrowerName;
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public boolean isOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(boolean onSale) {
+        this.onSale = onSale;
+    }
+
 
 }

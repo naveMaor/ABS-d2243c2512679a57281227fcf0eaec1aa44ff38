@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import servletDTO.LoanInformationObj;
 import servletDTO.RelevantLoansRequestObj;
 import servletDTO.ScrambleRequestObj;
-import util.AddCheckBoxCell;
+import util.AddJavaFXCell;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -352,7 +352,7 @@ public class CustomerScrambleBodyController {
         allCategoriesList = new HashSet<>();
         getAllCategories();
         resetFields();
-        AddCheckBoxCell.addCheckBoxCellScramble(ReleventLoansTable);
+        AddJavaFXCell.addCheckBoxCellScramble(ReleventLoansTable);
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("loanOriginalDepth"));
         TotalLoanCost.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("totalLoanCostInterestPlusOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("interestPercentagePerTimeUnit"));

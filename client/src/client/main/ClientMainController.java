@@ -4,6 +4,7 @@ import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import common.LoginController;
+
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -29,20 +30,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
 
+
 import java.io.Closeable;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -283,11 +277,13 @@ public class ClientMainController implements Closeable {
                 //   return false;
             }
         });
+
     }
+}
+
 
     public void createClientDTORequest() throws IOException {
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.GET_CLIENT_DTO)
                 .newBuilder()
                 .build()

@@ -1,16 +1,24 @@
 package util;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 
-public class AddCheckBoxCell {
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+public class AddJavaFXCell {
+
+    private BooleanProperty booleanProperty =new SimpleBooleanProperty();
 
     public static void addCheckBoxCellPayment(TableView<?> LoansTable){
         TableColumn select = new TableColumn("select");
@@ -82,6 +90,42 @@ public class AddCheckBoxCell {
         });
         LoansTable.getColumns().add(0, select);
 
+    }
+
+
+    public static <T> void addButtonToTable(TableView<T> lenderTable, Consumer<T> SellBuyLoan, String action) {
+        TableColumn<T, Void> colBtn = new TableColumn(action);
+
+        Callback<TableColumn<T, Void>, TableCell<T, Void>> cellFactory = new Callback<TableColumn<T, Void>, TableCell<T, Void>>() {
+            @Override
+            public TableCell<T, Void> call(final TableColumn<T, Void> param) {
+                final TableCell<T, Void> cell = new TableCell<T, Void>() {
+
+                    private Button btn = new Button(action);
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            T data = getTableView().getItems().get(getIndex());
+                            SellBuyLoan.accept(data);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        colBtn.setCellFactory(cellFactory);
+
+        lenderTable.getColumns().add(colBtn);
     }
 
 

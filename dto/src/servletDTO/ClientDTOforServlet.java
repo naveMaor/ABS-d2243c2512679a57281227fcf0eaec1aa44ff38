@@ -51,10 +51,10 @@ public class ClientDTOforServlet {
         this.fullName = client.getFullName();
         this.myAccount = client.getMyAccount();
         for (Loan loan:client.getClientAsLenderLoanList()){
-            this.clientAsBorrowLoanList.add(new LoanInformationObj(loan));
+            this.clientAsLenderLoanList.add(new LoanInformationObj(loan,client.getFullName()));
         }
         for (Loan loan:client.getClientAsBorrowLoanList()){
-            this.clientAsBorrowLoanList.add(new LoanInformationObj(loan));
+            this.clientAsBorrowLoanList.add(new LoanInformationObj(loan,client.getFullName()));
         }
     }
 

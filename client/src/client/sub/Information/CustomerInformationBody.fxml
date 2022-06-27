@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.effect.Glow?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
+
 <ScrollPane fx:id="customerInformationBody" style="-fx-background-color: #e6fffe;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.sub.Information.CustomerInformationBodyCont">
    <content>
       <BorderPane style="-fx-background-color: #d1e5ff;">
@@ -43,6 +49,7 @@
                             <TableColumn fx:id="lenderBorrowerName" prefWidth="75.0" text="Borrower name" />
                               <TableColumn fx:id="lenderLoanCat" prefWidth="75.0" text="Loan category" />
                               <TableColumn fx:id="lenderLoanStatus" prefWidth="75.0" text="Status" />
+                              <TableColumn fx:id="sellPrice" prefWidth="75.0" text="Price sell" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

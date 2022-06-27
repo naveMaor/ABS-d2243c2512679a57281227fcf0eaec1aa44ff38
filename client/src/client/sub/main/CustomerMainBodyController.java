@@ -40,6 +40,7 @@ public class CustomerMainBodyController {
 
     @FXML private Tab informationTabPane;
     @FXML private Tab paymentTabPane;
+    @FXML private Tab buyLoanTabPane;
 
 
 
@@ -77,8 +78,15 @@ public class CustomerMainBodyController {
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        //todo: load table data here
                         customerPaymentBodyController.loadLoanTableData();
+                    }
+                }
+        );
+        buyLoanTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                        buyLoanController.loadTableData();
                     }
                 }
         );
@@ -140,8 +148,8 @@ public class CustomerMainBodyController {
         synchronized (this) {
                 customerInformationBodyController.initializeClientTable();
                 customerInformationBodyController.loadTransactionsTable();
-                //todo:load table data here
                 customerPaymentBodyController.loadLoanTableData();
+                buyLoanController.loadTableData();
         }
     }
 

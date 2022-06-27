@@ -3,8 +3,6 @@ package client.sub.Information;
 import com.google.gson.Gson;
 import client.sub.Information.transactionsTableView.transactionsController;
 import client.sub.main.CustomerMainBodyController;
-import customes.Client;
-import exceptions.BalanceException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,20 +11,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import loan.Loan;
 import loan.enums.eLoanStatus;
-import engine.Engine;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import servletDTO.LoanInformationObj;
+import util.AddJavaFXCell;
 import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomerInformationBodyCont {
 
@@ -59,6 +54,9 @@ public class CustomerInformationBodyCont {
     private TableColumn<LoanInformationObj, String> lenderBorrowerName;
 
     @FXML
+    private TableColumn<LoanInformationObj, Double> sellPrice;
+
+    @FXML
     private TableView<LoanInformationObj> lenderTable;
 
     @FXML
@@ -77,6 +75,7 @@ public class CustomerInformationBodyCont {
         this.customerMainBodyController = customerMainBodyController;
     }
 
+
     @FXML public void initialize() {
         clientAsLenderLoanList = FXCollections.observableArrayList();
         clientAsBorrowLoanList = FXCollections.observableArrayList();
@@ -90,7 +89,12 @@ public class CustomerInformationBodyCont {
         lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<>("borrowerName"));
         borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        sellPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        AddJavaFXCell.addButtonToTable(lenderTable,
+                this::putLoanOnSaleRequest,
+                "Sell");
     }
+
 
 
     public SimpleStringProperty customerNameProperty() {
@@ -127,7 +131,6 @@ public class CustomerInformationBodyCont {
     private void createLoansAsLenderRequest(){
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.LOANS_AS_LENDER)
                 .newBuilder()
                 .build()
@@ -174,7 +177,6 @@ public class CustomerInformationBodyCont {
     private void createLoansAsBorrowerRequest(){
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.LOANS_AS_BORROW)
                 .newBuilder()
                 .build()
@@ -217,9 +219,63 @@ public class CustomerInformationBodyCont {
         });
     }
 
-
-
     public ClientDTOforServlet getCurrClient(){
         return customerMainBodyController.getCurrClient();
     }
+
+    private void putLoanOnSaleRequest(LoanInformationObj loan){
+
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(),String.class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.PUT_LOAN_ON_SELL)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url put loan on sale")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Platform.runLater(() -> {
+                    String jsonOfClientString = null;
+                    try {
+                        jsonOfClientString = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    response.body().close();
+
+                    if(response.code()==200){
+                        customerMainBodyController.loadData();
+                        loan.setOnSale(true);
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"loan "+loan.getLoanID()+"is now on sale!");
+                        alert.showAndWait();
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                        alert.showAndWait();
+                    }
+                });
+            }
+
+        });
+    }
+
+
 }

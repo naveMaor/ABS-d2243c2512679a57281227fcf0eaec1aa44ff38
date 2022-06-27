@@ -2,7 +2,6 @@ package client.sub.Payment;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
-import customes.Client;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -16,13 +15,11 @@ import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
-import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 import servletDTO.Payment.PartialPaymentObj;
-import time.Timeline;
 import engine.Engine;
 import util.Constants;
-import util.AddCheckBoxCell;
+import util.AddJavaFXCell;
 import util.HttpClientUtil;
 
 import java.io.IOException;
@@ -328,7 +325,7 @@ public class CustomerPaymentBodyController {
         status.setCellValueFactory(new PropertyValueFactory<LoanPaymentObj, eLoanStatus>("status"));
 
 
-        AddCheckBoxCell.addCheckBoxCellPayment(ReleventLoansTable);
+        AddJavaFXCell.addCheckBoxCellPayment(ReleventLoansTable);
 
 
         //ReleventLoansTable.getItems().add(loanPaymentObj);
