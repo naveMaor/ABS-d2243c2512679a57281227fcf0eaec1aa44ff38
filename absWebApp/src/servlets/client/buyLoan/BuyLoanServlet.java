@@ -2,6 +2,7 @@ package servlets.client.buyLoan;
 
 import com.google.gson.Gson;
 import engine.Engine;
+import exceptions.BalanceException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,8 +32,14 @@ public class BuyLoanServlet extends HttpServlet {
         Loan loan =  systemEngine.getDatabase().getLoanById(buyLoanObj.getLoanID());
 
         //create buy
-        systemEngine.createLoanBuy(loan,usernameFromSession,buyLoanObj.getSellerName());
-
+        try {
+            systemEngine.createLoanBuy(loan,usernameFromSession,buyLoanObj.getSellerName());
+        } catch (BalanceException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print(e.getMessage());
+            e.printStackTrace();
+            return;
+        }
 
 
         System.out.println("request URI is: " + request.getRequestURI());

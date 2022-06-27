@@ -11,7 +11,10 @@ import javafx.util.Callback;
 import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class AddJavaFXCell {
 
@@ -90,7 +93,7 @@ public class AddJavaFXCell {
     }
 
 
-    public static <T> void addButtonToTable(TableView<T> lenderTable, Consumer<T> SellLoan, String action) {
+    public static <T> void addButtonToTable(TableView<T> lenderTable, Consumer<T> SellBuyLoan, String action) {
         TableColumn<T, Void> colBtn = new TableColumn(action);
 
         Callback<TableColumn<T, Void>, TableCell<T, Void>> cellFactory = new Callback<TableColumn<T, Void>, TableCell<T, Void>>() {
@@ -102,9 +105,7 @@ public class AddJavaFXCell {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             T data = getTableView().getItems().get(getIndex());
-                            SellLoan.accept(data);
-                            btn.setDisable(true);
-                            btn.disableProperty();
+                            SellBuyLoan.accept(data);
                         });
                     }
 

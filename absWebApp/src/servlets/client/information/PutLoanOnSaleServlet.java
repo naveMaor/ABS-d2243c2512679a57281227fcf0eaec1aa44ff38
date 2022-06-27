@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
+import loan.enums.eLoanStatus;
 import servletDTO.BuyLoanObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -30,6 +31,13 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         Loan loan = systemEngine.getDatabase().getLoanById(loanName);
         BuyLoanObj buyLoanObj = new BuyLoanObj(loan,usernameFromSession);
 
+        if(systemEngine.getDatabase().getLoanById(buyLoanObj.getLoanID()).getStatus()!= eLoanStatus.ACTIVE)
+        {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print("LOAN HAS TO BE ACTIVE STATUS");
+            return;
+        }
+
         //set loan on sale
         try {
             systemEngine.getDatabase().putLoanOnSale(usernameFromSession,buyLoanObj);
@@ -37,6 +45,7 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         catch (IOException e){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getOutputStream().print(e.getMessage());
+            return;
         }
 
         System.out.println("request URI is: " + request.getRequestURI());

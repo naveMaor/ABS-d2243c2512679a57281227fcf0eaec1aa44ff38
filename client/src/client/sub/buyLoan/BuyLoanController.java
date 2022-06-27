@@ -18,6 +18,7 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BuyLoanController {
     private CustomerMainBodyController customerMainBodyController;
@@ -164,8 +165,9 @@ public class BuyLoanController {
 
                     if(response.code()==200){
                         //loan.setOnSale(false);
-                        customerMainBodyController.loadData();
+                        //customerMainBodyController.loadData();
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"You just bought "+loan.getLoanID()+"!");
+                        ReleventLoansTable.getItems().remove(loan);
                         alert.showAndWait();
                     }
                     else {
@@ -176,13 +178,12 @@ public class BuyLoanController {
             }
 
         });
-
     }
 
     private void addBuyButton(){
         AddJavaFXCell.addButtonToTable(ReleventLoansTable,this::buyLoanRequest,"Buy");
-
     }
+
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;

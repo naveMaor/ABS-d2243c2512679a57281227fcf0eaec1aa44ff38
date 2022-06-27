@@ -587,36 +587,50 @@ public class Engine {
         }
     }
 
-    public void createLoanBuy(Loan loan,String buyer,String seller){
+    public double calculatePrice(Loan loan,String client){
+        return loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
+    }
+
+    public void createLoanBuy(Loan loan,String buyer,String seller) throws BalanceException {
         int currTimeStamp = Timeline.getCurrTime();
+        double price = calculatePrice(loan,seller);
+
         //get clients
         Client buyerClient = database.getClientByname(buyer);
         Account buyerAccount = buyerClient.getMyAccount();
         Client sellerClient = database.getClientByname(seller);
         Account sellerAccount = sellerClient.getMyAccount();
 
+        if(buyerAccount.getCurrBalance()<price){
+            throw new BalanceException("you do not have enough money");
+        }
+
         //change client owning loans data
         sellerClient.getClientAsLenderLoanList().remove(loan);
         buyerClient.getClientAsLenderLoanList().add(loan);
 
         //create transaction
-        Transaction transactionOfBuyer = new Transaction(currTimeStamp, -loan.getTotalRemainingFund(), seller, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() - loan.getTotalRemainingFund());
+        Transaction transactionOfBuyer = new Transaction(currTimeStamp, -price, seller, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() - price);
         buyerAccount.addTnuaToAccount(transactionOfBuyer);
 
-        Transaction transactionOfSeller = new Transaction(currTimeStamp, loan.getTotalRemainingFund(), buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + loan.getTotalRemainingFund());
+        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
         sellerAccount.addTnuaToAccount(transactionOfSeller);
 
         //change loan owner
         Lenders SellerAslender = getLenderByName(seller,loan.getLendersList());
-        Lenders BuyerAslender = getLenderByName(buyer,loan.getLendersList());
+        Lenders BuyerAslender = new Lenders(buyer,SellerAslender.getDeposit());
 
-        //todo check if null
         loan.getLendersList().remove(SellerAslender);
         loan.getLendersList().add(BuyerAslender);
 
-
+        removeLoanOnSale(seller,loan);
         //change loan onsale
         //loan.setOnSale(false);
+    }
+
+    public void removeLoanOnSale(String seller,Loan loan){
+        List<BuyLoanObj> loanObjList = database.getLoanOnSale().get(seller);
+        loanObjList.removeIf(loanObj -> loanObj.getLoanID().equals(loan.getLoanID()));
     }
 
     private Lenders getLenderByName(String name,List<Lenders> lendersList){

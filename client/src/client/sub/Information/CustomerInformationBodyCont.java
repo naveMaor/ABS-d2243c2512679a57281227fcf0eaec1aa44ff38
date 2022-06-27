@@ -21,6 +21,7 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomerInformationBodyCont {
 
@@ -74,6 +75,7 @@ public class CustomerInformationBodyCont {
         this.customerMainBodyController = customerMainBodyController;
     }
 
+
     @FXML public void initialize() {
         clientAsLenderLoanList = FXCollections.observableArrayList();
         clientAsBorrowLoanList = FXCollections.observableArrayList();
@@ -88,8 +90,11 @@ public class CustomerInformationBodyCont {
         borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         sellPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-        AddJavaFXCell.addButtonToTable(lenderTable,this::putLoanOnSaleRequest,"Sell");
+        AddJavaFXCell.addButtonToTable(lenderTable,
+                this::putLoanOnSaleRequest,
+                "Sell");
     }
+
 
 
     public SimpleStringProperty customerNameProperty() {
@@ -220,7 +225,6 @@ public class CustomerInformationBodyCont {
 
     private void putLoanOnSaleRequest(LoanInformationObj loan){
 
-
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(),String.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
@@ -271,9 +275,7 @@ public class CustomerInformationBodyCont {
             }
 
         });
-
     }
-
 
 
 }

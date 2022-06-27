@@ -29,7 +29,7 @@ public class Database implements Serializable {
 
     private Map <String, List<Loan>> loanMapByCategory = new HashMap<>();
     private Map<String, Client> clientMap =new HashMap<>();
-    //key of map is client name, value is map of key by loan name and value is the price of the loan
+    //key of map is client name, value is list map of loan buy object
     private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
@@ -225,7 +225,8 @@ public class Database implements Serializable {
             }
             if(!tmpList.contains(buyLoanObj.getLoanID()))
                 buyLoanObjList.add(buyLoanObj);
-            else throw new IOException("LOAN IS ALREADY ON SALE");
+            else
+                throw new IOException("LOAN IS ALREADY ON SALE");
         }
         else
         {
@@ -235,7 +236,5 @@ public class Database implements Serializable {
         }
         //getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
     }
-
-
 
 }

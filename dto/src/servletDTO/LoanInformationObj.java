@@ -51,7 +51,9 @@ public class LoanInformationObj implements Serializable {
         this.loanID = loan.getLoanID();
         this.status = loan.getStatus();
         //this.onSale = loan.isOnSale();
-        this.price = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
+        if(loan.calculateClientLoanOwningPercentage(client)!=-2){
+            this.price = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
+        }
     }
 
 
