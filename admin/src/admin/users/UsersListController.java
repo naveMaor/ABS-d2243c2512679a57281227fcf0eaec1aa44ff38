@@ -1,6 +1,7 @@
 package admin.users;
 
 
+import admin.AdminMainController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -13,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import servletDTO.client.ClientBalanceObj;
 
@@ -31,7 +33,7 @@ public class UsersListController implements Closeable {
     private HttpStatusUpdate httpStatusUpdate;
 
     @FXML
-    private Label UsersLabel;
+    private TitledPane titleTV;
 
     @FXML
     private TableView<ClientBalanceObj> usersTableView;
@@ -41,15 +43,18 @@ public class UsersListController implements Closeable {
 
     @FXML
     private TableColumn<ClientBalanceObj, Double> clientBalance;
+    @FXML
+    private AdminMainController adminMainController;
 
     public UsersListController() {
         autoUpdate = new SimpleBooleanProperty();
         totalUsers = new SimpleIntegerProperty();
+        autoUpdate.set(true);
     }
 
     @FXML
     public void initialize() {
-        UsersLabel.textProperty().bind(Bindings.concat("ABS Users: (", totalUsers.asString(), ")"));
+        titleTV.textProperty().bind(Bindings.concat("ABS Users: (", totalUsers.asString(), ")"));
         clientName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         clientBalance.setCellValueFactory(new PropertyValueFactory<>("clientBalance"));
     }
@@ -66,18 +71,16 @@ public class UsersListController implements Closeable {
     private void updateUsersList(List<ClientBalanceObj> usersInTheSystem) {
         Platform.runLater(() -> {
             ObservableList<ClientBalanceObj> items = FXCollections.observableArrayList();
-            items.addAll(usersTableView.getItems());
-
-            items.clear();
             items.addAll(usersInTheSystem);
             totalUsers.set(usersInTheSystem.size());
+            usersTableView.getItems().clear();
+            usersTableView.getItems().addAll(usersInTheSystem);
         });
     }
 
     public void startListRefresher() {
         listRefresher = new admin.users.UserListRefresher(
                 autoUpdate,
-                httpStatusUpdate::updateHttpLine,
                 this::updateUsersList);
         timer = new Timer();
         timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
@@ -91,5 +94,10 @@ public class UsersListController implements Closeable {
             listRefresher.cancel();
             timer.cancel();
         }
+    }
+
+
+    public void setMainController(AdminMainController adminMainController) {
+        this.adminMainController= adminMainController;
     }
 }

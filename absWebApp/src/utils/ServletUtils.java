@@ -34,18 +34,15 @@ public class ServletUtils {
 
     private static final Object adminManagerLock = new Object();
 
-    public static boolean getAdminManger(ServletContext servletContext) {
+    public static Engine getAdminManger(ServletContext servletContext) {
         synchronized (adminManagerLock) {
-            if (servletContext.getAttribute(ADMIN_LOGGED_IN_ATTRIBUTE_NAME)==null) {
-                servletContext.setAttribute(ADMIN_LOGGED_IN_ATTRIBUTE_NAME, true);
-                return (boolean) servletContext.getAttribute(ADMIN_LOGGED_IN_ATTRIBUTE_NAME);
+            if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
+                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new Engine());
             }
-            else
-            {
-                return false;
-            }
+        }
+        return (Engine) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
         }
     }
 
 
-}
+

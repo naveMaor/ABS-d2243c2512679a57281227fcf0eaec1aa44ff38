@@ -4,9 +4,6 @@ public class ClientBalanceObj {
 
 
     private String fullName;
-
-
-
     private double clientBalance =0;
 
     public void setFullName(String fullName) {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.AdminMainController">
+   <content>
+      <BorderPane fx:id="rootBP">
+         <center>
+            <GridPane prefHeight="1045.0" prefWidth="1092.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="NEVER" maxWidth="194.39996337890625" minWidth="30.0" prefWidth="30.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                  <ColumnConstraints hgrow="NEVER" maxWidth="143.60003662109375" minWidth="30.0" prefWidth="30.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+                  <RowConstraints maxHeight="493.0" minHeight="44.400000000000006" prefHeight="211.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="887.0" minHeight="39.0" prefHeight="87.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="887.0" minHeight="747.0" prefHeight="753.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane style="-fx-text-fill: black;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <fx:include fx:id="adminLoanTables" source="adminLoanTables/adminLoanTablesMain/adminLoanTables.fxml" />
+                        <AnchorPane layoutY="464.0" prefHeight="400.0" prefWidth="989.0" style="-fx-text-fill: black;">
+                           <children>
+                              <fx:include fx:id="adminClientTable" source="adminClientTable/adminClientTable.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <GridPane prefHeight="159.0" prefWidth="989.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="326.0" minWidth="10.0" prefWidth="183.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="376.0" minWidth="10.0" prefWidth="376.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="282.0" minWidth="10.0" prefWidth="282.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="217.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <fx:include fx:id="usersList" source="users/users.fxml" GridPane.columnIndex="1" />
+                        <Label fx:id="currYaz" text="Current Yaz: " />
+                        <Button fx:id="IncreaseYazButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="48.0" prefWidth="176.0" text="Increase YAZ" textAlignment="CENTER" GridPane.columnIndex="4">
+                           <opaqueInsets>
+                              <Insets left="100.0" />
+                           </opaqueInsets>
+                        </Button>
+                        <Button fx:id="rewindButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" mnemonicParsing="false" onAction="#rewindButtonListener" prefHeight="48.0" prefWidth="176.0" text="Rewind YAZ" textAlignment="CENTER" GridPane.columnIndex="3">
+                           <opaqueInsets>
+                              <Insets left="100.0" />
+                           </opaqueInsets>
+                        </Button>
+                     </children>
+                  </GridPane>
+               </children>
+               <effect>
+                  <Glow />
+               </effect>
+            </GridPane>
+         </center>
+         <top>
+            <fx:include fx:id="LoginPage" source="../common/login.fxml" />
+         </top>
+      </BorderPane>
+   </content>
+</ScrollPane>
