@@ -16,6 +16,14 @@ import static constants.Constants.ADMIN;
 @WebServlet(name = "AdminLoginResponse", urlPatterns = "/AdminLoginResponse")
 
 public class AdminLoginServlet extends HttpServlet{
+
+    @Override
+    public void destroy() {
+        synchronized (this) {
+            Engine engine = ServletUtils.getAdminManger(getServletContext());
+            engine.getDatabase().setAdminConnected(false);
+        }
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain;charset=UTF-8");
@@ -45,8 +53,9 @@ public class AdminLoginServlet extends HttpServlet{
             A better code would be to perform only as little and as necessary things we need here inside the synchronized block and avoid
             do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
              */
+                Engine engine = ServletUtils.getAdminManger(getServletContext());
                 synchronized (this) {
-                    if (ServletUtils.getAdminManger(getServletContext())) {
+                    if (engine.getDatabase().isAdminConnected()) {
                         String errorMessage = "Admin " + usernameFromParameter + " already Logged In. Please wait till this admin finish his work.";
 
                         // stands for unauthorized as there is already such user with this name
@@ -59,7 +68,8 @@ public class AdminLoginServlet extends HttpServlet{
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
                         request.getSession(true).setAttribute(ADMIN, usernameFromParameter);
-                       //maybe do it twice here and in utils
+                        engine.getDatabase().addAdmin(usernameFromParameter);
+                        engine.getDatabase().setAdminConnected(true);
                         request.getSession(true).setAttribute(IS_ADMIN_LOGGED_IN, true);
 
                         //redirect the request to the chat room - in order to actually change the URL

@@ -27,6 +27,8 @@ public class Database implements Serializable {
 
     private Map <String, List<Loan>> loanMapByCategory = new HashMap<>();
     private Map<String, Client> clientMap =new HashMap<>();
+    private Set<String> adminSet =new HashSet<>();
+    private boolean isAdminConnected =false;
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
         loanMapByCategory = loanMapByCategory;
@@ -198,9 +200,20 @@ public class Database implements Serializable {
         addClientToClientMap(newClient);
     }
 
-//    public void addAdmin(String usernameFromParameter){
-//
-//    }
+    public boolean isAdminExists(String adminName){
+        return adminSet.contains(adminName);
+    }
+
+    public void addAdmin(String adminName){
+        adminSet.add(adminName);
+    }
+
+    public boolean isAdminConnected(){
+        return isAdminConnected;
+    }
+    public void setAdminConnected(boolean bool){
+        isAdminConnected =bool;
+    }
 
     public List<String> getLoanNameList(){
         List<Loan> loanList = getLoanList();

@@ -1,5 +1,6 @@
 package common;
 
+import admin.AdminMainController;
 import client.main.ClientMainController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,25 +17,25 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import util.Constants;
-import util.HttpClientUtil;
+import util.HttpAdminUtil;
 
 import java.io.IOException;
 
 public class LoginController {
-
+    @FXML
+    AdminMainController mainController;
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     @FXML
     public TextField userNameTextField;
 
-    //private ChatAppMainController chatAppMainController;
+
+
     @FXML
     public Label errorMessageLabel;
-    private ClientMainController clientMainController;
 
     @FXML
     public void initialize() {
         errorMessageLabel.textProperty().bind(errorMessageProperty);
-
     }
 
     @FXML
@@ -58,9 +59,7 @@ public class LoginController {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
+        HttpAdminUtil.runAsync(request, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -78,8 +77,8 @@ public class LoginController {
                     );
                 } else {
                     Platform.runLater(() -> {
-                        clientMainController.updateUserName(userName);
-                        clientMainController.switchToClientDesktop();
+                        mainController.updateAdminName(userName);
+                        mainController.switchToAdminDesktop();
                     });
                 }
             }
@@ -104,8 +103,8 @@ public class LoginController {
         this.chatAppMainController = chatAppMainController;
     }*/
 
-    public void setMainController(ClientMainController mainController) {
-        this.clientMainController = mainController;
+    public void setMainController(AdminMainController mainController) {
+        this.mainController = mainController;
     }
 
 }

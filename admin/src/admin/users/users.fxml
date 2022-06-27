@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" spacing="3.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.users.UsersListController">
+<VBox maxHeight="1.7976931348623157E308" prefHeight="229.0" prefWidth="367.0" spacing="3.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.users.UsersListController">
     <children>
-        <Label fx:id="UsersLabel" text="ABS Users:">
-            <font>
-                <Font name="System Bold" size="16.0" />
-            </font>
-            <VBox.margin>
-                <Insets bottom="8.0" top="8.0" />
-            </VBox.margin></Label>
-      <TableView fx:id="usersTableView" prefHeight="200.0" prefWidth="200.0">
-        <columns>
-          <TableColumn fx:id="clientName" prefWidth="108.0" text="Customer" />
-          <TableColumn fx:id="clientBalance" prefWidth="91.0" text="Balance" />
-        </columns>
-      </TableView>
+      <ScrollPane prefHeight="218.0" prefWidth="361.0">
+         <content>
+            <TitledPane fx:id="titleTV" alignment="CENTER" contentDisplay="CENTER" prefWidth="338.0" text="ABS Users:" textAlignment="CENTER" textFill="#e41919" wrapText="true">
+               <content>
+                  <TableView fx:id="usersTableView" prefHeight="200.0" prefWidth="300.0">
+                    <columns>
+                      <TableColumn fx:id="clientName" prefWidth="173.0" text="Customer" />
+                      <TableColumn fx:id="clientBalance" prefWidth="163.0" text="Balance" />
+                    </columns>
+                  </TableView>
+               </content>
+               <font>
+                  <Font name="System Bold Italic" size="19.0" />
+               </font>
+            </TitledPane>
+         </content>
+      </ScrollPane>
     </children>
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
