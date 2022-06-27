@@ -37,22 +37,21 @@ public class LoanInformationObj implements Serializable {
         this.originalLoanTimeFrame = originalLoanTimeFrame;
     }
 
-    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double price, boolean onSale) {
+    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double price) {
         this.loanID = LoanId;
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.status = status;
         this.price = price;
-        this.onSale = onSale;
     }
 
-    public LoanInformationObj(Loan loan, Client client) {
+    public LoanInformationObj(Loan loan, String client) {
         this.borrowerName = loan.getBorrowerName();
         this.loanCategory = loan.getLoanCategory();
         this.loanID = loan.getLoanID();
         this.status = loan.getStatus();
-        this.onSale = loan.isOnSale();
-        this.price = loan.getTotalRemainingFund()*loan.calculateClientLoanOwningPercentage(client.getFullName());
+        //this.onSale = loan.isOnSale();
+        this.price = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
     }
 
 

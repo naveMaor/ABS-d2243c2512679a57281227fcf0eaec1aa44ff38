@@ -16,7 +16,7 @@ public class BuyLoanObj {
 
 
     public BuyLoanObj(Loan loan, String sellerName) {
-        this.price = loan.getTotalRemainingFund()*loan.calculateClientLoanOwningPercentage(sellerName);
+        this.price = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(sellerName)/100);
         this.sellerName = sellerName;
         this.borrowerName = loan.getBorrowerName();
         this.loanCategory = loan.getLoanCategory();

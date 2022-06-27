@@ -10,11 +10,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import loan.enums.eLoanStatus;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.BuyLoanObj;
-import servletDTO.LoanInformationObj;
 import util.AddJavaFXCell;
 import util.Constants;
 import util.HttpClientUtil;
@@ -128,7 +126,7 @@ public class BuyLoanController {
     private void buyLoanRequest(BuyLoanObj loan){
 
 
-        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(),String.class);
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan,BuyLoanObj.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
@@ -167,7 +165,7 @@ public class BuyLoanController {
                     if(response.code()==200){
                         //loan.setOnSale(false);
                         customerMainBodyController.loadData();
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"loan "+loan.getLoanID()+"is now on sale!");
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"You just bought "+loan.getLoanID()+"!");
                         alert.showAndWait();
                     }
                     else {
@@ -182,7 +180,7 @@ public class BuyLoanController {
     }
 
     private void addBuyButton(){
-        AddJavaFXCell.addButtonToTable(ReleventLoansTable,this::buyLoanRequest,"Sell");
+        AddJavaFXCell.addButtonToTable(ReleventLoansTable,this::buyLoanRequest,"Buy");
 
     }
 

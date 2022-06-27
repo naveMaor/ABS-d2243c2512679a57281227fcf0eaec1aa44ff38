@@ -11,6 +11,7 @@ import old.LoanObj;
 import servletDTO.BuyLoanObj;
 import time.Timeline;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -214,10 +215,17 @@ public class Database implements Serializable {
         return loanOnSale;
     }
 
-    public void putLoanOnSale(String clientName, BuyLoanObj buyLoanObj){
+    public void putLoanOnSale(String clientName, BuyLoanObj buyLoanObj) throws IOException {
         if(loanOnSale.containsKey(clientName))
         {
-            loanOnSale.get(clientName).add(buyLoanObj);
+            List<BuyLoanObj> buyLoanObjList= loanOnSale.get(clientName);
+            List<String> tmpList = new ArrayList<>();
+            for (BuyLoanObj buyLoanObjForname:buyLoanObjList){
+                tmpList.add(buyLoanObjForname.getLoanID());
+            }
+            if(!tmpList.contains(buyLoanObj.getLoanID()))
+                buyLoanObjList.add(buyLoanObj);
+            else throw new IOException("LOAN IS ALREADY ON SALE");
         }
         else
         {
@@ -225,7 +233,7 @@ public class Database implements Serializable {
             newSellLoanlist.add(buyLoanObj);
             loanOnSale.put(clientName,newSellLoanlist);
         }
-        getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
+        //getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
     }
 
 

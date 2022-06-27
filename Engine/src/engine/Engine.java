@@ -604,7 +604,7 @@ public class Engine {
         buyerAccount.addTnuaToAccount(transactionOfBuyer);
 
         Transaction transactionOfSeller = new Transaction(currTimeStamp, loan.getTotalRemainingFund(), buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + loan.getTotalRemainingFund());
-        buyerAccount.addTnuaToAccount(transactionOfSeller);
+        sellerAccount.addTnuaToAccount(transactionOfSeller);
 
         //change loan owner
         Lenders SellerAslender = getLenderByName(seller,loan.getLendersList());
@@ -614,8 +614,9 @@ public class Engine {
         loan.getLendersList().remove(SellerAslender);
         loan.getLendersList().add(BuyerAslender);
 
+
         //change loan onsale
-        loan.setOnSale(false);
+        //loan.setOnSale(false);
     }
 
     private Lenders getLenderByName(String name,List<Lenders> lendersList){
@@ -628,13 +629,13 @@ public class Engine {
         return null;
     }
 
-    public List<BuyLoanObj> getBuyLoanObjList() {
+    public List<BuyLoanObj> getBuyLoanObjList(String userNameFromSession) {
         Map<String, List<BuyLoanObj>> loanOnSale = database.getLoanOnSale();
         List<BuyLoanObj> result = new ArrayList<>();
         for (List<BuyLoanObj> loanObjList : loanOnSale.values()) {
             for (BuyLoanObj buyLoanObj : loanObjList) {
                 Loan loan = database.getLoanById(buyLoanObj.getLoanID());
-                if (loan.getStatus() == ACTIVE) {
+                if ((loan.getStatus() == ACTIVE)&&(!loan.getBorrowerName().equals(userNameFromSession))&&(!buyLoanObj.getSellerName().equals(userNameFromSession))) {
                     result.add(buyLoanObj);
                 }
             }

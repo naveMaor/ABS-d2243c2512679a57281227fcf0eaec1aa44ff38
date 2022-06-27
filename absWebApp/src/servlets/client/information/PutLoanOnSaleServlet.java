@@ -31,7 +31,13 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         BuyLoanObj buyLoanObj = new BuyLoanObj(loan,usernameFromSession);
 
         //set loan on sale
-        systemEngine.getDatabase().putLoanOnSale(usernameFromSession,buyLoanObj);
+        try {
+            systemEngine.getDatabase().putLoanOnSale(usernameFromSession,buyLoanObj);
+        }
+        catch (IOException e){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print(e.getMessage());
+        }
 
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);

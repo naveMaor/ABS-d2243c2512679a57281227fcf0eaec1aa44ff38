@@ -1,3 +1,4 @@
+
 package servlets.client.buyLoan;
 
 import com.google.gson.Gson;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "GetBuyTableServlet", urlPatterns = "GetBuyList")
+@WebServlet(name = "GetBuyTableServlet", urlPatterns = "/GetBuyList")
 public class GetBuyTableServlet extends HttpServlet {
 
     @Override
@@ -25,7 +26,7 @@ public class GetBuyTableServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-        List<BuyLoanObj> buyLoanObjList = systemEngine.getBuyLoanObjList();
+        List<BuyLoanObj> buyLoanObjList = systemEngine.getBuyLoanObjList(usernameFromSession);
 
 
         Gson gson = new Gson();
@@ -39,3 +40,4 @@ public class GetBuyTableServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
+

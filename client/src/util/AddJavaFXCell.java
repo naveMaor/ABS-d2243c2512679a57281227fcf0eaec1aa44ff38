@@ -102,8 +102,9 @@ public class AddJavaFXCell {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             T data = getTableView().getItems().get(getIndex());
-                                SellLoan.accept(data);
-                                btn.setDisable(true);
+                            SellLoan.accept(data);
+                            btn.setDisable(true);
+                            btn.disableProperty();
                         });
                     }
 
