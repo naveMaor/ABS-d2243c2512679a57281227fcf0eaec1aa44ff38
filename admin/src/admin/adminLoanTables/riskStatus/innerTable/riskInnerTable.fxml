@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.adminLoanTables.riskStatus.innerTable.riskInnerTableController">
+   <children>
+      <SplitPane dividerPositions="0.5" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane>
+               <children>
+                  <TableView fx:id="pendingInnerTable" layoutY="33.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                     <columns>
+                        <TableColumn fx:id="lenderName" prefWidth="75.0" text="Lender name" />
+                        <TableColumn fx:id="InvestedAmount" prefWidth="75.0" text="Invested amount" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <Label contentDisplay="CENTER" layoutX="229.0" layoutY="5.0" text="Lenders information" textAlignment="CENTER" underline="true" wrapText="true" />
+               </children>
+            </AnchorPane>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+              <items>
+                <AnchorPane>
+                     <children>
+                        <TableView fx:id="borrowerPayements" layoutX="180.0" layoutY="-29.0" AnchorPane.bottomAnchor="-38.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                          <columns>
+                            <TableColumn fx:id="paymentAmount" prefWidth="75.0" text="Amount" />
+                            <TableColumn fx:id="yaz" prefWidth="75.0" text="Yaz" />
+                              <TableColumn fx:id="fund" prefWidth="75.0" text="Fund" />
+                              <TableColumn fx:id="interest" prefWidth="75.0" text="Interest" />
+                              <TableColumn fx:id="payed" prefWidth="75.0" text="Payed" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                        <Label contentDisplay="CENTER" layoutX="223.0" layoutY="2.0" prefHeight="18.0" text="borrower Payments" textAlignment="CENTER" underline="true" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="30.0" minHeight="20.0" prefHeight="20.0">
+                     <children>
+                        <Label contentDisplay="CENTER" layoutX="14.0" layoutY="6.0" minWidth="120.0" text="Amount not payed:" textAlignment="CENTER" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="478.0" AnchorPane.topAnchor="6.0" />
+                        <Label layoutX="310.0" layoutY="6.0" minWidth="120.0" text="Number of not payed:" textAlignment="CENTER" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="310.0" AnchorPane.rightAnchor="166.0" AnchorPane.topAnchor="6.0" />
+                        <Label fx:id="amountNotPayedLable" layoutX="143.0" layoutY="5.0" text="0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="398.6" AnchorPane.topAnchor="5.0" />
+                        <Label fx:id="numNotPayedLable" layoutX="465.0" layoutY="7.0" prefHeight="18.0" prefWidth="57.0" text="0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="465.0" AnchorPane.rightAnchor="76.60000000000002" AnchorPane.topAnchor="7.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
