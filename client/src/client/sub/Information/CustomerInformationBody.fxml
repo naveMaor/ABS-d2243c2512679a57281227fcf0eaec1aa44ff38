@@ -49,7 +49,7 @@
                             <TableColumn fx:id="lenderBorrowerName" prefWidth="75.0" text="Borrower name" />
                               <TableColumn fx:id="lenderLoanCat" prefWidth="75.0" text="Loan category" />
                               <TableColumn fx:id="lenderLoanStatus" prefWidth="75.0" text="Status" />
-                              <TableColumn fx:id="remainFund" prefWidth="75.0" text="Remain fund" />
+                              <TableColumn fx:id="sellPrice" prefWidth="75.0" text="Price sell" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

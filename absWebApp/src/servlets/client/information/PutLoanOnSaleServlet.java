@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
+import loan.enums.eLoanStatus;
+import servletDTO.BuyLoanObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -24,11 +26,27 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        //load LOAN NAME from request body
+        //load LOAN NAME and price from request body
         String loanName = new Gson().fromJson(reqBodyAsString, String.class);
+        Loan loan = systemEngine.getDatabase().getLoanById(loanName);
+        BuyLoanObj buyLoanObj = new BuyLoanObj(loan,usernameFromSession);
+
+        if(systemEngine.getDatabase().getLoanById(buyLoanObj.getLoanID()).getStatus()!= eLoanStatus.ACTIVE)
+        {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print("LOAN HAS TO BE ACTIVE STATUS");
+            return;
+        }
 
         //set loan on sale
-        systemEngine.getDatabase().getLoanById(loanName).setOnSale(true);
+        try {
+            systemEngine.getDatabase().putLoanOnSale(usernameFromSession,buyLoanObj);
+        }
+        catch (IOException e){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print(e.getMessage());
+            return;
+        }
 
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);

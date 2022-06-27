@@ -21,6 +21,7 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomerInformationBodyCont {
 
@@ -53,7 +54,7 @@ public class CustomerInformationBodyCont {
     private TableColumn<LoanInformationObj, String> lenderBorrowerName;
 
     @FXML
-    private TableColumn<LoanInformationObj, Double> remainFund;
+    private TableColumn<LoanInformationObj, Double> sellPrice;
 
     @FXML
     private TableView<LoanInformationObj> lenderTable;
@@ -64,7 +65,6 @@ public class CustomerInformationBodyCont {
     private ObservableList<LoanInformationObj> clientAsLenderLoanList = FXCollections.observableArrayList();
     private ObservableList<LoanInformationObj> clientAsBorrowLoanList = FXCollections.observableArrayList();
 
-    private final Button btnSell = new Button("Action");
 
     public void initializeClientTable(){
         createLoansAsLenderRequest();
@@ -74,6 +74,7 @@ public class CustomerInformationBodyCont {
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;
     }
+
 
     @FXML public void initialize() {
         clientAsLenderLoanList = FXCollections.observableArrayList();
@@ -88,9 +89,12 @@ public class CustomerInformationBodyCont {
         lenderBorrowerName.setCellValueFactory(new PropertyValueFactory<>("borrowerName"));
         borrowerLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         lenderLoanStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        remainFund.setCellValueFactory(new PropertyValueFactory<>("totalRemainingFund"));
-        AddJavaFXCell.addSellButtonToTable(lenderTable,this::putLoanOnSaleRequest);
+        sellPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        AddJavaFXCell.addButtonToTable(lenderTable,
+                this::putLoanOnSaleRequest,
+                "Sell");
     }
+
 
 
     public SimpleStringProperty customerNameProperty() {
@@ -127,7 +131,6 @@ public class CustomerInformationBodyCont {
     private void createLoansAsLenderRequest(){
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.LOANS_AS_LENDER)
                 .newBuilder()
                 .build()
@@ -222,7 +225,6 @@ public class CustomerInformationBodyCont {
 
     private void putLoanOnSaleRequest(LoanInformationObj loan){
 
-
         String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(),String.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
@@ -273,9 +275,7 @@ public class CustomerInformationBodyCont {
             }
 
         });
-
     }
-
 
 
 }

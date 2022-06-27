@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import loan.Loan;
 import loan.enums.eLoanStatus;
+import servletDTO.BuyLoanObj;
 import time.Timeline;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static loan.enums.eLoanStatus.ACTIVE;
 import static loan.enums.eLoanStatus.RISK;
@@ -424,7 +426,7 @@ public class Engine {
         //initialize for every loan their amount of money the client need to invest in order to get to max percentage share
         if (maxPercentage != -1)
             for (Loan loan : loanslistToInvest) {
-                maxPercentage = maxPercentage - loan.calculateClientLoanOwningPercentage(client);
+                maxPercentage = maxPercentage - loan.calculateClientLoanOwningPercentage(clientName);
                 loan.editMaxOwnershipMoneyForPercentage(maxPercentage);
             }
         do {
@@ -520,7 +522,7 @@ public class Engine {
         int TotalInvestedPercentage, clientOwningLoanPercentage;
         for (Loan loan : tmp) {
             TotalInvestedPercentage = loan.calculateTotalOwnersPercentage();
-            clientOwningLoanPercentage = loan.calculateClientLoanOwningPercentage(client);
+            clientOwningLoanPercentage = loan.calculateClientLoanOwningPercentage(clientName);
             if (loan.getStatus() == eLoanStatus.NEW || loan.getStatus() == eLoanStatus.PENDING)//if the loan is new or pending
                 if (!(client.getFullName().equalsIgnoreCase(loan.getBorrowerName())))//If the client's name is not the borrower
                     if ((minInterestPerYaz <= loan.getInterestPercentagePerTimeUnit()) || (minInterestPerYaz == -1))
@@ -532,7 +534,7 @@ public class Engine {
                                     }
         }
 
-        return tmp;
+        return result;
     }
 
 
@@ -582,6 +584,76 @@ public class Engine {
                 }
             }
         }
+    }
+
+    public double calculatePrice(Loan loan,String client){
+        return loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(client)/100);
+    }
+
+    public void createLoanBuy(Loan loan,String buyer,String seller) throws BalanceException {
+        int currTimeStamp = Timeline.getCurrTime();
+        double price = calculatePrice(loan,seller);
+
+        //get clients
+        Client buyerClient = database.getClientByname(buyer);
+        Account buyerAccount = buyerClient.getMyAccount();
+        Client sellerClient = database.getClientByname(seller);
+        Account sellerAccount = sellerClient.getMyAccount();
+
+        if(buyerAccount.getCurrBalance()<price){
+            throw new BalanceException("you do not have enough money");
+        }
+
+        //change client owning loans data
+        sellerClient.getClientAsLenderLoanList().remove(loan);
+        buyerClient.getClientAsLenderLoanList().add(loan);
+
+        //create transaction
+        Transaction transactionOfBuyer = new Transaction(currTimeStamp, -price, seller, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() - price);
+        buyerAccount.addTnuaToAccount(transactionOfBuyer);
+
+        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
+        sellerAccount.addTnuaToAccount(transactionOfSeller);
+
+        //change loan owner
+        Lenders SellerAslender = getLenderByName(seller,loan.getLendersList());
+        Lenders BuyerAslender = new Lenders(buyer,SellerAslender.getDeposit());
+
+        loan.getLendersList().remove(SellerAslender);
+        loan.getLendersList().add(BuyerAslender);
+
+        removeLoanOnSale(seller,loan);
+        //change loan onsale
+        //loan.setOnSale(false);
+    }
+
+    public void removeLoanOnSale(String seller,Loan loan){
+        List<BuyLoanObj> loanObjList = database.getLoanOnSale().get(seller);
+        loanObjList.removeIf(loanObj -> loanObj.getLoanID().equals(loan.getLoanID()));
+    }
+
+    private Lenders getLenderByName(String name,List<Lenders> lendersList){
+        for (Lenders lenders:lendersList){
+            if (lenders.getFullName().equals(name)){
+                return lenders;
+            }
+        }
+        System.out.println("didnt find the lender name in the list of loans lender list getLenderByName");
+        return null;
+    }
+
+    public List<BuyLoanObj> getBuyLoanObjList(String userNameFromSession) {
+        Map<String, List<BuyLoanObj>> loanOnSale = database.getLoanOnSale();
+        List<BuyLoanObj> result = new ArrayList<>();
+        for (List<BuyLoanObj> loanObjList : loanOnSale.values()) {
+            for (BuyLoanObj buyLoanObj : loanObjList) {
+                Loan loan = database.getLoanById(buyLoanObj.getLoanID());
+                if ((loan.getStatus() == ACTIVE)&&(!loan.getBorrowerName().equals(userNameFromSession))&&(!buyLoanObj.getSellerName().equals(userNameFromSession))) {
+                    result.add(buyLoanObj);
+                }
+            }
+        }
+        return result;
     }
 }
 

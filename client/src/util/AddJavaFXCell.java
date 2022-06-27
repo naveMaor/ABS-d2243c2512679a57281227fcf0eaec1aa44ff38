@@ -5,14 +5,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import servletDTO.LoanInformationObj;
 import servletDTO.Payment.LoanPaymentObj;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class AddJavaFXCell {
 
@@ -91,20 +93,19 @@ public class AddJavaFXCell {
     }
 
 
-    public static void addSellButtonToTable(TableView<LoanInformationObj> lenderTable, Consumer<LoanInformationObj> SellLoan) {
-        TableColumn<LoanInformationObj, Void> colBtn = new TableColumn("Sell");
-        Button Sellbtn;
-        Callback<TableColumn<LoanInformationObj, Void>, TableCell<LoanInformationObj, Void>> cellFactory = new Callback<TableColumn<LoanInformationObj, Void>, TableCell<LoanInformationObj, Void>>() {
-            @Override
-            public TableCell<LoanInformationObj, Void> call(final TableColumn<LoanInformationObj, Void> param) {
-                final TableCell<LoanInformationObj, Void> cell = new TableCell<LoanInformationObj, Void>() {
+    public static <T> void addButtonToTable(TableView<T> lenderTable, Consumer<T> SellBuyLoan, String action) {
+        TableColumn<T, Void> colBtn = new TableColumn(action);
 
-                    private Button btn = new Button("Action");
+        Callback<TableColumn<T, Void>, TableCell<T, Void>> cellFactory = new Callback<TableColumn<T, Void>, TableCell<T, Void>>() {
+            @Override
+            public TableCell<T, Void> call(final TableColumn<T, Void> param) {
+                final TableCell<T, Void> cell = new TableCell<T, Void>() {
+
+                    private Button btn = new Button(action);
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            LoanInformationObj data = getTableView().getItems().get(getIndex());
-                                SellLoan.accept(data);
-                                btn.setDisable(true);
+                            T data = getTableView().getItems().get(getIndex());
+                            SellBuyLoan.accept(data);
                         });
                     }
 
@@ -126,6 +127,7 @@ public class AddJavaFXCell {
 
         lenderTable.getColumns().add(colBtn);
     }
+
 
 
 }

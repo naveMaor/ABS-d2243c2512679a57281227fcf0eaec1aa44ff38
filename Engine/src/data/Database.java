@@ -8,8 +8,10 @@ import customes.Client;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
 import old.LoanObj;
+import servletDTO.BuyLoanObj;
 import time.Timeline;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -29,6 +31,8 @@ public class Database implements Serializable {
     private Map<String, Client> clientMap =new HashMap<>();
     private Set<String> adminSet =new HashSet<>();
     private boolean isAdminConnected =false;
+    //key of map is client name, value is list map of loan buy object
+    private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
         loanMapByCategory = loanMapByCategory;
@@ -222,6 +226,32 @@ public class Database implements Serializable {
             result.add(loan.getLoanID());
         }
         return result;
+    }
+
+    public Map<String,List<BuyLoanObj>> getLoanOnSale() {
+        return loanOnSale;
+    }
+
+    public void putLoanOnSale(String clientName, BuyLoanObj buyLoanObj) throws IOException {
+        if(loanOnSale.containsKey(clientName))
+        {
+            List<BuyLoanObj> buyLoanObjList= loanOnSale.get(clientName);
+            List<String> tmpList = new ArrayList<>();
+            for (BuyLoanObj buyLoanObjForname:buyLoanObjList){
+                tmpList.add(buyLoanObjForname.getLoanID());
+            }
+            if(!tmpList.contains(buyLoanObj.getLoanID()))
+                buyLoanObjList.add(buyLoanObj);
+            else
+                throw new IOException("LOAN IS ALREADY ON SALE");
+        }
+        else
+        {
+            List<BuyLoanObj> newSellLoanlist = new ArrayList<>();
+            newSellLoanlist.add(buyLoanObj);
+            loanOnSale.put(clientName,newSellLoanlist);
+        }
+        //getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
     }
 
 }

@@ -63,7 +63,6 @@ public class Loan implements Serializable {
 
     private Account loanAccount;
     private boolean select = false;
-    private boolean onSale;
 
 
 /*    private CheckBox select;
@@ -87,7 +86,7 @@ public class Loan implements Serializable {
         this.originalInterest = calculateInterest();
         this.totalLoanCostInterestPlusOriginalDepth = this.originalInterest + this.loanOriginalDepth;
         this.totalRemainingLoan = this.totalLoanCostInterestPlusOriginalDepth;
-        this.totalRemainingFund = totalRemainingLoan;
+        this.totalRemainingFund = loanOriginalDepth;
         this.loanAccount = new Account(Objects.hash(this.loanID) & 0xfffffff, 0);
         this.intristPerPayment = calculateInristPerPayment();
         this.deviation = new Deviation();
@@ -97,7 +96,6 @@ public class Loan implements Serializable {
         this.maxOwnershipMoneyForPercentage = 0;
         this.nextExpectedPaymentAmountDataMember = calculateNextExpectedPaymentAmount(eDeviationPortion.TOTAL);
         this.nextYazToPay = paymentFrequency;
-        this.onSale = false;
     }
 
 
@@ -222,9 +220,7 @@ public class Loan implements Serializable {
         return this.originalInterest / (originalLoanTimeFrame / paymentFrequency);
     }
 
-    public void setOnSale(boolean onSale) {
-        this.onSale = onSale;
-    }
+
 
     public Deviation getDeviation() {
         return deviation;
@@ -258,9 +254,7 @@ public class Loan implements Serializable {
         return totalRemainingFund;
     }
 
-    public boolean isOnSale() {
-        return onSale;
-    }
+
 
     public boolean getSelect() {
         return select;
@@ -493,9 +487,15 @@ public class Loan implements Serializable {
         return (int) ((totalRaisedDeposit / loanOriginalDepth) * 100);
     }
 
-    public int calculateClientLoanOwningPercentage(Client client) {
+    public int calculateClientLoanOwningPercentage(String clientName) {
+        Client client = engine.getDatabase().getClientByname(clientName);
         double clientOwningSum = -1;
+
         for (Lenders lender : lendersList) {
+            //plaster
+            if(lender==null){
+                return -2;
+            }
             if (lender.getFullName().equals(client.getFullName())) {
                 clientOwningSum = lender.getDeposit();
             }

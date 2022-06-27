@@ -1,22 +1,24 @@
-package servlets.client.newLoan;
+package servlets.client.buyLoan;
 
 import com.google.gson.Gson;
 import engine.Engine;
+import exceptions.BalanceException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
-import servletDTO.LoanInformationObj;
+import servletDTO.BuyLoanObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-@WebServlet(name = "NewLoanFromUserServlet", urlPatterns = "/NewLoanFromUser")
-public class NewLoanFromUserServlet extends HttpServlet {
+@WebServlet(name = "BuyLoanServlet", urlPatterns = "/BuyLoan")
+public class BuyLoanServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
@@ -25,17 +27,22 @@ public class NewLoanFromUserServlet extends HttpServlet {
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        LoanInformationObj loanInformationObj = new Gson().fromJson(reqBodyAsString, LoanInformationObj.class);
-        Loan newLoan = new Loan(loanInformationObj.getLoanID(), loanInformationObj.getBorrowerName(), loanInformationObj.getLoanCategory(), loanInformationObj.getLoanOriginalDepth(), loanInformationObj.getOriginalLoanTimeFrame(), loanInformationObj.getPaymentFrequency(), loanInformationObj.getPaymentFrequency());
+        //load LOAN NAME from request body
+        BuyLoanObj buyLoanObj = new Gson().fromJson(reqBodyAsString, BuyLoanObj.class);
+        Loan loan =  systemEngine.getDatabase().getLoanById(buyLoanObj.getLoanID());
+
+        //create buy
         try {
-            systemEngine.addNewLoanFromUser(newLoan);
-        }
-        catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            systemEngine.createLoanBuy(loan,usernameFromSession,buyLoanObj.getSellerName());
+        } catch (BalanceException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getOutputStream().print(e.getMessage());
+            e.printStackTrace();
             return;
         }
-        response.setStatus(200);
 
+
+        System.out.println("request URI is: " + request.getRequestURI());
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
