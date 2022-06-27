@@ -16,4 +16,6 @@ public class Constants {
 
     public final static String LOGIN_PAGE = FULL_SERVER_PATH + "/AdminLoginResponse";
     public final static String USERS_LIST = FULL_SERVER_PATH + "/UsersList";
+    public final static String CLIENTS_INFO= FULL_SERVER_PATH + "/AdminClientInfo";
+    public final static String INCREASE_YAZ= FULL_SERVER_PATH + "/increaseYaz";
 }

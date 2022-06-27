@@ -1,4 +1,4 @@
-package servlets.admin;
+package servlets.client.common;
 
 import com.google.gson.Gson;
 import engine.Engine;
@@ -8,14 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import time.Timeline;
 import utils.ServletUtils;
-import utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@WebServlet(name = "increaseYazServlet", urlPatterns = "/increaseYaz")
-public class IncreaseYazServlet extends HttpServlet {
+@WebServlet(name = "GetCurrYazServlet", urlPatterns = "/GetCurrYaz")
+public class GetCurrYazServlet extends HttpServlet {
 
 
     @Override
@@ -23,8 +22,6 @@ public class IncreaseYazServlet extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
-            Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-            systemEngine.increaseYaz();
             int yaz = Timeline.getCurrTime();
             String jsonResponse = new Gson().toJson(yaz);
             out.print(jsonResponse);

@@ -1,10 +1,9 @@
-package admin.adminClientTable;
-
+package servletDTO.client;
 
 import loan.enums.eLoanStatus;
 import old.ClientObj;
 
-public class ClientLoans {
+public class ClientLoansObj {
     private String Name;
     private double balance;
 
@@ -19,6 +18,21 @@ public class ClientLoans {
     private int asBorrowerActive;
     private int asBorrowerRisk;
     private int asBorrowerFinished;
+
+    public ClientLoansObj(String name, double balance, int asLenderNew, int asLenderPending, int asLenderActive, int asLenderRisk, int asLenderFinished, int asBorrowerNew, int asBorrowerPending, int asBorrowerActive, int asBorrowerRisk, int asBorrowerFinished) {
+        Name = name;
+        this.balance = balance;
+        this.asLenderNew = asLenderNew;
+        this.asLenderPending = asLenderPending;
+        this.asLenderActive = asLenderActive;
+        this.asLenderRisk = asLenderRisk;
+        this.asLenderFinished = asLenderFinished;
+        this.asBorrowerNew = asBorrowerNew;
+        this.asBorrowerPending = asBorrowerPending;
+        this.asBorrowerActive = asBorrowerActive;
+        this.asBorrowerRisk = asBorrowerRisk;
+        this.asBorrowerFinished = asBorrowerFinished;
+    }
 
     public String getName() {
         return Name;
@@ -68,7 +82,7 @@ public class ClientLoans {
         return asBorrowerFinished;
     }
 
-    public ClientLoans(ClientObj clientObj) {
+    public ClientLoansObj(ClientObj clientObj) {
         int lender=1;
         int borrower=0;
         this.Name = clientObj.getFullName();
@@ -86,5 +100,53 @@ public class ClientLoans {
         this.asBorrowerActive = clientObj.getNumberOfLoansByStatus(eLoanStatus.ACTIVE,borrower);
         this.asBorrowerRisk = clientObj.getNumberOfLoansByStatus(eLoanStatus.RISK,borrower);
         this.asBorrowerFinished = clientObj.getNumberOfLoansByStatus(eLoanStatus.FINISHED,borrower);
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setAsLenderNew(int asLenderNew) {
+        this.asLenderNew = asLenderNew;
+    }
+
+    public void setAsLenderPending(int asLenderPending) {
+        this.asLenderPending = asLenderPending;
+    }
+
+    public void setAsLenderActive(int asLenderActive) {
+        this.asLenderActive = asLenderActive;
+    }
+
+    public void setAsLenderRisk(int asLenderRisk) {
+        this.asLenderRisk = asLenderRisk;
+    }
+
+    public void setAsLenderFinished(int asLenderFinished) {
+        this.asLenderFinished = asLenderFinished;
+    }
+
+    public void setAsBorrowerNew(int asBorrowerNew) {
+        this.asBorrowerNew = asBorrowerNew;
+    }
+
+    public void setAsBorrowerPending(int asBorrowerPending) {
+        this.asBorrowerPending = asBorrowerPending;
+    }
+
+    public void setAsBorrowerActive(int asBorrowerActive) {
+        this.asBorrowerActive = asBorrowerActive;
+    }
+
+    public void setAsBorrowerRisk(int asBorrowerRisk) {
+        this.asBorrowerRisk = asBorrowerRisk;
+    }
+
+    public void setAsBorrowerFinished(int asBorrowerFinished) {
+        this.asBorrowerFinished = asBorrowerFinished;
     }
 }
