@@ -4,7 +4,6 @@ import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import common.LoginController;
-
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -30,13 +29,20 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
 
-
 import java.io.Closeable;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -119,7 +125,6 @@ public class ClientMainController implements Closeable {
         loginComponentController.setMainController(this);
         customerMainBodyController.setMainController(this);
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ", currentUserName));
-//        getCurrYaz();
         startListRefresher();
     }
     private void updateYAZ(Integer currYaz) {
@@ -148,46 +153,6 @@ public class ClientMainController implements Closeable {
         currentUserName.set(userName);
     }
 
-
-//    public void getCurrYaz() {
-//
-//        String finalUrl = HttpUrl
-//                .parse(Constants.GET_CURR_YEZ)
-//                .newBuilder()
-//                .build()
-//                .toString();
-//
-//        Request request = new Request.Builder()
-//                .url(finalUrl)
-//                .build();
-//
-//        HttpClientUtil.runAsync(request, new Callback() {
-//
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                Platform.runLater(() ->
-//                        new Alert(Alert.AlertType.ERROR, "Can't GET yaz, request failed").showAndWait()
-//                );
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                if (response.code() != 200) {
-//                    new Alert(Alert.AlertType.ERROR, response.body().string()).showAndWait();
-//                } else {
-//                    Platform.runLater(() -> {
-//                        String jsonArrayOfUsersNames = null;
-//                        try {
-//                            jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
-//                            int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
 
     public void switchToClientDesktop() {
         synchronized (this) {
@@ -277,13 +242,11 @@ public class ClientMainController implements Closeable {
                 //   return false;
             }
         });
-
     }
-}
-
 
     public void createClientDTORequest() throws IOException {
         String finalUrl = HttpUrl
+                //todo parameter name here
                 .parse(Constants.GET_CLIENT_DTO)
                 .newBuilder()
                 .build()
