@@ -32,7 +32,6 @@ public class AdminMainMain extends Application {
 
     @Override
     public void stop() throws Exception {
-        System.out.println("stopppppppppppppp");
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.show();
 
