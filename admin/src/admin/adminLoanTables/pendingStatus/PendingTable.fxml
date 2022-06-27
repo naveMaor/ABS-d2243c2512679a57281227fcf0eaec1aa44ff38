@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.adminLoanTables.pendingStatus.PendingTableController">
+   <children>
+      <TableView fx:id="PendingTable" style="-fx-text-fill: black; -fx-background-color: #c2eaff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+          <TableColumn fx:id="ColumnId" prefWidth="50.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="id" />
+          <TableColumn fx:id="ColumnName" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="name" />
+            <TableColumn fx:id="ColumnStatus" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="status" />
+            <TableColumn fx:id="ColumnCategory" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="category" />
+            <TableColumn fx:id="ColumnAmount" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Amount" />
+            <TableColumn fx:id="ColumnTotalYaz" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Total Yaz" />
+            <TableColumn fx:id="ColumnPayEvery" minWidth="120.0" prefWidth="120.0" resizable="false" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Pay Every (Yazes)" />
+            <TableColumn fx:id="ColumnInterest" prefWidth="84.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Interest %" />
+            <TableColumn fx:id="LendersColumn" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Lenders&amp;Payments" />
+            <TableColumn fx:id="RaisedColmun" prefWidth="84.0" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Raised So Far" />
+            <TableColumn fx:id="LeftToMakeActive" minWidth="120.0" prefWidth="120.0" resizable="false" style="-fx-border-color: white; -fx-background-color: #9cdbff;" text="Left To Make Active" />
+        </columns>
+         <effect>
+            <Glow />
+         </effect>
+      </TableView>
+   </children>
+   <effect>
+      <Glow level="0.23" />
+   </effect>
+</AnchorPane>

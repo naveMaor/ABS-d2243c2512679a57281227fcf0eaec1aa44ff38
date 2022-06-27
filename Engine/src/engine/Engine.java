@@ -33,14 +33,13 @@ public class Engine {
     /*
     This func gets lenders list and return thus sum of their deposit
      */
-    Database database = Database.Database();
+    Database database = Database.Database(); //LODGED
 
     public Engine() {
         database = Database.Database();
     }
 
     public static Engine getInstance() {
-        Object o;
         if (single_instance == null) {
             single_instance = new Engine();
         }

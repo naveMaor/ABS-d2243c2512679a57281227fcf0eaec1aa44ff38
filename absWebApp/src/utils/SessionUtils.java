@@ -15,4 +15,11 @@ public class SessionUtils {
     public static void clearSession (HttpServletRequest request) {
         request.getSession().invalidate();
     }
+
+    public static String getAdminName (HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Object sessionAttribute = session != null ? session.getAttribute(Constants.ADMIN) : null;
+
+        return sessionAttribute != null ? sessionAttribute.toString() : null;
+    }
 }
