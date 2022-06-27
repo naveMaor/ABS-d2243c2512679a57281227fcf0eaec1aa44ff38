@@ -198,6 +198,10 @@ public class Database implements Serializable {
         addClientToClientMap(newClient);
     }
 
+//    public void addAdmin(String usernameFromParameter){
+//
+//    }
+
     public List<String> getLoanNameList(){
         List<Loan> loanList = getLoanList();
         List<String> result = new ArrayList<>();
