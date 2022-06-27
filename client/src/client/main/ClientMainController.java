@@ -224,7 +224,6 @@ public class ClientMainController {
 
 /*    public void createClientRequest() throws IOException {
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.GET_CLIENT)
                 .newBuilder()
                 .build()
@@ -251,7 +250,6 @@ public class ClientMainController {
 
     public void createClientDTORequest() throws IOException {
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.GET_CLIENT_DTO)
                 .newBuilder()
                 .build()

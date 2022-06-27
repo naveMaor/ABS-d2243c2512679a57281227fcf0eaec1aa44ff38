@@ -34,7 +34,6 @@ public class BuyLoanServlet extends HttpServlet {
         systemEngine.createLoanBuy(loan,usernameFromSession,buyLoanObj.getSellerName());
 
 
-        //todo return buy loans list
 
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);

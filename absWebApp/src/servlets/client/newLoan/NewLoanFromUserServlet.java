@@ -26,7 +26,6 @@ public class NewLoanFromUserServlet extends HttpServlet {
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
         LoanInformationObj loanInformationObj = new Gson().fromJson(reqBodyAsString, LoanInformationObj.class);
-        //todo:check if valid loan
         Loan newLoan = new Loan(loanInformationObj.getLoanID(), loanInformationObj.getBorrowerName(), loanInformationObj.getLoanCategory(), loanInformationObj.getLoanOriginalDepth(), loanInformationObj.getOriginalLoanTimeFrame(), loanInformationObj.getPaymentFrequency(), loanInformationObj.getPaymentFrequency());
         try {
             systemEngine.addNewLoanFromUser(newLoan);

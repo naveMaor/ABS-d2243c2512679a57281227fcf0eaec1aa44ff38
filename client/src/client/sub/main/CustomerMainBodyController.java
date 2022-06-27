@@ -78,7 +78,6 @@ public class CustomerMainBodyController {
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        //todo: load table data here
                         customerPaymentBodyController.loadLoanTableData();
                     }
                 }
@@ -87,7 +86,6 @@ public class CustomerMainBodyController {
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        //todo: load table data here
                         buyLoanController.loadTableData();
                     }
                 }

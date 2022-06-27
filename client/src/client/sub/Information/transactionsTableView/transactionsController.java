@@ -104,7 +104,6 @@ public class transactionsController {
 
     private void createTransactionListRequest(){
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.GET_TRANSACTION_LIST)
                 .newBuilder()
                 .build()
