@@ -8,6 +8,7 @@ import customes.Client;
 import loan.enums.eDeviationPortion;
 import loan.enums.eLoanStatus;
 import old.LoanObj;
+import servletDTO.BuyLoanObj;
 import time.Timeline;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ public class Database implements Serializable {
 
     private Map <String, List<Loan>> loanMapByCategory = new HashMap<>();
     private Map<String, Client> clientMap =new HashMap<>();
+    //key of map is client name, value is map of key by loan name and value is the price of the loan
+    private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
         loanMapByCategory = loanMapByCategory;
@@ -206,5 +209,25 @@ public class Database implements Serializable {
         }
         return result;
     }
+
+    public Map<String,List<BuyLoanObj>> getLoanOnSale() {
+        return loanOnSale;
+    }
+
+    public void putLoanOnSale(String clientName, BuyLoanObj buyLoanObj){
+        if(loanOnSale.containsKey(clientName))
+        {
+            loanOnSale.get(clientName).add(buyLoanObj);
+        }
+        else
+        {
+            List<BuyLoanObj> newSellLoanlist = new ArrayList<>();
+            newSellLoanlist.add(buyLoanObj);
+            loanOnSale.put(clientName,newSellLoanlist);
+        }
+        getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
+    }
+
+
 
 }

@@ -493,7 +493,8 @@ public class Loan implements Serializable {
         return (int) ((totalRaisedDeposit / loanOriginalDepth) * 100);
     }
 
-    public int calculateClientLoanOwningPercentage(Client client) {
+    public int calculateClientLoanOwningPercentage(String clientName) {
+        Client client = engine.getDatabase().getClientByname(clientName);
         double clientOwningSum = -1;
         for (Lenders lender : lendersList) {
             if (lender.getFullName().equals(client.getFullName())) {

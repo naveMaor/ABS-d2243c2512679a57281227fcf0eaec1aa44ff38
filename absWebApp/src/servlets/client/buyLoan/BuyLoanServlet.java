@@ -1,4 +1,4 @@
-package servlets.client.information;
+package servlets.client.buyLoan;
 
 import com.google.gson.Gson;
 import engine.Engine;
@@ -15,8 +15,9 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.util.Scanner;
 
-@WebServlet(name = "PutLoanOnSaleServlet", urlPatterns = "/PutLoanOnSell")
-public class PutLoanOnSaleServlet extends HttpServlet {
+@WebServlet(name = "BuyLoanServlet", urlPatterns = "/BuyLoan")
+public class BuyLoanServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
@@ -25,13 +26,15 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        //load LOAN NAME and price from request body
-        String loanName = new Gson().fromJson(reqBodyAsString, String.class);
-        Loan loan = systemEngine.getDatabase().getLoanById(loanName);
-        BuyLoanObj buyLoanObj = new BuyLoanObj(loan,usernameFromSession);
+        //load LOAN NAME from request body
+        BuyLoanObj buyLoanObj = new Gson().fromJson(reqBodyAsString, BuyLoanObj.class);
+        Loan loan =  systemEngine.getDatabase().getLoanById(buyLoanObj.getLoanID());
 
-        //set loan on sale
-        systemEngine.getDatabase().putLoanOnSale(usernameFromSession,buyLoanObj);
+        //create buy
+        systemEngine.createLoanBuy(loan,usernameFromSession,buyLoanObj.getSellerName());
+
+
+        //todo return buy loans list
 
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);

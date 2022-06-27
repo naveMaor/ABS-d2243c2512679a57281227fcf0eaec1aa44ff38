@@ -1,5 +1,6 @@
 package servletDTO;
 
+import customes.Client;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 
@@ -16,7 +17,7 @@ public class LoanInformationObj implements Serializable {
     private boolean select;
     private Integer paymentFrequency;
     private Integer originalLoanTimeFrame;
-    private double totalRemainingFund;
+    private double price;
     private boolean onSale;
 
     public void setSelect(boolean select) {
@@ -36,22 +37,22 @@ public class LoanInformationObj implements Serializable {
         this.originalLoanTimeFrame = originalLoanTimeFrame;
     }
 
-    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double totalRemainingFund, boolean onSale) {
+    public LoanInformationObj(String LoanId, String borrowerName, String loanCategory, eLoanStatus status,double price, boolean onSale) {
         this.loanID = LoanId;
         this.borrowerName = borrowerName;
         this.loanCategory = loanCategory;
         this.status = status;
-        this.totalRemainingFund = totalRemainingFund;
+        this.price = price;
         this.onSale = onSale;
     }
 
-    public LoanInformationObj(Loan loan) {
+    public LoanInformationObj(Loan loan, Client client) {
         this.borrowerName = loan.getBorrowerName();
         this.loanCategory = loan.getLoanCategory();
         this.loanID = loan.getLoanID();
         this.status = loan.getStatus();
-        this.totalRemainingFund = loan.getTotalRemainingFund();
         this.onSale = loan.isOnSale();
+        this.price = loan.getTotalRemainingFund()*loan.calculateClientLoanOwningPercentage(client.getFullName());
     }
 
 
@@ -121,13 +122,12 @@ public class LoanInformationObj implements Serializable {
         this.borrowerName = borrowerName;
     }
 
-
-    public double getTotalRemainingFund() {
-        return totalRemainingFund;
+    public double getPrice() {
+        return price;
     }
 
-    public void setTotalRemainingFund(double totalRemainingFund) {
-        this.totalRemainingFund = totalRemainingFund;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public boolean isOnSale() {

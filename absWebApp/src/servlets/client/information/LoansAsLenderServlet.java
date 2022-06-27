@@ -30,7 +30,8 @@ public class LoansAsLenderServlet extends HttpServlet {
         List<LoanInformationObj> loanInformationObjList =new ArrayList<>();
 
         for(Loan loan:loanList){
-            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus(),loan.getTotalRemainingFund(),loan.isOnSale()));
+            double AsSellerLoanPrice = loan.getTotalRemainingFund()*loan.calculateClientLoanOwningPercentage(usernameFromSession);
+            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus(),AsSellerLoanPrice,loan.isOnSale()));
         }
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(loanInformationObjList);
