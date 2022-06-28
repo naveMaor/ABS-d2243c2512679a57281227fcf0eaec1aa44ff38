@@ -25,12 +25,11 @@ import java.util.TimerTask;
 
 
 public class UsersListController implements Closeable {
-    public final static int REFRESH_RATE = 2000;
+    public final static int REFRESH_RATE = 4000;
     private final BooleanProperty autoUpdate;
     private final IntegerProperty totalUsers;
     private Timer timer;
     private TimerTask listRefresher;
-    private HttpStatusUpdate httpStatusUpdate;
 
     @FXML
     private TitledPane titleTV;
@@ -57,11 +56,6 @@ public class UsersListController implements Closeable {
         titleTV.textProperty().bind(Bindings.concat("ABS Users: (", totalUsers.asString(), ")"));
         clientName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         clientBalance.setCellValueFactory(new PropertyValueFactory<>("clientBalance"));
-    }
-
-    public void setHttpStatusUpdate(HttpStatusUpdate httpStatusUpdate) {
-        this.httpStatusUpdate = httpStatusUpdate;
-
     }
 
     public BooleanProperty autoUpdatesProperty() {

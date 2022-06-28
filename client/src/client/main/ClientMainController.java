@@ -4,9 +4,12 @@ import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import common.LoginController;
-import engine.Engine;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -26,39 +29,62 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class ClientMainController {
+public class ClientMainController implements Closeable {
+    public final static int REFRESH_RATE = 4000;
+    private final IntegerProperty cuerrYaz;
+    private final BooleanProperty autoUpdate;
+    Node header;
+    Node clientDesktop;
+    Node login;
     private Stage primaryStage;
-    @FXML private BorderPane root;
-    @FXML private AnchorPane loginComponent;
-    @FXML private LoginController loginComponentController;
-    @FXML private ScrollPane customerMainBody;
-    @FXML private CustomerMainBodyController customerMainBodyController;
-    //Engine engine = Engine.getInstance();
-    private Engine engine = new Engine();
+    @FXML
+    private BorderPane root;
+    @FXML
+    private AnchorPane loginComponent;
+    @FXML
+    private LoginController loginComponentController;
+    @FXML
+    private ScrollPane customerMainBody;
+    @FXML
+    private CustomerMainBodyController customerMainBodyController;
     private ClientDTOforServlet currClient;
     private NewLoanWindowController newLoanWindowController;
-
+    private Timer timer;
+    private TimerTask listRefresher;
     @FXML
     private Label welcomeLable;
     @FXML
     private Button NewLoan;
     @FXML
-    private Label currentYazLable;
-
-
-
+    private Button currYAZ;
     private StringProperty currentUserName = new SimpleStringProperty();
-    private StringProperty currentYaz = new SimpleStringProperty();
 
+    public ClientMainController() {
+        autoUpdate = new SimpleBooleanProperty();
+        cuerrYaz = new SimpleIntegerProperty();
+        autoUpdate.set(true);
+    }
 
     public void NewManualLoanButton(ActionEvent actionEvent) {
         Stage Newstage = new Stage();
@@ -83,18 +109,9 @@ public class ClientMainController {
         }
     }
 
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
-
-
-
-
-    Node header ;
-    Node clientDesktop ;
-    Node login ;
-
 
     @FXML
     public void initialize() {
@@ -107,22 +124,37 @@ public class ClientMainController {
         root.setTop(null);
         loginComponentController.setMainController(this);
         customerMainBodyController.setMainController(this);
-        welcomeLable.textProperty().bind(Bindings.concat("Welcome ",currentUserName));
-        currentYazLable.textProperty().bind(Bindings.concat(currentYaz));
+        welcomeLable.textProperty().bind(Bindings.concat("Welcome ", currentUserName));
+        startListRefresher();
+    }
+    private void updateYAZ(Integer currYaz) {
+        Platform.runLater(() -> {
+            currYAZ.setText("Current YAZ: " + currYaz);
 
-        //customerMainBody.setFitToWidth(true); // tried to set the node to middle of the screen
-        //CustomerMainBody.setFitToHeight(true);
+        });
     }
 
+    public void startListRefresher() {
+        listRefresher = new client.main.YazRefresher(
+                autoUpdate,
+                this::updateYAZ);
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+
+    @Override
+    public void close() {
+        if (listRefresher != null && timer != null) {
+            listRefresher.cancel();
+            timer.cancel();
+        }
+    }
     public void updateUserName(String userName) {
         currentUserName.set(userName);
     }
 
-    public void updateYaz(int yaz){
-        currentYaz.set(String.valueOf(yaz));
-    }
 
-    public void switchToClientDesktop(){
+    public void switchToClientDesktop() {
         synchronized (this) {
             root.setBottom(null);
             root.setCenter(clientDesktop);
@@ -135,7 +167,6 @@ public class ClientMainController {
 
             customerMainBodyController.loadData();
         }
-
 
 
     }
@@ -154,7 +185,7 @@ public class ClientMainController {
     }
 
 
-    public void createFileRequest(String absolutePath){
+    public void createFileRequest(String absolutePath) {
         File f = new File(absolutePath);
         RequestBody body =
                 new MultipartBody.Builder()
@@ -178,29 +209,29 @@ public class ClientMainController {
             public void onFailure(Call call, IOException e) {
                 Platform.runLater(() ->
                 {
-                    Alert alert = new Alert(Alert.AlertType.ERROR,"Unknown Error");
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Unknown Error");
                     alert.showAndWait();
                 });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.code() != 200){
+                if (response.code() != 200) {
                     Platform.runLater(() ->
                     {
                         try {
 
-                            Alert alert = new Alert(Alert.AlertType.ERROR,response.body().string());
+                            Alert alert = new Alert(Alert.AlertType.ERROR, response.body().string());
                             alert.showAndWait();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     });
-                } else{
+                } else {
                     Platform.runLater(() ->
                     {
                         try {
-                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,response.body().string());
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, response.body().string());
                             alert.showAndWait();
                             loadData();
                         } catch (IOException e) {
@@ -211,37 +242,11 @@ public class ClientMainController {
                 //   return false;
             }
         });
-}
-
-
-/*    public void createClientRequest() throws IOException {
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_CLIENT)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        Response response = HttpClientUtil.execute(request);
-
-        if(response.code() == 200)
-        {
-                String jsonOfClientString = response.body().string();
-                currClient = new Gson().fromJson(jsonOfClientString, Client.class);
-        }
-        else
-        {
-            System.out.println("failed to GET CLIENT");
-        }
-
-    }*/
-
+    }
 
     public void createClientDTORequest() throws IOException {
         String finalUrl = HttpUrl
+                //todo parameter name here
                 .parse(Constants.GET_CLIENT_DTO)
                 .newBuilder()
                 .build()
@@ -253,13 +258,10 @@ public class ClientMainController {
 
         Response response = HttpClientUtil.execute(request);
 
-        if(response.code() == 200)
-        {
-                String jsonOfClientString = response.body().string();
-                currClient = new Gson().fromJson(jsonOfClientString, ClientDTOforServlet.class);
-        }
-        else
-        {
+        if (response.code() == 200) {
+            String jsonOfClientString = response.body().string();
+            currClient = new Gson().fromJson(jsonOfClientString, ClientDTOforServlet.class);
+        } else {
             System.out.println("failed to GET CLIENT");
         }
 
@@ -274,7 +276,7 @@ public class ClientMainController {
         return currClient;
     }
 
-    public void loadData(){
+    public void loadData() {
         customerMainBodyController.loadData();
     }
 }

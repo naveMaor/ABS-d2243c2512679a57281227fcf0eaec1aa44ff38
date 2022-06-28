@@ -39,5 +39,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="client" exported="" />
+    <orderEntry type="module" module-name="admin" />
   </component>
 </module>
