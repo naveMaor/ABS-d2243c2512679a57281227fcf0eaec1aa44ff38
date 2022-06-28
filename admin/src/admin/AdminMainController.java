@@ -2,9 +2,11 @@ package admin;
 
 
 import admin.adminClientTable.adminClientTableController;
+import admin.adminLoanTables.TablesRefresher;
 import admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
 import admin.users.UsersListController;
 import common.LoginController;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -12,15 +14,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import servletDTO.admin.AdminLoanObj;
+
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class AdminMainController {
 
     SimpleBooleanProperty increaseYaz = new SimpleBooleanProperty(false);
+    private Timer timer;
+    private TimerTask listRefresher;
+    public final static int REFRESH_RATE = 2000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
 
     @FXML
     private VBox usersList;
@@ -86,10 +96,12 @@ public class AdminMainController {
 
 
     public void initializeAdminTables() {
-        adminLoanTablesController.initializeLoansTable();
+        //adminLoanTablesController.initializeLoansTable();
         adminClientTableController.initializeClientTable();
+    }
 
-
+    private void loadAdminTablesData(List<AdminLoanObj> adminLoanObj){
+        adminLoanTablesController.initializeLoansTable(adminLoanObj);
     }
 
     public void rewindButtonListener(ActionEvent actionEvent) {
@@ -103,8 +115,18 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
-            initializeAdminTables();
+            startLoanListRefresher();
+            //initializeAdminTables();
             //        this.usersListController.startListRefresher();
         }
+    }
+
+    public void startLoanListRefresher() {
+        listRefresher = new TablesRefresher(
+                this::loadAdminTablesData,
+                autoUpdate
+                );
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 }

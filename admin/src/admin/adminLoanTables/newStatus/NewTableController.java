@@ -14,6 +14,9 @@ import javafx.util.Callback;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
+import servletDTO.admin.AdminLoanObj;
+
+import java.util.List;
 
 public class NewTableController {
 
@@ -26,38 +29,38 @@ public class NewTableController {
     }
 
     @FXML
-    private TableColumn<Loan, Double> ColumnAmount;
+    private TableColumn<AdminLoanObj, Double> ColumnAmount;
 
     @FXML
-    private TableColumn<Loan, String> ColumnCategory;
+    private TableColumn<AdminLoanObj, String> ColumnCategory;
 
     @FXML
-    private TableColumn<Loan, String> ColumnId;
+    private TableColumn<AdminLoanObj, String> ColumnId;
 
     @FXML
-    private TableColumn<Loan, Double> ColumnInterest;
+    private TableColumn<AdminLoanObj, Double> ColumnInterest;
 
     @FXML
-    private TableColumn<Loan, String> ColumnName;
+    private TableColumn<AdminLoanObj, String> ColumnName;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnPayEvery;
+    private TableColumn<AdminLoanObj, Integer> ColumnPayEvery;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> ColumnStatus;
+    private TableColumn<AdminLoanObj, eLoanStatus> ColumnStatus;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnTotalYaz;
+    private TableColumn<AdminLoanObj, Integer> ColumnTotalYaz;
 
     //TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
 
 
     @FXML
-    private TableView<Loan> NewTable;
+    private TableView<AdminLoanObj> NewTable;
 
-    ObservableList<Loan> loanObservableList;
+    ObservableList<AdminLoanObj> loanObservableList;
 
-    private void addButtonToTable() {
+/*    private void addButtonToTable() {
         TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
 
         Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>> cellFactory =
@@ -96,23 +99,29 @@ public class NewTableController {
 
         NewTable.getColumns().add(colBtn);
 
-    }
+    }*/
 
 
     public void initialize(){
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
-        ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        ColumnName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
-        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
-        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
-        ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("loanOriginalDepth"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("interestPercentagePerTimeUnit"));
+        ColumnCategory.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanCategory"));
+        ColumnId.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanID"));
+        ColumnName.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("borrowerName"));
+        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
+        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
+        ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
     }
 
-    public void initializeTable() {
+    public void initializeTable(List<AdminLoanObj> adminLoanObj) {
+        loanObservableList.clear();
+        NewTable.getItems().clear();
         initialize();
-        loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.NEW);
+        for(AdminLoanObj loanObj:adminLoanObj){
+            if(loanObj.getStatus()==eLoanStatus.NEW){
+                loanObservableList.add(loanObj);
+            }
+        }
         NewTable.setItems(loanObservableList);
 
         //mainTablesController.addButtonToTable(NewTable);

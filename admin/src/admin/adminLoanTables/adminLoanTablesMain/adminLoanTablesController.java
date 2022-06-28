@@ -14,6 +14,9 @@ import admin.adminLoanTables.finishedStatus.FinishedTableController;
 import admin.adminLoanTables.newStatus.NewTableController;
 import admin.adminLoanTables.pendingStatus.PendingTableController;
 import admin.adminLoanTables.riskStatus.RiskTableController;
+import servletDTO.admin.AdminLoanObj;
+
+import java.util.List;
 
 public class adminLoanTablesController {
     @FXML AnchorPane NewTable;
@@ -47,12 +50,12 @@ public class adminLoanTablesController {
 
     }
 
-        public void initializeLoansTable(){
-        NewTableController.initializeTable();
-        PendingTableController.initializeTable();
-        ActiveTableController.initializeTable();
-        RiskTableController.initializeTable();
-        FinishedTableController.initialize();
+        public void initializeLoansTable(List<AdminLoanObj> adminLoanObj){
+        NewTableController.initializeTable(adminLoanObj);
+        PendingTableController.initializeTable(adminLoanObj);
+        ActiveTableController.initializeTable(adminLoanObj);
+        RiskTableController.initializeTable(adminLoanObj);
+        FinishedTableController.initializeTable(adminLoanObj);
     }
 
 

@@ -18,8 +18,10 @@ import javafx.util.Callback;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
+import servletDTO.admin.AdminLoanObj;
 
 import java.io.IOException;
+import java.util.List;
 
 public class RiskTableController {
     Engine engine =Engine.getInstance();
@@ -31,49 +33,47 @@ public class RiskTableController {
     }
 
     @FXML
-    private TableColumn<Loan, String> ColumnId;
+    private TableColumn<AdminLoanObj, String> ColumnId;
 
     @FXML
-    private TableColumn<Loan, String> ColumnName;
+    private TableColumn<AdminLoanObj, String> ColumnName;
 
     @FXML
-    private TableColumn<Loan, eLoanStatus> ColumnStatus;
+    private TableColumn<AdminLoanObj, eLoanStatus> ColumnStatus;
 
     @FXML
-    private TableColumn<Loan, String> ColumnCategory;
+    private TableColumn<AdminLoanObj, String> ColumnCategory;
 
     @FXML
-    private TableColumn<Loan, Double> ColumnAmount;
+    private TableColumn<AdminLoanObj, Double> ColumnAmount;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnTotalYaz;
+    private TableColumn<AdminLoanObj, Integer> ColumnTotalYaz;
 
     @FXML
-    private TableColumn<Loan, Integer> ColumnPayEvery;
+    private TableColumn<AdminLoanObj, Integer> ColumnPayEvery;
 
     @FXML
-    private TableColumn<Loan, Double> ColumnInterest;
-
-    @FXML
-    private TableColumn<Loan, Button> LendersColumn;
+    private TableColumn<AdminLoanObj, Double> ColumnInterest;
 
 
     @FXML
-    private TableColumn<Loan, Integer> ActiveStatusYaz;
+    private TableColumn<AdminLoanObj, Integer> ActiveStatusYaz;
 
     @FXML
-    private TableColumn<Loan, Integer> NextPaymentColumn;
+    private TableColumn<AdminLoanObj, Integer> NextPaymentColumn;
 
     @FXML
-    private TableView<Loan> RiskTable;
+    private TableView<AdminLoanObj> RiskTable;
 
 
-    ObservableList<Loan> loanObservableList;
+    ObservableList<AdminLoanObj> loanObservableList;
 
 
 
 
-    public void addButtonToTable(TableView<Loan> table) {
+/*
+    public void addButtonToTable(TableView<AdminLoanObj> table) {
         TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
 
         Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>> cellFactory = new Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>>() {
@@ -109,32 +109,35 @@ public class RiskTableController {
         table.getColumns().add(colBtn);
 
     }
+*/
 
-    public void initializeTable() {
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("totalLoanCostInterestPlusOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
-        ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        ColumnName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
-        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
-        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
-        ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
-        ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("startLoanYaz"));
-        NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
-        LendersColumn.setCellValueFactory(new PropertyValueFactory<Loan, Button>("infoButton"));
+    public void initialize() {
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("totalLoanCostInterestPlusOriginalDepth"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("interestPercentagePerTimeUnit"));
+        ColumnCategory.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanCategory"));
+        ColumnId.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanID"));
+        ColumnName.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("borrowerName"));
+        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
+        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
+        ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
+        ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
+        NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
+    }
 
 
-
-        loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.RISK);
-        for (Loan loan:loanObservableList){
-            //loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
+        public void initializeTable(List<AdminLoanObj> adminLoanObj) {
+        loanObservableList.clear();
+        RiskTable.getItems().clear();
+        for(AdminLoanObj loanObj:adminLoanObj){
+            if(loanObj.getStatus()==eLoanStatus.RISK){
+                loanObservableList.add(loanObj);
+            }
         }
-
         RiskTable.setItems(loanObservableList);
 
         //mainTablesController.addButtonToTable(RiskTable);
     }
-    public void ActiveActionHandle(Loan loan){
+/*    public void ActiveActionHandle(Loan loan){
         //create stage
         Stage stage = new Stage();
         stage.setTitle("lenders info");
@@ -152,7 +155,7 @@ public class RiskTableController {
         Scene scene = new Scene(riskInnerTable);
         stage.setScene(scene);
         stage.show();
-    }
+    }*/
 
 
 }
