@@ -1,5 +1,8 @@
 package admin.adminLoanTables.adminLoanTablesMain;
 
+import admin.adminLoanTables.TablesRefresher;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,6 +20,8 @@ import admin.adminLoanTables.riskStatus.RiskTableController;
 import servletDTO.admin.AdminLoanObj;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class adminLoanTablesController {
     @FXML AnchorPane NewTable;
@@ -30,6 +35,11 @@ public class adminLoanTablesController {
     @FXML AnchorPane FinishedTable;
     @FXML FinishedTableController FinishedTableController;
 
+
+    private Timer timer;
+    private TimerTask listRefresher;
+    public final static int REFRESH_RATE = 2000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
 
     @FXML public void initialize() {
 
@@ -50,7 +60,7 @@ public class adminLoanTablesController {
 
     }
 
-        public void initializeLoansTable(List<AdminLoanObj> adminLoanObj){
+        public void loadAdminTablesData(List<AdminLoanObj> adminLoanObj){
         NewTableController.initializeTable(adminLoanObj);
         PendingTableController.initializeTable(adminLoanObj);
         ActiveTableController.initializeTable(adminLoanObj);
@@ -99,5 +109,17 @@ public class adminLoanTablesController {
         table.getColumns().add(colBtn);
 
     }
+
+
+
+    public void startLoanListRefresher() {
+        listRefresher = new TablesRefresher(
+                this::loadAdminTablesData,
+                autoUpdate
+        );
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+
 
 }

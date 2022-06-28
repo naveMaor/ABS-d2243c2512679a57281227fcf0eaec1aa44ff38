@@ -27,10 +27,7 @@ import java.util.TimerTask;
 public class AdminMainController {
 
     SimpleBooleanProperty increaseYaz = new SimpleBooleanProperty(false);
-    private Timer timer;
-    private TimerTask listRefresher;
-    public final static int REFRESH_RATE = 2000;
-    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+
 
     @FXML
     private VBox usersList;
@@ -71,7 +68,6 @@ public class AdminMainController {
     @FXML
     void IncreaseYazButtonListener(ActionEvent event) {
 //        engine.increaseYaz();
-        initializeAdminTables();
         increaseYaz.setValue(true);
     }
 
@@ -92,17 +88,11 @@ public class AdminMainController {
         LoginPageController.setMainController(this);
         usersListController.setMainController(this);
         usersListController.startListRefresher();
+        adminLoanTablesController.startLoanListRefresher();
     }
 
 
-    public void initializeAdminTables() {
-        //adminLoanTablesController.initializeLoansTable();
-        adminClientTableController.initializeClientTable();
-    }
 
-    private void loadAdminTablesData(List<AdminLoanObj> adminLoanObj){
-        adminLoanTablesController.initializeLoansTable(adminLoanObj);
-    }
 
     public void rewindButtonListener(ActionEvent actionEvent) {
     }
@@ -115,18 +105,10 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
-            startLoanListRefresher();
             //initializeAdminTables();
             //        this.usersListController.startListRefresher();
         }
     }
 
-    public void startLoanListRefresher() {
-        listRefresher = new TablesRefresher(
-                this::loadAdminTablesData,
-                autoUpdate
-                );
-        timer = new Timer();
-        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
-    }
+
 }
