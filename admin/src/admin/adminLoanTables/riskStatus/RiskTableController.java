@@ -133,7 +133,7 @@ public class RiskTableController {
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
-        AddJavaFXCell.addButtonToTable(RiskTable,this::openLoanDetails,"show","lenders");
+        AddJavaFXCell.addButtonToTable(RiskTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
 

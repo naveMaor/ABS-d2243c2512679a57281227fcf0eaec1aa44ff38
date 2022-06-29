@@ -127,7 +127,7 @@ public class PendingTableController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
-        AddJavaFXCell.addButtonToTable(PendingTable,this::openLoanDetails,"show","lenders");
+        AddJavaFXCell.addButtonToTable(PendingTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
 

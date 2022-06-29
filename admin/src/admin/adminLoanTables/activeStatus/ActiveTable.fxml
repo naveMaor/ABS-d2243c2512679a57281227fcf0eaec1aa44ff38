@@ -17,7 +17,6 @@
             <TableColumn fx:id="ColumnTotalYaz" prefWidth="75.0" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Total Yaz" />
             <TableColumn fx:id="ColumnPayEvery" minWidth="96.0" prefWidth="96.0" resizable="false" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Pay Every (Yazes)" />
             <TableColumn fx:id="ColumnInterest" prefWidth="84.0" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Interest %" />
-            <TableColumn fx:id="LendersColumn" minWidth="120.0" prefWidth="120.0" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Lenders&amp;Payments" />
             <TableColumn fx:id="ActiveStatusYaz" minWidth="120.0" prefWidth="96.0" resizable="false" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Active Status Yaz" />
             <TableColumn fx:id="NextPaymentColumn" minWidth="120.0" style="-fx-border-color: white; -fx-background-color: #88cec9;" text="Next Payment" />
         </columns>

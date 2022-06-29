@@ -76,8 +76,6 @@ public class ActiveTableController {
     @FXML
     private TableColumn<AdminLoanObj, Double> ColumnInterest;
 
-    @FXML
-    private TableColumn<AdminLoanObj, Button> LendersColumn;
 
 
     @FXML
@@ -143,7 +141,7 @@ public class ActiveTableController {
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
-        AddJavaFXCell.addButtonToTable(ActiveTable,this::openLoanDetails,"show","lenders");
+        AddJavaFXCell.addButtonToTable(ActiveTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
 

@@ -91,7 +91,7 @@ public class FinishedTableController {
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
         FinishedStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("endLoanYaz"));
-        AddJavaFXCell.addButtonToTable(FinishedTable,this::openLoanDetails,"show","lenders");
+        AddJavaFXCell.addButtonToTable(FinishedTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
 /*    public void ActiveActionHandle(Loan loan){
