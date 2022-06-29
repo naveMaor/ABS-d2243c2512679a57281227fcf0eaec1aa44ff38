@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import engine.Engine;
+import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ActiveInnerTableController {
 
     Engine engine =Engine.getInstance();
 
+    String loanName;
 
     @FXML
     private TableColumn<Lenders, Double> InvestedAmount;
@@ -50,7 +52,7 @@ public class ActiveInnerTableController {
     ObservableList<Payment> PaymentObservableList = FXCollections.observableArrayList();
 
 
-    public void initializeTable(List<Lenders> lendersObservableList,List<Payment> paymentObservableList) {
+    public void initialize() {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
         lenderName.setCellValueFactory(new PropertyValueFactory<Lenders, String>("fullName"));
         fund.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPortion"));
@@ -58,6 +60,9 @@ public class ActiveInnerTableController {
         paymentAmount.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPlusInterest"));
         yaz.setCellValueFactory(new PropertyValueFactory<Payment, Integer>("paymentYaz"));
 
+    }
+
+/*    public void initializeTable(List<Lenders> lendersObservableList,List<Payment> paymentObservableList) {
 
         LendersObservableList.addAll(lendersObservableList);
         PaymentObservableList.addAll(paymentObservableList);
@@ -70,7 +75,26 @@ public class ActiveInnerTableController {
         if(PaymentObservableList.isEmpty()){
             borrowerPayements.disableProperty();
         }
+    }*/
+
+
+    public void setLoanName(String loanName){
+        this.loanName=loanName;
     }
 
+    public void loadTableData(InnerTableObj innerTableObj){
+        LendersObservableList.clear();
+        LendersObservableList.addAll(innerTableObj.getLendersList());
+        PaymentObservableList.clear();
+        PaymentObservableList.addAll(innerTableObj.getPaymentList());
 
+        PaymentObservableList.removeIf(payment -> !payment.getIsPayed());
+
+
+        pendingInnerTable.setItems(LendersObservableList);
+        borrowerPayements.setItems(PaymentObservableList);
+        if(PaymentObservableList.isEmpty()){
+            borrowerPayements.disableProperty();
+        }
+    }
 }

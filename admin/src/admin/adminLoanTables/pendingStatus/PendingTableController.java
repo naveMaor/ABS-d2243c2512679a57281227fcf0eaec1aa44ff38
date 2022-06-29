@@ -1,9 +1,13 @@
 package admin.adminLoanTables.pendingStatus;
 
-import admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
+import admin.adminLoanTables.InnerTablesRefresher;
+import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
+import admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
 import admin.adminLoanTables.pendingStatus.innerTable.PendingInnerTableController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,22 +15,30 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
+import servletDTO.admin.InnerTableObj;
+import util.AddJavaFXCell;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PendingTableController {
 
     Engine engine =Engine.getInstance();
 
-    private adminLoanTablesController mainTablesController;
+    private AdminLoanTablesController mainTablesController;
 
-    public void setMainController(adminLoanTablesController mainTablesController){
+    private Timer timer;
+    private TimerTask listRefresher;
+    public final static int REFRESH_RATE = 2000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    private PendingInnerTableController innerTableController;
+
+    public void setMainController(AdminLoanTablesController mainTablesController){
         this.mainTablesController = mainTablesController;
     }
     @FXML
@@ -62,7 +74,7 @@ public class PendingTableController {
     @FXML
     private TableColumn<AdminLoanObj, Double> LeftToMakeActive;
 
-    ObservableList<AdminLoanObj> loanObservableList;
+    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();
 
 
 
@@ -115,6 +127,7 @@ public class PendingTableController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
+        AddJavaFXCell.addButtonToTable(PendingTable,this::openLoanDetails,"show","lenders");
     }
 
 
@@ -150,5 +163,47 @@ public class PendingTableController {
         stage.show();
     }
 */
+
+    private void openLoanDetails(AdminLoanObj adminLoanObj){
+        activeActionHandle(adminLoanObj.getLoanID());
+    }
+
+
+
+    private void activeActionHandle(String loanName){
+        //create stage
+        Stage stage = new Stage();
+        stage.setTitle("lenders info");
+        //load fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/PendingInnerTable.fxml"));
+        AnchorPane pendingInnerTable = null;
+        try {
+            pendingInnerTable = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //get the controller
+        innerTableController = fxmlLoader.getController();
+        startLoanListRefresher(loanName);
+        Scene scene = new Scene(pendingInnerTable);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void loadInnerTableData(InnerTableObj innerTableObj){
+        innerTableController.loadTableData(innerTableObj);
+    }
+
+
+    public void startLoanListRefresher(String loanName) {
+        listRefresher = new InnerTablesRefresher(
+                this::loadInnerTableData,
+                autoUpdate,
+                loanName
+        );
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
+    }
+
 
 }

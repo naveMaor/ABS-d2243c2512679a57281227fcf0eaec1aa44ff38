@@ -21,6 +21,7 @@ public class Constants {
 
 
     public final static String ADMIN_LOAN_LIST = FULL_SERVER_PATH + "/AdminLoanList";
+    public final static String GET_INNER_TABLE_OBJ = FULL_SERVER_PATH + "/innerTable";
 
 
 }

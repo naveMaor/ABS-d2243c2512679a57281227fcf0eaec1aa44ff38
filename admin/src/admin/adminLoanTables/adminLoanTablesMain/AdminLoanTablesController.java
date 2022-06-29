@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class adminLoanTablesController {
+public class AdminLoanTablesController {
     @FXML AnchorPane NewTable;
     @FXML NewTableController NewTableController;
     @FXML AnchorPane PendingTable;

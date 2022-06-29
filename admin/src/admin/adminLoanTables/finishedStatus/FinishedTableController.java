@@ -1,6 +1,11 @@
 package admin.adminLoanTables.finishedStatus;
 
+import admin.adminLoanTables.InnerTablesRefresher;
+import admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
 import admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,13 +20,23 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
+import servletDTO.admin.InnerTableObj;
+import util.AddJavaFXCell;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FinishedTableController {
 
     Engine engine =Engine.getInstance();
+
+    private Timer timer;
+    private TimerTask listRefresher;
+    public final static int REFRESH_RATE = 2000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    private finishedInnerTableController innerTableController;
 
 
     @FXML
@@ -62,7 +77,7 @@ public class FinishedTableController {
     @FXML
     private TableView<AdminLoanObj> FinishedTable;
 
-    ObservableList<AdminLoanObj> loanObservableList;
+    ObservableList<AdminLoanObj> loanObservableList= FXCollections.observableArrayList();
 
     public void initialize(List<AdminLoanObj> adminLoanObj) {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("loanOriginalDepth"));
@@ -76,6 +91,7 @@ public class FinishedTableController {
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
         FinishedStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("endLoanYaz"));
+        AddJavaFXCell.addButtonToTable(FinishedTable,this::openLoanDetails,"show","lenders");
     }
 
 /*    public void ActiveActionHandle(Loan loan){
@@ -102,10 +118,53 @@ public class FinishedTableController {
         loanObservableList.clear();
         FinishedTable.getItems().clear();
         for(AdminLoanObj loanObj:adminLoanObj){
-            if(loanObj.getStatus()==eLoanStatus.RISK){
+            if(loanObj.getStatus()==eLoanStatus.FINISHED){
                 loanObservableList.add(loanObj);
             }
         }
         FinishedTable.setItems(loanObservableList);
+    }
+
+
+
+    private void openLoanDetails(AdminLoanObj adminLoanObj){
+        activeActionHandle(adminLoanObj.getLoanID());
+    }
+
+
+
+    private void activeActionHandle(String loanName){
+        //create stage
+        Stage stage = new Stage();
+        stage.setTitle("lenders info");
+        //load fxml
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/finishedInnerTable.fxml"));
+        AnchorPane finishedInnerTable = null;
+        try {
+            finishedInnerTable = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //get the controller
+        innerTableController = fxmlLoader.getController();
+        startLoanListRefresher(loanName);
+        Scene scene = new Scene(finishedInnerTable);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void loadInnerTableData(InnerTableObj innerTableObj){
+        innerTableController.loadTableData(innerTableObj);
+    }
+
+
+    public void startLoanListRefresher(String loanName) {
+        listRefresher = new InnerTablesRefresher(
+                this::loadInnerTableData,
+                autoUpdate,
+                loanName
+        );
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 }

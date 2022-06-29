@@ -1,17 +1,13 @@
 package admin.adminLoanTables.newStatus;
 
 
-import admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
+import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
-import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
@@ -22,9 +18,9 @@ public class NewTableController {
 
     private Engine engine =Engine.getInstance();
 
-    private adminLoanTablesController mainTablesController;
+    private AdminLoanTablesController mainTablesController;
 
-    public void setMainController(adminLoanTablesController mainTablesController){
+    public void setMainController(AdminLoanTablesController mainTablesController){
         this.mainTablesController = mainTablesController;
     }
 
@@ -58,7 +54,7 @@ public class NewTableController {
     @FXML
     private TableView<AdminLoanObj> NewTable;
 
-    ObservableList<AdminLoanObj> loanObservableList;
+    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();;
 
 /*    private void addButtonToTable() {
         TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");

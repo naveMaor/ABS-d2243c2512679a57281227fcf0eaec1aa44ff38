@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import engine.Engine;
+import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class riskInnerTableController {
     ObservableList<Payment> PaymentObservableList = FXCollections.observableArrayList();
 
 
-    public void initializeTable(List<Lenders> lendersObservableList, List<Payment> paymentObservableList) {
+    public void initialize() {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
         lenderName.setCellValueFactory(new PropertyValueFactory<Lenders, String>("fullName"));
         fund.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPortion"));
@@ -67,18 +68,6 @@ public class riskInnerTableController {
         paymentAmount.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPlusInterest"));
         yaz.setCellValueFactory(new PropertyValueFactory<Payment, Integer>("paymentYaz"));
         payed.setCellValueFactory(new PropertyValueFactory<Payment, Boolean>("isPayed"));
-
-        LendersObservableList.addAll(lendersObservableList);
-        PaymentObservableList.addAll(paymentObservableList);
-
-
-        pendingInnerTable.setItems(LendersObservableList);
-        borrowerPayements.setItems(PaymentObservableList);
-        customiseFactory(payed);
-        setNotPayedData(paymentObservableList);
-        amountNotPayedLable.textProperty().set(String.valueOf(amountNotPayed));
-        numNotPayedLable.textProperty().set(String.valueOf(numNotPayed));
-
     }
 
 
@@ -117,4 +106,18 @@ public class riskInnerTableController {
         }
     }
 
+    public void loadTableData(InnerTableObj innerTableObj) {
+        LendersObservableList.clear();
+        LendersObservableList.addAll(innerTableObj.getLendersList());
+        PaymentObservableList.clear();
+        PaymentObservableList.addAll(innerTableObj.getPaymentList());
+
+
+        pendingInnerTable.setItems(LendersObservableList);
+        borrowerPayements.setItems(PaymentObservableList);
+        customiseFactory(payed);
+        setNotPayedData(innerTableObj.getPaymentList());
+        amountNotPayedLable.textProperty().set(String.valueOf(amountNotPayed));
+        numNotPayedLable.textProperty().set(String.valueOf(numNotPayed));
+    }
 }

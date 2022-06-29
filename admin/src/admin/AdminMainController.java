@@ -1,15 +1,11 @@
 package admin;
 
 
-import admin.adminClientTable.adminClientTableController;
-import admin.adminLoanTables.TablesRefresher;
-
 import admin.adminClientTable.ClientTableController;
-import admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
+import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
 import admin.users.UsersListController;
 import com.google.gson.Gson;
 import common.LoginController;
-import javafx.beans.property.BooleanProperty;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,17 +24,11 @@ import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import servletDTO.client.ClientLoansObj;
 import util.Constants;
 import util.HttpAdminUtil;
 
 import java.io.IOException;
 import java.util.Objects;
-import servletDTO.admin.AdminLoanObj;
-
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class AdminMainController {
@@ -74,7 +64,7 @@ public class AdminMainController {
 
 
     @FXML
-    private adminLoanTablesController adminLoanTablesController;
+    private AdminLoanTablesController adminLoanTablesController;
 
     @FXML
     private AnchorPane clientsTable;
@@ -153,8 +143,7 @@ public class AdminMainController {
         LoginPageController.setMainController(this);
         usersListController.setMainController(this);
         usersListController.startListRefresher();
-        adminLoanTablesController.startLoanListRefresher();
-        clientsTableController.startListRefresher();
+
 
 
     }
@@ -173,8 +162,8 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
-            //initializeAdminTables();
-            //        this.usersListController.startListRefresher();
+            adminLoanTablesController.startLoanListRefresher();
+            clientsTableController.startListRefresher();
         }
     }
 

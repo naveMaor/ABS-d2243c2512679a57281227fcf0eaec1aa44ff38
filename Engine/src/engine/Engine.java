@@ -604,6 +604,7 @@ public class Engine {
             throw new BalanceException("you do not have enough money");
         }
 
+
         //change client owning loans data
         sellerClient.getClientAsLenderLoanList().remove(loan);
         buyerClient.getClientAsLenderLoanList().add(loan);
@@ -614,6 +615,10 @@ public class Engine {
 
         Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
         sellerAccount.addTnuaToAccount(transactionOfSeller);
+
+        //update balance
+        buyerAccount.setCurrBalance(buyerAccount.getCurrBalance()-price);
+        sellerAccount.setCurrBalance(sellerAccount.getCurrBalance()+price);
 
         //change loan owner
         Lenders SellerAslender = getLenderByName(seller,loan.getLendersList());
