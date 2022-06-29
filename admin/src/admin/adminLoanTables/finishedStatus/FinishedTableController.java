@@ -94,25 +94,7 @@ public class FinishedTableController {
         AddJavaFXCell.addButtonToTable(FinishedTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
-/*    public void ActiveActionHandle(Loan loan){
-        //create stage
-        Stage stage = new Stage();
-        stage.setTitle("lenders info");
-        //load fxml
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/finishedInnerTable.fxml"));
-        AnchorPane finishedInnerTable = null;
-        try {
-            finishedInnerTable = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //get the controller
-        finishedInnerTableController innerTableController = fxmlLoader.getController();
-        innerTableController.initializeTable(loan.getLendersList(),loan.getPaymentsList());
-        Scene scene = new Scene(finishedInnerTable);
-        stage.setScene(scene);
-        stage.show();
-    }*/
+
 
     public void initializeTable(List<AdminLoanObj> adminLoanObj) {
         loanObservableList.clear();
