@@ -13,7 +13,7 @@ public class Client implements Serializable {
     private Account myAccount;
     private List<Loan> clientAsLenderLoanList = new ArrayList<>();//
     private List<Loan> clientAsBorrowLoanList = new ArrayList<>();//
-
+    private String notification = "";
 
 
 
@@ -107,4 +107,11 @@ public class Client implements Serializable {
         return result;
     }
 
+    public String getNotification() {
+        return notification;
+    }
+
+    public void setNotification(String notification) {
+        this.notification = notification;
+    }
 }

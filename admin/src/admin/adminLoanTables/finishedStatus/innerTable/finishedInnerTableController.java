@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import engine.Engine;
+import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
@@ -48,17 +49,20 @@ public class finishedInnerTableController {
     ObservableList<Payment> PaymentObservableList = FXCollections.observableArrayList();
 
 
-    public void initializeTable(List<Lenders> lendersObservableList, List<Payment> paymentObservableList) {
+    public void initialize(List<Lenders> lendersObservableList, List<Payment> paymentObservableList) {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
         lenderName.setCellValueFactory(new PropertyValueFactory<Lenders, String>("fullName"));
         fund.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPortion"));
         interest.setCellValueFactory(new PropertyValueFactory<Payment, Double>("interestPortion"));
         paymentAmount.setCellValueFactory(new PropertyValueFactory<Payment, Double>("fundPlusInterest"));
         yaz.setCellValueFactory(new PropertyValueFactory<Payment, Integer>("paymentYaz"));
+    }
 
-
-        LendersObservableList.addAll(lendersObservableList);
-        PaymentObservableList.addAll(paymentObservableList);
+    public void loadTableData(InnerTableObj innerTableObj){
+        LendersObservableList.clear();
+        LendersObservableList.addAll(innerTableObj.getLendersList());
+        PaymentObservableList.clear();
+        PaymentObservableList.addAll(innerTableObj.getPaymentList());
 
         PaymentObservableList.removeIf(payment -> !payment.getIsPayed());
 

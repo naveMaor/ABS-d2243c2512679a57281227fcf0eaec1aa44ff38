@@ -50,6 +50,7 @@ public class ClientDTOforServlet {
     public ClientDTOforServlet(Client client) {
         this.fullName = client.getFullName();
         this.myAccount = client.getMyAccount();
+        this.notification = client.getNotification();
         for (Loan loan:client.getClientAsLenderLoanList()){
             this.clientAsLenderLoanList.add(new LoanInformationObj(loan,client.getFullName()));
         }

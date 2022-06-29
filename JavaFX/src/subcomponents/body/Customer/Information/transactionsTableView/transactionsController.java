@@ -1,6 +1,7 @@
 package subcomponents.body.Customer.Information.transactionsTableView;
 
 import Money.operations.Transaction;
+import customes.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -87,7 +88,11 @@ public class transactionsController {
 
     public void loadTableData(){
         String customerName=customerInformationBodyCont.customerNameProperty().get();
-        double balance = engine.getDatabase().getClientByname(customerName).getMyAccount().getCurrBalance();
+        Client client = engine.getDatabase().getClientByname(customerName);
+        if(client==null){
+            return;
+        }
+        double balance = client.getMyAccount().getCurrBalance();
         transactionsObservableList =engine.getClientTransactionsList(customerName);
         transactionsTableView.getItems().clear();
         transactionsTableView.setItems(transactionsObservableList);

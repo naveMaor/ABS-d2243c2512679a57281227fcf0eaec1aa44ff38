@@ -1,6 +1,11 @@
 package admin.adminLoanTables.finishedStatus;
 
+import admin.adminLoanTables.InnerTablesRefresher;
+import admin.adminLoanTables.activeStatus.innerTable.ActiveInnerTableController;
 import admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,81 +19,103 @@ import javafx.stage.Stage;
 import loan.Loan;
 import loan.enums.eLoanStatus;
 import engine.Engine;
+import servletDTO.admin.AdminLoanObj;
+import servletDTO.admin.InnerTableObj;
+import util.AddJavaFXCell;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FinishedTableController {
 
     Engine engine =Engine.getInstance();
 
-
-    @FXML
-    private TableColumn<Loan, String> ColumnId;
-
-    @FXML
-    private TableColumn<Loan, String> ColumnName;
-
-    @FXML
-    private TableColumn<Loan, eLoanStatus> ColumnStatus;
-
-    @FXML
-    private TableColumn<Loan, String> ColumnCategory;
-
-    @FXML
-    private TableColumn<Loan, Double> ColumnAmount;
-
-    @FXML
-    private TableColumn<Loan, Integer> ColumnTotalYaz;
-
-    @FXML
-    private TableColumn<Loan, Integer> ColumnPayEvery;
-
-    @FXML
-    private TableColumn<Loan, Double> ColumnInterest;
-
-    @FXML
-    private TableColumn<Loan, Button> LendersColumn;
+    private Timer timer;
+    private TimerTask listRefresher;
+    public final static int REFRESH_RATE = 2000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    private finishedInnerTableController innerTableController;
 
 
     @FXML
-    private TableColumn<Loan, Integer> ActiveStatusYaz;
+    private TableColumn<AdminLoanObj, String> ColumnId;
 
     @FXML
-    private TableColumn<Loan, Integer> NextPaymentColumn;
+    private TableColumn<AdminLoanObj, String> ColumnName;
 
     @FXML
-    private TableColumn<Loan, Integer> FinishedStatusYaz;
+    private TableColumn<AdminLoanObj, eLoanStatus> ColumnStatus;
+
+    @FXML
+    private TableColumn<AdminLoanObj, String> ColumnCategory;
+
+    @FXML
+    private TableColumn<AdminLoanObj, Double> ColumnAmount;
+
+    @FXML
+    private TableColumn<AdminLoanObj, Integer> ColumnTotalYaz;
+
+    @FXML
+    private TableColumn<AdminLoanObj, Integer> ColumnPayEvery;
+
+    @FXML
+    private TableColumn<AdminLoanObj, Double> ColumnInterest;
 
 
     @FXML
-    private TableView<Loan> FinishedTable;
+    private TableColumn<AdminLoanObj, Integer> ActiveStatusYaz;
 
-    ObservableList<Loan> loanObservableList;
+    @FXML
+    private TableColumn<AdminLoanObj, Integer> NextPaymentColumn;
 
-    public void initialize() {
-        ColumnAmount.setCellValueFactory(new PropertyValueFactory<Loan, Double>("loanOriginalDepth"));
-        ColumnInterest.setCellValueFactory(new PropertyValueFactory<Loan, Double>("interestPercentagePerTimeUnit"));
-        ColumnCategory.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanCategory"));
-        ColumnId.setCellValueFactory(new PropertyValueFactory<Loan, String>("loanID"));
-        ColumnName.setCellValueFactory(new PropertyValueFactory<Loan, String>("borrowerName"));
-        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("paymentFrequency"));
-        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("originalLoanTimeFrame"));
-        ColumnStatus.setCellValueFactory(new PropertyValueFactory<Loan, eLoanStatus>("status"));
-        ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("startLoanYaz"));
-        NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("nextYazToPay"));
-        FinishedStatusYaz.setCellValueFactory(new PropertyValueFactory<Loan, Integer>("endLoanYaz"));
-        LendersColumn.setCellValueFactory(new PropertyValueFactory<Loan, Button>("infoButton"));
+    @FXML
+    private TableColumn<AdminLoanObj, Integer> FinishedStatusYaz;
 
-        loanObservableList = engine.getDatabase().o_getAllLoansByStatus(eLoanStatus.FINISHED);
-        for (Loan loan:loanObservableList){
-            //loan.getInfoButton().setOnAction(event -> ActiveActionHandle(loan));
-        }
 
-        FinishedTable.setItems(loanObservableList);
+    @FXML
+    private TableView<AdminLoanObj> FinishedTable;
 
+    ObservableList<AdminLoanObj> loanObservableList= FXCollections.observableArrayList();
+
+    public void initialize(List<AdminLoanObj> adminLoanObj) {
+        ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("loanOriginalDepth"));
+        ColumnInterest.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("interestPercentagePerTimeUnit"));
+        ColumnCategory.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanCategory"));
+        ColumnId.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanID"));
+        ColumnName.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("borrowerName"));
+        ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
+        ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
+        ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
+        ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
+        NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
+        FinishedStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("endLoanYaz"));
+        AddJavaFXCell.addButtonToTable(FinishedTable,this::openLoanDetails,"show","Lenders&Payments");
     }
 
-    public void ActiveActionHandle(Loan loan){
+
+
+    public void initializeTable(List<AdminLoanObj> adminLoanObj) {
+        loanObservableList.clear();
+        FinishedTable.getItems().clear();
+        for(AdminLoanObj loanObj:adminLoanObj){
+            if(loanObj.getStatus()==eLoanStatus.FINISHED){
+                loanObservableList.add(loanObj);
+            }
+        }
+        FinishedTable.setItems(loanObservableList);
+    }
+
+
+
+    private void openLoanDetails(AdminLoanObj adminLoanObj){
+        activeActionHandle(adminLoanObj.getLoanID());
+    }
+
+
+
+    private void activeActionHandle(String loanName){
         //create stage
         Stage stage = new Stage();
         stage.setTitle("lenders info");
@@ -101,10 +128,25 @@ public class FinishedTableController {
             e.printStackTrace();
         }
         //get the controller
-        finishedInnerTableController innerTableController = fxmlLoader.getController();
-        innerTableController.initializeTable(loan.getLendersList(),loan.getPaymentsList());
+        innerTableController = fxmlLoader.getController();
+        startLoanListRefresher(loanName);
         Scene scene = new Scene(finishedInnerTable);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void loadInnerTableData(InnerTableObj innerTableObj){
+        innerTableController.loadTableData(innerTableObj);
+    }
+
+
+    public void startLoanListRefresher(String loanName) {
+        listRefresher = new InnerTablesRefresher(
+                this::loadInnerTableData,
+                autoUpdate,
+                loanName
+        );
+        timer = new Timer();
+        timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }
 }

@@ -1,4 +1,4 @@
-package servlets.admin;
+package servlets.admin.time;
 
 import com.google.gson.Gson;
 import engine.Engine;
@@ -21,12 +21,12 @@ public class IncreaseYazServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain;charset=UTF-8");
+        Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
+        systemEngine.increaseYaz();
+        int yaz = Timeline.getCurrTime();
+        String jsonResponse = new Gson().toJson(yaz);
 
         try (PrintWriter out = response.getWriter()) {
-            Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-            systemEngine.increaseYaz();
-            int yaz = Timeline.getCurrTime();
-            String jsonResponse = new Gson().toJson(yaz);
             out.print(jsonResponse);
             out.flush();
             response.setStatus(HttpServletResponse.SC_OK);

@@ -1,6 +1,7 @@
 package servlets.client.information;
 
 import com.google.gson.Gson;
+import customes.Client;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,14 +27,19 @@ public class LoansAsLenderServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
-        List<Loan> loanList = systemEngine.getDatabase().getClientByname(usernameFromSession).getClientAsLenderLoanList();
+        Gson gson = new Gson();
         List<LoanInformationObj> loanInformationObjList =new ArrayList<>();
 
-        for(Loan loan:loanList){
-            double AsSellerLoanPrice = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(usernameFromSession)/100);
-            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus(),AsSellerLoanPrice));
+        Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
+        if(client!=null){
+            List<Loan> loanList = client.getClientAsLenderLoanList();
+
+            for(Loan loan:loanList){
+                double AsSellerLoanPrice = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(usernameFromSession)/100);
+                loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus(),AsSellerLoanPrice));
+            }
         }
-        Gson gson = new Gson();
+
         String jsonResponse = gson.toJson(loanInformationObjList);
 
         try (PrintWriter out = response.getWriter()) {

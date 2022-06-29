@@ -6,6 +6,7 @@ import customes.Client;
 import customes.Lenders;
 import data.Database;
 import data.File.XmlFile;
+import data.SaveSystemData;
 import data.schema.generated.AbsDescriptor;
 import data.schema.generated.AbsLoan;
 import exceptions.BalanceException;
@@ -16,8 +17,7 @@ import loan.Loan;
 import loan.enums.eLoanStatus;
 import servletDTO.BuyLoanObj;
 import time.Timeline;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -418,6 +418,13 @@ public class Engine {
         loan.UpdateLoanStatusIfNeeded();
     }
 
+    public void updateClientStatusLoanNotification(Loan loan,String status){
+        String borrowerName = loan.getBorrowerName();
+        Client client=database.getClientByname(borrowerName);
+        client.setNotification(client.getNotification()+"\n"+"yaz now "+Timeline.getCurrTime()+" your loan "+loan.getLoanID()+" just turned into " +status);
+    }
+
+
     public int investing_according_to_agreed_risk_management_methodology(List<Loan> loanslistToInvest, double wantedInvestment, String clientName, int maxPercentage) {
         Client client = database.getClientByname(clientName);
         double amountOfMoneyPerLoan, minNeededInvestment, investment;
@@ -570,12 +577,20 @@ public class Engine {
     }
 
     public void increaseYaz() {
+        saveData(Timeline.getCurrTime(),database);
         Timeline.promoteStaticCurrTime();
         List<Loan> loanList = database.getLoanList();
         for (Loan loan : loanList) {
             loan.setNextYazToPay(loan.calculateNextYazToPay());
             if (loan.getNextYazToPay() == 0) {
                 loan.getDeviation().setSkipped(true);
+                //update Notification
+                String borrowerName = loan.getBorrowerName();
+                Client client = database.getClientByname(borrowerName);
+                StringBuilder finalNotification = new StringBuilder();
+                String currNotification = client.getNotification();
+                finalNotification.append(currNotification).append("\n").append("time now is ").append(Timeline.getCurrTime()).append(" its time to pay for the loan ").append(loan.getLoanID());
+                client.setNotification(finalNotification.toString());
             }
             eLoanStatus status = loan.getStatus();
             if ((status == ACTIVE) || (status == RISK)) {
@@ -604,6 +619,7 @@ public class Engine {
             throw new BalanceException("you do not have enough money");
         }
 
+
         //change client owning loans data
         sellerClient.getClientAsLenderLoanList().remove(loan);
         buyerClient.getClientAsLenderLoanList().add(loan);
@@ -614,6 +630,10 @@ public class Engine {
 
         Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
         sellerAccount.addTnuaToAccount(transactionOfSeller);
+
+        //update balance
+        buyerAccount.setCurrBalance(buyerAccount.getCurrBalance()-price);
+        sellerAccount.setCurrBalance(sellerAccount.getCurrBalance()+price);
 
         //change loan owner
         Lenders SellerAslender = getLenderByName(seller,loan.getLendersList());
@@ -654,6 +674,22 @@ public class Engine {
             }
         }
         return result;
+    }
+
+    public void saveData(int yaz, Database database){
+        SaveSystemData saveSystemData = new SaveSystemData(yaz,database);
+        database.addSaveSystemDataToMap(yaz,saveSystemData);
+    }
+
+    public void loadRewindData(int yaz){
+        database.setRewind(true);
+        SaveSystemData saveSystemData = database.getSaveSystemData(yaz);
+        database.setClientMap(saveSystemData.getClientMap());
+        database.setLoanMapByCategory(saveSystemData.getLoanMapByCategory());
+        Timeline.setCurrTime(saveSystemData.getCurrTime());
+        database.setLoanOnSale(saveSystemData.getLoanOnSale());
+        database.setAdminConnected(saveSystemData.isAdminConnected());
+        database.setAdminSet(saveSystemData.getAdminSet());
     }
 }
 

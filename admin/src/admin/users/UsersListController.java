@@ -69,6 +69,7 @@ public class UsersListController implements Closeable {
             totalUsers.set(usersInTheSystem.size());
             usersTableView.getItems().clear();
             usersTableView.getItems().addAll(usersInTheSystem);
+
         });
     }
 

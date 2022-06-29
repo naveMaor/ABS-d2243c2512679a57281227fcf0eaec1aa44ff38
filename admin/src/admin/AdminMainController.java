@@ -1,9 +1,8 @@
 package admin;
 
 
-
 import admin.adminClientTable.ClientTableController;
-import admin.adminLoanTables.adminLoanTablesMain.adminLoanTablesController;
+import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
 import admin.users.UsersListController;
 import com.google.gson.Gson;
 import common.LoginController;
@@ -16,18 +15,17 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import servletDTO.client.ClientLoansObj;
+import servletDTO.ClientDTOforServlet;
+import time.Timeline;
 import util.Constants;
 import util.HttpAdminUtil;
+import util.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -38,6 +36,8 @@ public class AdminMainController {
     SimpleBooleanProperty increaseYaz = new SimpleBooleanProperty(false);
     @FXML
     private Button currYaz;
+
+
     @FXML
     private VBox usersList;
     @FXML
@@ -56,32 +56,33 @@ public class AdminMainController {
     private Button IncreaseYazButtonId;
 
     @FXML
-    private Button LoadFileButtonId;
-
-
-    @FXML
     private AnchorPane adminLoanTables;
 
-
     @FXML
-    private adminLoanTablesController adminLoanTablesController;
+    private AdminLoanTablesController adminLoanTablesController;
 
     @FXML
     private AnchorPane clientsTable;
     @FXML
     private ClientTableController clientsTableController;
 
+    @FXML
+    private ComboBox<Integer> yazComboBox;
+
+
+
+
     private StringProperty currentAdminName = new SimpleStringProperty();
     private StringProperty currentYaz = new SimpleStringProperty();
     private Node login;
     private Node body;
+    private Integer rewindTime = null;
 
 
     @FXML
     void IncreaseYazButtonListener(ActionEvent event) {
-
-
         //noinspection ConstantConditions
+        yazComboBox.getItems().add(Timeline.getCurrTime());
         String finalUrl = HttpUrl
                 .parse(Constants.INCREASE_YAZ)
                 .newBuilder()
@@ -126,6 +127,19 @@ public class AdminMainController {
 
     }
 
+    @FXML
+    public void rewindButtonAction(ActionEvent actionEvent) {
+        rewindTime =yazComboBox.getValue();
+        if(rewindTime==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR,"PLEASE CHOOSE YAZ FIRST!");
+            alert.showAndWait();
+            return;
+        }
+        rewindSystemRequest(rewindTime);
+    }
+
+    public void backToNormalButtonAction(ActionEvent actionEvent) {
+    }
 
     public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleBooleanProperty isYazChanged) {
         //CustomersInformationButtonId.disableProperty().bind(isFileSelected.not());
@@ -143,19 +157,8 @@ public class AdminMainController {
         LoginPageController.setMainController(this);
         usersListController.setMainController(this);
         usersListController.startListRefresher();
-        clientsTableController.startListRefresher();
-
-
     }
 
-
-    public void initializeAdminTables() {
-        adminLoanTablesController.initializeLoansTable();
-//        clientsTableController.initializeClientTable();
-    }
-
-    public void rewindButtonListener(ActionEvent actionEvent) {
-    }
 
     public void updateAdminName(String userName) {
         currentAdminName.set(userName);
@@ -165,8 +168,58 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
-            initializeAdminTables();
-            //        this.usersListController.startListRefresher();
+            adminLoanTablesController.startLoanListRefresher();
+            clientsTableController.startListRefresher();
+        }
+    }
+
+    private void rewindSystemRequest(int yaz){
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(yaz,int.class);
+
+        RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
+
+        String finalUrl = HttpUrl
+                .parse(Constants.REWIND_TIME)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .post(body)
+                .build();
+
+
+        Response response = HttpClientUtil.execute(request);
+
+        if (response.code() == 200) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now READONLY mode at yaz "+yaz);
+            alert.showAndWait();
+        } else {
+            System.out.println("failed to GET CLIENT");
+        }
+
+    }
+
+    private void backToNormalSystemRequest(){
+        String finalUrl = HttpUrl
+                .parse(Constants)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+
+        Response response = HttpClientUtil.execute(request);
+
+        if (response.code() == 200) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now back to narmal mode");
+            alert.showAndWait();
+        } else {
+            System.out.println("failed to GET CLIENT");
         }
     }
 }
