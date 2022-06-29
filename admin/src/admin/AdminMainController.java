@@ -55,9 +55,6 @@ public class AdminMainController {
     @FXML
     private Button IncreaseYazButtonId;
 
-    @FXML
-    private Button LoadFileButtonId;
-
 
     @FXML
     private AnchorPane adminLoanTables;

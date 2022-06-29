@@ -576,6 +576,13 @@ public class Engine {
             loan.setNextYazToPay(loan.calculateNextYazToPay());
             if (loan.getNextYazToPay() == 0) {
                 loan.getDeviation().setSkipped(true);
+                //update Notification
+                String borrowerName = loan.getBorrowerName();
+                Client client = database.getClientByname(borrowerName);
+                StringBuilder finalNotification = new StringBuilder();
+                String currNotification = client.getNotification();
+                finalNotification.append(currNotification).append("\n").append("time now is ").append(Timeline.getCurrTime()).append(" its time to pay for the loan ").append(loan.getLoanID());
+                client.setNotification(finalNotification.toString());
             }
             eLoanStatus status = loan.getStatus();
             if ((status == ACTIVE) || (status == RISK)) {
