@@ -362,6 +362,7 @@ public class Loan implements Serializable {
     public void UpdateLoanStatusIfNeeded() {
         if ((!lendersList.isEmpty()) && (status == eLoanStatus.NEW)) {
             setStatus(eLoanStatus.PENDING);
+            engine.updateClientStatusLoanNotification(this,"pending");
         }
         if (loanAccount.getCurrBalance() == getLoanOriginalDepth()) {
             setStatus(eLoanStatus.ACTIVE);
@@ -379,6 +380,7 @@ public class Loan implements Serializable {
         loanAccount.setCurrBalance(0);
         //Timeline startingLoanTimeStamp = new Timeline (Timeline.getCurrTime());
         startLoanYaz = Timeline.getCurrTime();
+        engine.updateClientStatusLoanNotification(this,"active");
     }
 
     public void updateDynamicDataMembersAfterPayment(double interest, double fund) {

@@ -25,7 +25,10 @@ public class getClientDTOservlet extends HttpServlet {
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
-
+        if(client==null){
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         ClientDTOforServlet clientDTOforServlet = new ClientDTOforServlet(client);
 
 

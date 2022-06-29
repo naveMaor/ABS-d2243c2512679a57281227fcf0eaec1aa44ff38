@@ -1,5 +1,6 @@
 package data;
 
+import data.File.DataToFileDataFromFile;
 import old.ClientObj;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,8 +32,13 @@ public class Database implements Serializable {
     private Map<String, Client> clientMap =new HashMap<>();
     private Set<String> adminSet =new HashSet<>();
     private boolean isAdminConnected =false;
-    //key of map is client name, value is list map of loan buy object
+    //key of map is client name, value is list loan on sale object
     private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
+
+    //map by yaz and system data
+    private Map<Integer, SaveSystemData> systemHistory;
+    private boolean rewind=false;
+
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
         loanMapByCategory = loanMapByCategory;
@@ -254,4 +260,31 @@ public class Database implements Serializable {
         //getLoanById(buyLoanObj.getLoanID()).setOnSale(true);
     }
 
+    public void addSaveSystemDataToMap(int yaz,SaveSystemData saveSystemData){
+        systemHistory.put(yaz,saveSystemData);
+    }
+
+    public SaveSystemData getSaveSystemData(int yaz){
+      return systemHistory.get(yaz);
+    }
+
+    public void setAdminSet(Set<String> adminSet) {
+        this.adminSet = adminSet;
+    }
+
+    public Set<String> getAdminSet() {
+        return adminSet;
+    }
+
+    public void setLoanOnSale(Map<String, List<BuyLoanObj>> loanOnSale) {
+        this.loanOnSale = loanOnSale;
+    }
+
+    public boolean isRewind() {
+        return rewind;
+    }
+
+    public void setRewind(boolean rewind) {
+        this.rewind = rewind;
+    }
 }

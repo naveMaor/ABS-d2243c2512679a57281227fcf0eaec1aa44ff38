@@ -1,4 +1,4 @@
-package servlets.admin;
+package servlets.admin.time;
 
 import com.google.gson.Gson;
 import engine.Engine;
@@ -13,25 +13,24 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Scanner;
 
-@WebServlet(name = "RewindTimeServlet", urlPatterns = "/RewindTime")
+@WebServlet(name = "RewindTimeServlet", urlPatterns = "/rewindTime")
 public class RewindTimeServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain;charset=UTF-8");
 
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
-        List<Loan> loanList = systemEngine.getDatabase().getLoanList();
 
-        Gson gson = new Gson();
-        String jsonResponse = gson.toJson(loanList);
+        Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
+        String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        try (PrintWriter out = response.getWriter()) {
-            out.print(jsonResponse);
-            out.flush();
-        }
+        int yaz = new Gson().fromJson(reqBodyAsString, int.class);
+        systemEngine.loadRewindData(yaz);
+
         System.out.println("request URI is: " + request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_OK);
 

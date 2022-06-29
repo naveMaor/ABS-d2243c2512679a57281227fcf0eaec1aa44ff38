@@ -1,4 +1,4 @@
-package servlets.admin;
+package servlets.admin.time;
 
 import com.google.gson.Gson;
 import engine.Engine;
