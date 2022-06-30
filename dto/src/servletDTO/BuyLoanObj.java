@@ -107,4 +107,18 @@ public class BuyLoanObj {
     public void setPrice(double price) {
         this.price = price;
     }
+
+
+    public BuyLoanObj(BuyLoanObj other) {
+        this.loanCategory = other.getLoanCategory();
+        this.loanID = other.getLoanID();
+        this.borrowerName = other.getBorrowerName();
+        this.sellerName = other.getSellerName();
+        this.loanOriginalDepth = other.getLoanOriginalDepth();
+        this.originalLoanTimeFrame = other.getOriginalLoanTimeFrame();
+        this.paymentFrequency = other.getPaymentFrequency();
+        this.interestPercentagePerTimeUnit = other.getInterestPercentagePerTimeUnit();
+        this.totalLoanCostInterestPlusOriginalDepth = other.getTotalLoanCostInterestPlusOriginalDepth();
+        this.price = other.getPrice();
+    }
 }

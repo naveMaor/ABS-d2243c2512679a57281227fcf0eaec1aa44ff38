@@ -114,4 +114,36 @@ public class Client implements Serializable {
     public void setNotification(String notification) {
         this.notification = notification;
     }
+
+    public int getNumberOfLoansByStatus(eLoanStatus eLoanStatus,int lenderOrBorrower){
+        int lender=1;
+        int borrower=0;
+        int result=0;
+        if(lenderOrBorrower==lender){
+            for (Loan loanObj:clientAsLenderLoanList) {
+                if(loanObj.getStatus()==eLoanStatus){
+                    ++result;
+                }
+            }
+        }
+        else{
+            for (Loan loanObj:clientAsBorrowLoanList) {
+                if(loanObj.getStatus()==eLoanStatus){
+                    ++result;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    @SuppressWarnings("IncompleteCopyConstructor")
+    public Client(Client other) {
+        this.fullName = other.getFullName();
+        this.myAccount = new Account(other.myAccount);
+        this.clientAsLenderLoanList = new ArrayList<>(other.clientAsLenderLoanList);
+        this.clientAsBorrowLoanList = new ArrayList<>(other.clientAsBorrowLoanList);
+        this.notification = other.getNotification();
+    }
 }
+

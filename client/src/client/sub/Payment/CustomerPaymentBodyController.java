@@ -421,7 +421,6 @@ public class CustomerPaymentBodyController {
                 Platform.runLater(() -> {
                     try {
                         if(response.code()==200){
-                            //todo add update notification from client
                             loanListForTable.clear();
                             ReleventLoansTable.getItems().clear();
                             String jsonOfClientString = response.body().string();

@@ -1,6 +1,5 @@
 package data;
 
-import data.File.DataToFileDataFromFile;
 import old.ClientObj;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,7 +35,8 @@ public class Database implements Serializable {
     private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
 
     //map by yaz and system data
-    private Map<Integer, SaveSystemData> systemHistory;
+    private Map<Integer, SaveSystemData> systemHistory= new HashMap<>();
+    private SaveSystemData normalSystem;
     private boolean rewind=false;
 
 
@@ -44,7 +44,7 @@ public class Database implements Serializable {
         loanMapByCategory = loanMapByCategory;
     }
     public void setClientMap(Map<String, Client> clientMap) {
-        clientMap = clientMap;
+        this.clientMap = clientMap;
     }
 
 
@@ -264,7 +264,7 @@ public class Database implements Serializable {
         systemHistory.put(yaz,saveSystemData);
     }
 
-    public SaveSystemData getSaveSystemData(int yaz){
+    public SaveSystemData getSavedSystemData(int yaz){
       return systemHistory.get(yaz);
     }
 
@@ -286,5 +286,13 @@ public class Database implements Serializable {
 
     public void setRewind(boolean rewind) {
         this.rewind = rewind;
+    }
+
+    public SaveSystemData getNormalSystem() {
+        return normalSystem;
+    }
+
+    public void setNormalSystem(SaveSystemData normalSystem) {
+        this.normalSystem = normalSystem;
     }
 }

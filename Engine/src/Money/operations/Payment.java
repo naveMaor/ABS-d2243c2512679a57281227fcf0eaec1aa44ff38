@@ -81,4 +81,13 @@ public class Payment implements Serializable {
                  payed +
                 '}';*/
     }
+
+    @SuppressWarnings("IncompleteCopyConstructor")
+    public Payment(Payment other) {
+        this.fundPortion = other.getFundPortion();
+        this.interestPortion = other.getInterestPortion();
+        this.paymentYaz = other.getPaymentYaz();
+        this.fundPlusInterest = other.getFundPlusInterest();
+        this.isPayed = other.getIsPayed();
+    }
 }

@@ -3,10 +3,12 @@ package common;
 import admin.AdminMainController;
 import client.main.ClientMainController;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -28,7 +30,10 @@ public class LoginController {
     @FXML
     public TextField userNameTextField;
 
-
+    @FXML
+    public Button loginButton;
+    @FXML
+    public Button quitButton;
 
     @FXML
     public Label errorMessageLabel;
@@ -107,4 +112,8 @@ public class LoginController {
         this.mainController = mainController;
     }
 
+    public void bindProperties(BooleanProperty isRewind) {
+        userNameTextField.disableProperty().bind(isRewind);
+        loginButton.disableProperty().bind(isRewind);
+    }
 }

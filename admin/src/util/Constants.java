@@ -18,7 +18,8 @@ public class Constants {
     public final static String USERS_LIST = FULL_SERVER_PATH + "/UsersList";
     public final static String CLIENTS_INFO= FULL_SERVER_PATH + "/AdminClientInfo";
     public final static String INCREASE_YAZ= FULL_SERVER_PATH + "/increaseYaz";
-    public final static String REWIND_TIME= FULL_SERVER_PATH + "/RewindTime";
+    public final static String REWIND_TIME= FULL_SERVER_PATH + "/rewindTime";
+    public final static String LOAD_NORMAL_DATA= FULL_SERVER_PATH + "/loadNormal";
 
 
     public final static String ADMIN_LOAN_LIST = FULL_SERVER_PATH + "/AdminLoanList";
