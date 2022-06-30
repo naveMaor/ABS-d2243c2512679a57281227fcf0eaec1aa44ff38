@@ -1,5 +1,6 @@
 package servletDTO.client;
 
+import customes.Client;
 import loan.enums.eLoanStatus;
 import old.ClientObj;
 
@@ -82,7 +83,7 @@ public class ClientLoansObj {
         return asBorrowerFinished;
     }
 
-    public ClientLoansObj(ClientObj clientObj) {
+    public ClientLoansObj(Client clientObj) {
         int lender=1;
         int borrower=0;
         this.Name = clientObj.getFullName();

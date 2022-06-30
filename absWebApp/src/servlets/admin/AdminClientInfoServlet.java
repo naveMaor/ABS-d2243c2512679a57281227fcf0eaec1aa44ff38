@@ -1,6 +1,8 @@
 package servlets.admin;
 
 import com.google.gson.Gson;
+import customes.Client;
+import data.Database;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import old.ClientObj;
 import servletDTO.client.ClientLoansObj;
+import time.Timeline;
 import utils.ServletUtils;
 
 import java.io.IOException;
@@ -25,9 +28,10 @@ public class AdminClientInfoServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Gson gson = new Gson();
             Engine engine = ServletUtils.getSystemEngine(getServletContext());
-            List<ClientObj> clientsObjList = engine.getDatabase().getClientsObjList();
+
+            List<Client> clientsObjList = engine.getDatabase().getClientsList();
             ObservableList<ClientLoansObj> clientLoansObservableList = FXCollections.observableArrayList();
-            for (ClientObj clientObj:clientsObjList){
+            for (Client clientObj:clientsObjList){
                 ClientLoansObj clientLoans = new ClientLoansObj(clientObj);
                 clientLoansObservableList.add(clientLoans);
             }

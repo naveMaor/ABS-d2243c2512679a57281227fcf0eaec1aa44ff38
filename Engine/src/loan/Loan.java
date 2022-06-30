@@ -98,6 +98,38 @@ public class Loan implements Serializable {
         this.nextYazToPay = paymentFrequency;
     }
 
+    @SuppressWarnings("IncompleteCopyConstructor")
+    public Loan(Loan other) {
+        this.engine = new Engine();
+        this.loanCategory = other.getLoanCategory();
+        this.status = other.getStatus();
+        this.loanID = other.getLoanID();
+        this.borrowerName = other.getBorrowerName();
+        this.lendersList = new ArrayList<>(other.lendersList);
+        this.paymentsList = new ArrayList<>(other.paymentsList);
+        this.originalLoanTimeFrame = other.getOriginalLoanTimeFrame();
+        this.startLoanYaz = other.getStartLoanYaz();
+        this.paymentFrequency = other.getPaymentFrequency();
+        this.endLoanYaz = other.getEndLoanYaz();
+        this.interestPercentagePerTimeUnit = other.getInterestPercentagePerTimeUnit();
+        this.intristPerPayment = other.getIntristPerPayment();
+        this.fundPerPayment = other.getFundPerPayment();
+        this.originalInterest = other.getOriginalInterest();
+        this.loanOriginalDepth = other.getLoanOriginalDepth();
+        this.totalLoanCostInterestPlusOriginalDepth = other.getTotalLoanCostInterestPlusOriginalDepth();
+        this.payedInterest = other.getPayedInterest();
+        this.payedFund = other.getPayedFund();
+        this.deviation = other.getDeviation();
+        this.missingMoney = other.getMissingMoney();
+        this.totalRaisedDeposit = other.getTotalRaisedDeposit();
+        this.nextYazToPay = other.getNextYazToPay();
+        this.maxOwnershipMoneyForPercentage = other.getMaxOwnershipMoneyForPercentage();
+        this.nextExpectedPaymentAmountDataMember = other.getNextExpectedPaymentAmountDataMember();
+        this.totalRemainingLoan = other.getTotalRemainingLoan();
+        this.totalRemainingFund = other.getTotalRemainingFund();
+        this.loanAccount = new Account(other.getLoanAccount());
+        this.select = other.getSelect();
+    }
 
     public final double calculateCurrInterestDepth() {
         return originalInterest - payedInterest;

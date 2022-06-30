@@ -6,28 +6,31 @@ import loan.Loan;
 import servletDTO.BuyLoanObj;
 import time.Timeline;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SaveSystemData {
 
-    private Map<String, List<Loan>> loanMapByCategory;
-    private Map<String, Client> clientMap;
+    private Map<String, List<Loan>> loanMapByCategory =new HashMap<>();
+    private Map<String, Client> clientMap = new HashMap<>();
     private int currTime;
-    private Map<String,List<BuyLoanObj>> loanOnSale;
+    private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
     private boolean isAdminConnected;
     private Set<String> adminSet =new HashSet<>();
 
 
     public SaveSystemData(int yaz, Database database) {
-        this.loanMapByCategory = database.getLoanMapByCategory();
-        this.clientMap = database.getClientMap();
+        for(Loan loan:database.getLoanList()){
+            Loan newLoan = new Loan(loan);
+            addLoanToLoanMap(newLoan);
+        }
+        for(Client client:database.getClientsList()){
+            Client newClient = new Client(client);
+            addClientToClientMap(newClient);
+        }
         this.currTime = yaz;
-        this.loanOnSale = database.getLoanOnSale();
+        this.loanOnSale = copyLoanOnSaleMap(database.getLoanOnSale());
         this.isAdminConnected = database.isAdminConnected();
-        this.adminSet =database.getAdminSet();
+        this.adminSet =new HashSet<>(database.getAdminSet());
     }
 
     public Map<String, List<Loan>> getLoanMapByCategory() {
@@ -52,5 +55,40 @@ public class SaveSystemData {
 
     public Set<String> getAdminSet() {
         return adminSet;
+    }
+
+
+    private void addLoanToLoanMap(Loan newLoanNode){
+        String category= newLoanNode.getLoanCategory();
+        if(loanMapByCategory.containsKey(category))
+        {
+            loanMapByCategory.get(category).add(newLoanNode);
+        }
+        else
+        {
+            List<Loan> newLoanlist = new ArrayList<>();
+            newLoanlist.add(newLoanNode);
+            loanMapByCategory.put(category,newLoanlist);
+        }
+        Client LoanBorrower = clientMap.get(newLoanNode.getBorrowerName());
+        LoanBorrower.addLoanAsBorrower(newLoanNode);
+    }
+
+    private void addClientToClientMap(Client newClientNode){
+        clientMap.put(newClientNode.getFullName(), newClientNode);
+    }
+
+    private Map<String,List<BuyLoanObj>> copyLoanOnSaleMap(Map<String,List<BuyLoanObj>> other){
+        List<BuyLoanObj> newBuyLoanObjList = new ArrayList<>();
+        Map<String,List<BuyLoanObj>> result= new HashMap<>();
+        for (Map.Entry<String, List<BuyLoanObj>> entry : other.entrySet()) {
+            List<BuyLoanObj> BuyLoanObjList = entry.getValue();
+            for(BuyLoanObj buyLoanObj:BuyLoanObjList){
+                BuyLoanObj newbuyLoan = new BuyLoanObj(buyLoanObj);
+                newBuyLoanObjList.add(newbuyLoan);
+            }
+            result.put(entry.getKey(),newBuyLoanObjList);
+        }
+        return result;
     }
 }

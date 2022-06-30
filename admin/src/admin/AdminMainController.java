@@ -7,6 +7,7 @@ import admin.users.UsersListController;
 import com.google.gson.Gson;
 import common.LoginController;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -50,10 +51,14 @@ public class AdminMainController {
     private BorderPane rootBP;
 
     @FXML
+    private Button rewindButton;
+    @FXML
     private Button CustomersInformationButtonId;
 
     @FXML
-    private Button IncreaseYazButtonId;
+    private Button IncreaseYazButton;
+    @FXML
+    private Button backToNormalButton;
 
     @FXML
     private AnchorPane adminLoanTables;
@@ -74,6 +79,7 @@ public class AdminMainController {
 
     private StringProperty currentAdminName = new SimpleStringProperty();
     private StringProperty currentYaz = new SimpleStringProperty();
+    private BooleanProperty isRewind = new SimpleBooleanProperty();
     private Node login;
     private Node body;
     private Integer rewindTime = null;
@@ -82,7 +88,6 @@ public class AdminMainController {
     @FXML
     void IncreaseYazButtonListener(ActionEvent event) {
         //noinspection ConstantConditions
-        yazComboBox.getItems().add(Timeline.getCurrTime());
         String finalUrl = HttpUrl
                 .parse(Constants.INCREASE_YAZ)
                 .newBuilder()
@@ -106,7 +111,8 @@ public class AdminMainController {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.code() != 200) {
-                    new Alert(Alert.AlertType.ERROR, response.body().string()).showAndWait();
+                    Alert alert = new Alert(Alert.AlertType.ERROR, response.body().string());
+                    alert.showAndWait();
                 } else {
                     Platform.runLater(() -> {
                         increaseYaz.setValue(true);
@@ -115,6 +121,7 @@ public class AdminMainController {
                             jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
                             int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
                             currYaz.setText("Current YAZ: "+ responseYaz);
+                            yazComboBox.getItems().add(responseYaz-1);
                         } catch (IOException e) {
                             e.printStackTrace();
 
@@ -139,14 +146,9 @@ public class AdminMainController {
     }
 
     public void backToNormalButtonAction(ActionEvent actionEvent) {
+        backToNormalSystemRequest();
     }
 
-    public void bindProperties(SimpleBooleanProperty isFileSelected, SimpleStringProperty selectedFileProperty, SimpleBooleanProperty isYazChanged) {
-        //CustomersInformationButtonId.disableProperty().bind(isFileSelected.not());
-        IncreaseYazButtonId.disableProperty().bind(isFileSelected.not());
-        //LoadFileButtonId.disableProperty().bind(isFileSelected.not());
-        isYazChanged.bindBidirectional(increaseYaz);
-    }
 
 
     @FXML
@@ -157,6 +159,10 @@ public class AdminMainController {
         LoginPageController.setMainController(this);
         usersListController.setMainController(this);
         usersListController.startListRefresher();
+        IncreaseYazButton.disableProperty().bind(isRewind);
+        rewindButton.disableProperty().bind(isRewind);
+        backToNormalButton.disableProperty().bind(isRewind.not());
+        LoginPageController.bindProperties(isRewind);
     }
 
 
@@ -193,17 +199,26 @@ public class AdminMainController {
         Response response = HttpClientUtil.execute(request);
 
         if (response.code() == 200) {
+            String respon = null;
+            try {
+                respon = Objects.requireNonNull(response.body()).string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int responseYaz = new Gson().fromJson(respon, int.class);
+            currYaz.setText("Current YAZ: "+ responseYaz);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now READONLY mode at yaz "+yaz);
             alert.showAndWait();
+            isRewind.setValue(true);
         } else {
-            System.out.println("failed to GET CLIENT");
+            System.out.println("failed to REWIND");
         }
 
     }
 
     private void backToNormalSystemRequest(){
         String finalUrl = HttpUrl
-                .parse(Constants)
+                .parse(Constants.LOAD_NORMAL_DATA)
                 .newBuilder()
                 .build()
                 .toString();
@@ -216,10 +231,19 @@ public class AdminMainController {
         Response response = HttpClientUtil.execute(request);
 
         if (response.code() == 200) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now back to narmal mode");
+            String respon = null;
+            try {
+                respon = Objects.requireNonNull(response.body()).string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int responseYaz = new Gson().fromJson(respon, int.class);
+            currYaz.setText("Current YAZ: "+ responseYaz);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now back to normal mode");
+            isRewind.setValue(false);
             alert.showAndWait();
         } else {
-            System.out.println("failed to GET CLIENT");
+            System.out.println("failed to LOAD NORMAL DATA");
         }
     }
 }

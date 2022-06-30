@@ -53,7 +53,9 @@ public class Lenders implements Serializable {
                 '}';
     }
 
-
-
+    public Lenders(Lenders other) {
+        this.fullName = other.getFullName();
+        this.deposit = other.getDeposit();
+    }
 }
 

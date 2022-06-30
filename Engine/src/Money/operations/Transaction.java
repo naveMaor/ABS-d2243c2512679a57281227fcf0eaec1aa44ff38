@@ -37,6 +37,10 @@ public class Transaction implements Serializable {
         return shai ;
     }           // same "Sign" of transaction +/-
 
+    public char getSign() {
+        return sign;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(timeOfMovement, to_from);
@@ -88,6 +92,13 @@ public class Transaction implements Serializable {
         this.sum = sum;
     }
 
-
-
+    @SuppressWarnings("IncompleteCopyConstructor")
+    public Transaction(Transaction other) {
+        this.timeOfMovement = other.getTimeOfMovement();
+        this.sum = other.getSum();
+        this.to_from = other.getTo_from();
+        this.sign = other.getSign();
+        this.balanceBefore = other.getBalanceBefore();
+        this.balanceAfter = other.getBalanceAfter();
+    }
 }

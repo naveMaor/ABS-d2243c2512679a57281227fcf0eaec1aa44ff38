@@ -21,9 +21,7 @@ import time.Timeline;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static loan.enums.eLoanStatus.ACTIVE;
 import static loan.enums.eLoanStatus.RISK;
@@ -682,14 +680,28 @@ public class Engine {
     }
 
     public void loadRewindData(int yaz){
-        database.setRewind(true);
-        SaveSystemData saveSystemData = database.getSaveSystemData(yaz);
-        database.setClientMap(saveSystemData.getClientMap());
-        database.setLoanMapByCategory(saveSystemData.getLoanMapByCategory());
-        Timeline.setCurrTime(saveSystemData.getCurrTime());
-        database.setLoanOnSale(saveSystemData.getLoanOnSale());
-        database.setAdminConnected(saveSystemData.isAdminConnected());
-        database.setAdminSet(saveSystemData.getAdminSet());
+        if(!database.isRewind()){
+            database.setNormalSystem(new SaveSystemData(Timeline.getCurrTime(),database));
+            database.setRewind(true);
+        }
+        SaveSystemData savedSystemData = database.getSavedSystemData(yaz);
+        database.setClientMap(new HashMap<>(savedSystemData.getClientMap()));
+        database.setLoanMapByCategory(new HashMap<>(savedSystemData.getLoanMapByCategory()));
+        Timeline.setCurrTime(savedSystemData.getCurrTime());
+        database.setLoanOnSale(new HashMap<>(savedSystemData.getLoanOnSale()));
+        database.setAdminConnected(savedSystemData.isAdminConnected());
+        database.setAdminSet(new HashSet<>(savedSystemData.getAdminSet()));
+    }
+
+    public void loadNormalData(){
+        database.setRewind(false);
+        SaveSystemData savedSystemData = database.getNormalSystem();
+        database.setClientMap(savedSystemData.getClientMap());
+        database.setLoanMapByCategory(savedSystemData.getLoanMapByCategory());
+        Timeline.setCurrTime(savedSystemData.getCurrTime());
+        database.setLoanOnSale(savedSystemData.getLoanOnSale());
+        database.setAdminConnected(savedSystemData.isAdminConnected());
+        database.setAdminSet(savedSystemData.getAdminSet());
     }
 }
 
