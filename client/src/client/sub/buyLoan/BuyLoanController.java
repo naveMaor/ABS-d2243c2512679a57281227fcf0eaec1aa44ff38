@@ -18,6 +18,7 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BuyLoanController {
@@ -75,10 +76,16 @@ public class BuyLoanController {
         addBuyButton();
     }
 
-    public void loadTableData(){
-        buyLoanTableListRequest();
+    public void loadTableData(List<BuyLoanObj> loanObjList){
+        synchronized (this){
+            LoanToBuyList.clear();
+            LoanToBuyList.addAll(loanObjList);
+        }
+        ReleventLoansTable.setItems(LoanToBuyList);
+
     }
 
+/*
     private void buyLoanTableListRequest(){
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
@@ -123,6 +130,7 @@ public class BuyLoanController {
 
         });
     }
+*/
 
     private void buyLoanRequest(BuyLoanObj loan){
 

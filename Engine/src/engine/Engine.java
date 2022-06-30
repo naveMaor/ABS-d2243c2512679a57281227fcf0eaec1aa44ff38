@@ -626,7 +626,7 @@ public class Engine {
         Transaction transactionOfBuyer = new Transaction(currTimeStamp, -price, seller, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() - price);
         buyerAccount.addTnuaToAccount(transactionOfBuyer);
 
-        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
+        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, sellerAccount.getCurrBalance(), sellerAccount.getCurrBalance() + price);
         sellerAccount.addTnuaToAccount(transactionOfSeller);
 
         //update balance

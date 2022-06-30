@@ -159,13 +159,13 @@ public class ClientMainController implements Closeable {
             root.setBottom(null);
             root.setCenter(clientDesktop);
             root.setTop(header);
-            try {
+/*            try {
                 createClientDTORequest();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-            customerMainBodyController.loadData();
+            }*/
+            customerMainBodyController.startLoanListRefresher();
+            //customerMainBodyController.loadData();
         }
 
 
@@ -233,7 +233,7 @@ public class ClientMainController implements Closeable {
                         try {
                             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, response.body().string());
                             alert.showAndWait();
-                            loadData();
+                            //loadData();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -244,9 +244,9 @@ public class ClientMainController implements Closeable {
         });
     }
 
+/*
     public void createClientDTORequest() throws IOException {
         String finalUrl = HttpUrl
-                //todo parameter name here
                 .parse(Constants.GET_CLIENT_DTO)
                 .newBuilder()
                 .build()
@@ -266,17 +266,22 @@ public class ClientMainController implements Closeable {
         }
 
     }
+*/
 
     public ClientDTOforServlet getCurrClient() {
-        try {
+/*        try {
             createClientDTORequest();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         return currClient;
     }
 
-    public void loadData() {
-        customerMainBodyController.loadData();
+    public void setCurrClient(ClientDTOforServlet currClient) {
+        this.currClient = currClient;
     }
+
+/*    public void loadData() {
+        customerMainBodyController.loadData();
+    }*/
 }

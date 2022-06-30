@@ -123,7 +123,7 @@ public class NewLoanWindowController {
 
                     if(response.code()==200){
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        clientMainController.loadData();
+                        //clientMainController.loadData();
                         alert.showAndWait();
                         resetFields();
                     }

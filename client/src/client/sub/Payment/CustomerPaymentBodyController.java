@@ -336,11 +336,13 @@ public class CustomerPaymentBodyController {
         loadTextAfterYazChange.bindBidirectional(yazChanged);
     }
 
+/*
     public void loadLoanTableData(){
         loadTextAreaData();
         updatePaymentLoanListRequest();
 
     }
+*/
 
 
     //todo:add get servlet for loan list from database
@@ -394,6 +396,7 @@ public class CustomerPaymentBodyController {
     }
 
 
+/*
     private void updatePaymentLoanListRequest(){
 
         String finalUrl = HttpUrl
@@ -438,6 +441,20 @@ public class CustomerPaymentBodyController {
 
         });
     }
+*/
 
+
+    public void loadPaymentData(List<LoanPaymentObj> loanPaymentObjs){
+        loadTextAreaData();
+        synchronized (this){
+            loanListForTable.clear();
+            ReleventLoansTable.getItems().clear();
+            loanListForTable.addAll(loanPaymentObjs);
+            ReleventLoansTable.setItems(loanListForTable);
+        }
+
+        customiseFactory(status);
+
+    }
 
 }

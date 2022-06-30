@@ -215,7 +215,7 @@ public class CustomerScrambleBodyController {
         for (String category : chosenCategories) {
             if (!existChosenCategories.contains(category)) {
                 existChosenCategories.add(category);
-                categoriesOptionsListView.getItems().remove(category);
+                //categoriesOptionsListView.getItems().remove(category);
             }
         }
     }
@@ -224,7 +224,9 @@ public class CustomerScrambleBodyController {
     void activateBackwardCategoriesButton(ActionEvent event) {
         //tsad yamin
         chosenCategories = userChoiceCategoriesListView.getSelectionModel().getSelectedItems();
-        //tsad smal
+        userChoiceCategoriesListView.getItems().remove(chosenCategories.get(0));
+
+/*        //tsad smal
         existChosenCategories = categoriesOptionsListView.getItems();
 
         for (String category : chosenCategories) {
@@ -232,7 +234,7 @@ public class CustomerScrambleBodyController {
                 existChosenCategories.add(category);
                 userChoiceCategoriesListView.getItems().remove(category);
             }
-        }
+        }*/
     }
 
     @FXML
@@ -350,7 +352,7 @@ public class CustomerScrambleBodyController {
     public void initialize() {
 
         allCategoriesList = new HashSet<>();
-        getAllCategories();
+        //getAllCategories();
         resetFields();
         AddJavaFXCell.addCheckBoxCellScramble(ReleventLoansTable);
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("loanOriginalDepth"));
@@ -366,6 +368,7 @@ public class CustomerScrambleBodyController {
 
     }
 
+/*
     private void getAllCategories() {
 
         String finalUrl = HttpUrl
@@ -416,6 +419,7 @@ public class CustomerScrambleBodyController {
             }
         });
     }
+*/
 
     public void resetFields() {
         ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
@@ -430,10 +434,17 @@ public class CustomerScrambleBodyController {
         userChoiceCategoriesListView.getItems().removeAll();
         categoriesOptionsListView.getItems().clear();
         userChoiceCategoriesListView.getItems().clear();
-        getAllCategories();
+        //getAllCategories();
     }
 
     public void resetRelevantLoansTable() {
         ReleventLoansTable.getItems().clear();
+    }
+
+    public void setAllCategories(Set<String> allCategoriesList){
+        synchronized (this){
+            categoriesOptionsListView.getItems().clear();
+            categoriesOptionsListView.getItems().addAll(allCategoriesList);
+        }
     }
 }
