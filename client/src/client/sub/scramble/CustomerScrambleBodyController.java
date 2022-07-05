@@ -4,6 +4,7 @@ import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -74,6 +75,15 @@ public class CustomerScrambleBodyController {
 
     @FXML
     private Button forwardCategoriesButton;
+
+    @FXML
+    private Button backwardCategoriesButton;
+
+    @FXML
+    private Button scrambleButton;
+
+    @FXML
+    private Button showRelevantButton;
 
     @FXML
     private Label maxOpenLoansLabel;
@@ -365,7 +375,6 @@ public class CustomerScrambleBodyController {
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
 
-
     }
 
 /*
@@ -446,5 +455,21 @@ public class CustomerScrambleBodyController {
             categoriesOptionsListView.getItems().clear();
             categoriesOptionsListView.getItems().addAll(allCategoriesList);
         }
+    }
+
+    public void bindDisable(BooleanProperty booleanProperty){
+        amountToInvestTextField.disableProperty().bind(booleanProperty);
+        minimumInterestTextField.disableProperty().bind(booleanProperty);
+        minimumYazTextField.disableProperty().bind(booleanProperty);
+        maxOwnershipTextField.disableProperty().bind(booleanProperty);
+
+        categoriesOptionsListView.disableProperty().bind(booleanProperty);
+        userChoiceCategoriesListView.disableProperty().bind(booleanProperty);
+        forwardCategoriesButton.disableProperty().bind(booleanProperty);
+        backwardCategoriesButton.disableProperty().bind(booleanProperty);
+
+        showRelevantButton.disableProperty().bind(booleanProperty);
+        scrambleButton.disableProperty().bind(booleanProperty);
+        ReleventLoansTable.disableProperty().bind(booleanProperty);
     }
 }

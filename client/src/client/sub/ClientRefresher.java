@@ -4,6 +4,7 @@ import Money.operations.Transaction;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -29,18 +30,19 @@ public class ClientRefresher extends TimerTask {
     private final Consumer<ClientDTOforServlet> getClient;
     private final Consumer<Set<String>> updateScrambleCategories;
     private final Consumer<List<BuyLoanObj>> loadTableBuyData;
-    private final BooleanProperty shouldUpdate;
+    private final BooleanProperty systemInRewindMode = new SimpleBooleanProperty(false);
     private String clientName;
 
-    public ClientRefresher(Consumer<List<LoanInformationObj>> borrowLoanConsumer, Consumer<List<LoanInformationObj>> lenderLoanConsumer, Consumer<List<Transaction>> updatedTransactionsData, Consumer<List<LoanPaymentObj>> loadLoanPaymentTableData, Consumer<ClientDTOforServlet> getClient, BooleanProperty shouldUpdate, Consumer<Set<String>> updateScrambleCategories, Consumer<List<BuyLoanObj>> loadTableBuyData) {
+    public ClientRefresher(Consumer<List<LoanInformationObj>> borrowLoanConsumer, Consumer<List<LoanInformationObj>> lenderLoanConsumer, Consumer<List<Transaction>> updatedTransactionsData, Consumer<List<LoanPaymentObj>> loadLoanPaymentTableData, Consumer<ClientDTOforServlet> getClient, BooleanProperty systemInRewindMode, Consumer<Set<String>> updateScrambleCategories, Consumer<List<BuyLoanObj>> loadTableBuyData) {
         this.borrowLoanConsumer = borrowLoanConsumer;
         this.lenderLoanConsumer = lenderLoanConsumer;
         this.updatedTransactionsData = updatedTransactionsData;
         this.loadLoanPaymentTableData = loadLoanPaymentTableData;
         this.getClient = getClient;
-        this.shouldUpdate = shouldUpdate;
         this.updateScrambleCategories = updateScrambleCategories;
         this.loadTableBuyData = loadTableBuyData;
+        this.systemInRewindMode.bindBidirectional(systemInRewindMode);
+
     }
 
 
@@ -338,14 +340,56 @@ public class ClientRefresher extends TimerTask {
 
         });
     }
+    private void createRewindRequest(){
+        String finalUrl = HttpUrl
+                .parse(Constants.GET_REWIND)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+        //updateHttpStatusLine("New request is launched for: " + finalUrl);
+
+        HttpClientUtil.runAsync(request, new Callback() {
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() ->
+                        System.out.println("failed to call url rewind")
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                Platform.runLater(() -> {
+                    try {
+                        if(response.code()==200){
+                            String jsonOfClientString = response.body().string();
+                            response.body().close();
+                            boolean rewind = new Gson().fromJson(jsonOfClientString, boolean.class);
+                            systemInRewindMode.setValue(rewind);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+        });
+    }
 
 
 
     @Override
     public void run() {
-        if (!shouldUpdate.get()) {
+        createRewindRequest();
+/*        if (systemInRewindMode.get()) {
             return;
-        }
+        }*/
         createClientDTORequest();
         createLoansAsLenderRequest();
         createLoansAsBorrowerRequest();

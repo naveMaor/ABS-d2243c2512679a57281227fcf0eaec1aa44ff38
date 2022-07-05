@@ -70,40 +70,15 @@ public class CustomerMainBodyController {
 
     @FXML public void initialize() {
         if (customerInformationBodyController != null&& customerScrambleBodyController!=null&& customerPaymentBodyController!=null) {
-            System.out.println(customerInformationBodyController);
             customerInformationBodyController.setMainController(this);
-            System.out.println(customerInformationBodyController);
             customerScrambleBodyController.setMainController(this);
             customerPaymentBodyController.setMainController(this);
             buyLoanController.setMainController(this);
         }
-/*        paymentTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<Tab>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        customerPaymentBodyController.loadLoanTableData();
-                    }
-                }
-        );
-        buyLoanTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<Tab>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        buyLoanController.loadTableData();
-                    }
-                }
-        );
-        informationTabPane.getTabPane().getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<Tab>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        customerInformationBodyController.initializeClientTable();
-                        customerInformationBodyController.loadTransactionsTable();
-                    }
-                }
-        );
-        customerPaymentBodyController.bindProperties(loadTextAfterYazChange);
-        resetFields();*/
+        customerInformationBodyController.bindDisable(autoUpdate);
+        customerScrambleBodyController.bindDisable(autoUpdate);
+        customerPaymentBodyController.bindDisable(autoUpdate);
+        buyLoanController.bindDisable(autoUpdate);
     }
 
     public void bindProperties(SimpleStringProperty customerName, SimpleBooleanProperty yazChanged){
@@ -127,20 +102,12 @@ public class CustomerMainBodyController {
         customerScrambleBodyController.resetRelevantLoansTable();
     }*/
 
-    public Tab getInformationTabPane() {
-        return informationTabPane;
+    public boolean isAutoUpdate() {
+        return autoUpdate.get();
     }
 
-    public Tab getPaymentTabPane() {
-        return paymentTabPane;
-    }
-
-    public boolean isRunningServiceProperty() {
-        return runningServiceProperty.get();
-    }
-
-    public SimpleBooleanProperty runningServicePropertyProperty() {
-        return runningServiceProperty;
+    public BooleanProperty autoUpdateProperty() {
+        return autoUpdate;
     }
 
 /*    public void loadData(){

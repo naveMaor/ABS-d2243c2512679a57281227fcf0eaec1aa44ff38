@@ -62,6 +62,6 @@ public class Account implements Serializable {
     public Account(Account other) {
         this.ID = other.getID();
         this.currBalance = other.getCurrBalance();
-        this.transactionList = new ArrayList<>(other.transactionList);
+        this.transactionList = new ArrayList<>(other.getTnuaList());
     }
 }

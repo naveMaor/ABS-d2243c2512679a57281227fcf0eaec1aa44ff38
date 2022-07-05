@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class Client implements Serializable {
     private String fullName;
     private Account myAccount;
@@ -140,9 +142,13 @@ public class Client implements Serializable {
     @SuppressWarnings("IncompleteCopyConstructor")
     public Client(Client other) {
         this.fullName = other.getFullName();
-        this.myAccount = new Account(other.myAccount);
-        this.clientAsLenderLoanList = new ArrayList<>(other.clientAsLenderLoanList);
-        this.clientAsBorrowLoanList = new ArrayList<>(other.clientAsBorrowLoanList);
+        this.myAccount = new Account(other.getMyAccount());
+
+        this.clientAsLenderLoanList = other.getClientAsLenderLoanList().stream().map(p-> new Loan(p)).collect(Collectors.toList());
+        this.clientAsBorrowLoanList = other.getClientAsBorrowLoanList().stream().map(p-> new Loan(p)).collect(Collectors.toList());
+
+        //this.clientAsLenderLoanList = new ArrayList<>(other.getClientAsLenderLoanList());
+        //this.clientAsBorrowLoanList = new ArrayList<>(other.getClientAsBorrowLoanList());
         this.notification = other.getNotification();
     }
 }

@@ -10,8 +10,8 @@ import java.util.*;
 
 public class SaveSystemData {
 
-    private Map<String, List<Loan>> loanMapByCategory =new HashMap<>();
-    private Map<String, Client> clientMap = new HashMap<>();
+    private Map<String, List<Loan>> loanMapByCategory;
+    private Map<String, Client> clientMap;
     private int currTime;
     private Map<String,List<BuyLoanObj>> loanOnSale= new HashMap<>();
     private boolean isAdminConnected;
@@ -19,14 +19,17 @@ public class SaveSystemData {
 
 
     public SaveSystemData(int yaz, Database database) {
-        for(Loan loan:database.getLoanList()){
-            Loan newLoan = new Loan(loan);
-            addLoanToLoanMap(newLoan);
-        }
+        this.loanMapByCategory =new HashMap<>();
+        this.clientMap = new HashMap<>();
         for(Client client:database.getClientsList()){
             Client newClient = new Client(client);
             addClientToClientMap(newClient);
         }
+        for(Loan loan:database.getLoanList()){
+            Loan newLoan = new Loan(loan);
+            addLoanToLoanMap(newLoan);
+        }
+
         this.currTime = yaz;
         this.loanOnSale = copyLoanOnSaleMap(database.getLoanOnSale());
         this.isAdminConnected = database.isAdminConnected();
@@ -70,8 +73,8 @@ public class SaveSystemData {
             newLoanlist.add(newLoanNode);
             loanMapByCategory.put(category,newLoanlist);
         }
-        Client LoanBorrower = clientMap.get(newLoanNode.getBorrowerName());
-        LoanBorrower.addLoanAsBorrower(newLoanNode);
+/*        Client LoanBorrower = clientMap.get(newLoanNode.getBorrowerName());
+        LoanBorrower.addLoanAsBorrower(newLoanNode);*/
     }
 
     private void addClientToClientMap(Client newClientNode){

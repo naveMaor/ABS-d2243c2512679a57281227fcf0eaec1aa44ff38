@@ -3,6 +3,7 @@ package client.sub.buyLoan;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -74,6 +75,11 @@ public class BuyLoanController {
         ColumnLender.setCellValueFactory(new PropertyValueFactory<BuyLoanObj, String>("sellerName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<BuyLoanObj, Double>("price"));
         addBuyButton();
+    }
+
+    public void bindDisable(BooleanProperty booleanProperty){
+        ReleventLoansTable.disableProperty().bind(booleanProperty);
+
     }
 
     public void loadTableData(List<BuyLoanObj> loanObjList){

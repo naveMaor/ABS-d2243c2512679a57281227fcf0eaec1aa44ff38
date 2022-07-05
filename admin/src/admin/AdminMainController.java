@@ -86,7 +86,7 @@ public class AdminMainController {
 
 
     @FXML
-    void IncreaseYazButtonListener(ActionEvent event) {
+    void IncreaseYazButtonListener1(ActionEvent event) {
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
                 .parse(Constants.INCREASE_YAZ)
@@ -98,6 +98,9 @@ public class AdminMainController {
         Request request = new Request.Builder()
                 .url(finalUrl)
                 .build();
+
+
+
 
         HttpAdminUtil.runAsync(request, new Callback() {
 
@@ -133,6 +136,52 @@ public class AdminMainController {
         });
 
     }
+
+
+
+    @FXML
+    void IncreaseYazButtonListener(ActionEvent event) {
+        //noinspection ConstantConditions
+        String finalUrl = HttpUrl
+                .parse(Constants.INCREASE_YAZ)
+                .newBuilder()
+                .addQueryParameter("admin", "true")
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+
+        Response response = HttpClientUtil.execute(request);
+
+
+
+        if (response.code() != 200) {
+            Alert alert = null;
+            try {
+                alert = new Alert(Alert.AlertType.ERROR, response.body().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            alert.showAndWait();
+        } else {
+                increaseYaz.setValue(true);
+                String jsonArrayOfUsersNames = null;
+                try {
+                    jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
+                    int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
+                    currYaz.setText("Current YAZ: "+ responseYaz);
+                    yazComboBox.getItems().add(responseYaz-1);
+                } catch (IOException e) {
+                            e.printStackTrace();
+
+
+                        }
+
+        }
+            }
 
     @FXML
     public void rewindButtonAction(ActionEvent actionEvent) {

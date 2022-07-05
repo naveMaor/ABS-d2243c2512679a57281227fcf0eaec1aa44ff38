@@ -39,16 +39,16 @@
          </content>
       </ScrollPane>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="338.0" layoutY="14.0" style="-fx-font-weight: bold; -fx-font-size: 15;" text="Notifications" textAlignment="CENTER" />
-      <Button fx:id="pay" layoutX="619.0" layoutY="554.0" mnemonicParsing="false" onAction="#activatePayLoanSinglePaymentButton" prefHeight="45.0" style="-fx-border-color: grey;" text="Pay Loan/s Single Payment" AnchorPane.leftAnchor="620.0" AnchorPane.rightAnchor="0.0" />
+      <Button fx:id="paySingleButton" layoutX="619.0" layoutY="554.0" mnemonicParsing="false" onAction="#activatePayLoanSinglePaymentButton" prefHeight="45.0" style="-fx-border-color: grey;" text="Pay Loan/s Single Payment" AnchorPane.leftAnchor="620.0" AnchorPane.rightAnchor="0.0" />
       <Button fx:id="closeEntireLoanButton" layoutX="434.0" layoutY="554.0" mnemonicParsing="false" onAction="#activateCloseEntireLoanButton" prefHeight="45.0" style="-fx-border-color: grey;" text="Pay Entire choosen Loan/s" AnchorPane.leftAnchor="434.0" AnchorPane.rightAnchor="209.2" />
-      <Button layoutX="458.0" layoutY="357.0" mnemonicParsing="false" onAction="#activateForwardLoanButton" text="&gt;&gt;" />
+      <Button fx:id="forwardButton" layoutX="458.0" layoutY="357.0" mnemonicParsing="false" onAction="#activateForwardLoanButton" text="&gt;&gt;" />
       <ListView fx:id="LoansListView" layoutX="499.0" layoutY="320.0" prefHeight="204.0" prefWidth="242.0" style="-fx-border-color: grey;" />
-      <Button layoutX="458.0" layoutY="433.0" mnemonicParsing="false" onAction="#activateBackwardLoanButton" text="&lt;&lt;" />
+      <Button fx:id="backwardButton" layoutX="458.0" layoutY="433.0" mnemonicParsing="false" onAction="#activateBackwardLoanButton" text="&lt;&lt;" />
       <Label layoutX="581.0" layoutY="300.0" style="-fx-font-size: 15; -fx-font-weight: bold;" text="Choosed loans" textAlignment="CENTER" underline="true" />
       <VBox layoutX="249.0" layoutY="551.0" AnchorPane.bottomAnchor="0.0">
          <children>
             <TextField fx:id="partialAmoutLable" />
-            <Button mnemonicParsing="false" onAction="#activatePayPartial" prefHeight="30.0" prefWidth="150.0" text="Pay partial amount">
+            <Button fx:id="partialButton" mnemonicParsing="false" onAction="#activatePayPartial" prefHeight="30.0" prefWidth="150.0" text="Pay partial amount">
                <VBox.margin>
                   <Insets />
                </VBox.margin></Button>

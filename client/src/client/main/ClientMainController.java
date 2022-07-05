@@ -75,7 +75,10 @@ public class ClientMainController implements Closeable {
     @FXML
     private Label welcomeLable;
     @FXML
-    private Button NewLoan;
+    private Button NewLoanFile;
+    @FXML
+    private Button NewLoanUser;
+
     @FXML
     private Button currYAZ;
     private StringProperty currentUserName = new SimpleStringProperty();
@@ -125,6 +128,7 @@ public class ClientMainController implements Closeable {
         loginComponentController.setMainController(this);
         customerMainBodyController.setMainController(this);
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ", currentUserName));
+        bindDisable(customerMainBodyController.autoUpdateProperty());
         startListRefresher();
     }
     private void updateYAZ(Integer currYaz) {
@@ -244,29 +248,7 @@ public class ClientMainController implements Closeable {
         });
     }
 
-/*
-    public void createClientDTORequest() throws IOException {
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_CLIENT_DTO)
-                .newBuilder()
-                .build()
-                .toString();
 
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        Response response = HttpClientUtil.execute(request);
-
-        if (response.code() == 200) {
-            String jsonOfClientString = response.body().string();
-            currClient = new Gson().fromJson(jsonOfClientString, ClientDTOforServlet.class);
-        } else {
-            System.out.println("failed to GET CLIENT");
-        }
-
-    }
-*/
 
     public ClientDTOforServlet getCurrClient() {
 /*        try {
@@ -281,7 +263,8 @@ public class ClientMainController implements Closeable {
         this.currClient = currClient;
     }
 
-/*    public void loadData() {
-        customerMainBodyController.loadData();
-    }*/
+    public void bindDisable(BooleanProperty autoUpdate){
+        NewLoanFile.disableProperty().bind(autoUpdate);
+        NewLoanUser.disableProperty().bind(autoUpdate);
+    }
 }

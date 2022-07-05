@@ -2,9 +2,9 @@ package client.sub.Information.transactionsTableView;
 
 import Money.operations.Transaction;
 import client.sub.Information.CustomerInformationBodyCont;
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,10 +19,9 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-public class transactionsController {
+public class TransactionsController {
     private CustomerInformationBodyCont customerInformationBodyCont;
 
     @FXML
@@ -33,7 +32,6 @@ public class transactionsController {
 
     @FXML
     private Button chargeButton;
-
 
 
     @FXML
@@ -144,6 +142,11 @@ public class transactionsController {
     }
 */
 
+    public void bindDisable(BooleanProperty autoUpdate){
+        chargeButton.disableProperty().bind(autoUpdate);
+        withdrawButton.disableProperty().bind(autoUpdate);
+        amountTextField.disableProperty().bind(autoUpdate);
+    }
 
     public void createTransaction(int amount) {
         createTransactionRequest(amount);

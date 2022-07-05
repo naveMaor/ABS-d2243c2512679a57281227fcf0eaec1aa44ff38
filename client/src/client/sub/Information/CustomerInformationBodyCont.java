@@ -2,10 +2,10 @@ package client.sub.Information;
 
 import Money.operations.Transaction;
 import com.google.gson.Gson;
-import client.sub.Information.transactionsTableView.transactionsController;
+import client.sub.Information.transactionsTableView.TransactionsController;
 import client.sub.main.CustomerMainBodyController;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,7 +23,6 @@ import util.HttpClientUtil;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomerInformationBodyCont {
 
@@ -32,7 +31,7 @@ public class CustomerInformationBodyCont {
     @FXML
     private BorderPane transactions;
     @FXML
-    private transactionsController transactionsController;
+    private TransactionsController transactionsController;
 
     @FXML
     private TableColumn<LoanInformationObj, String> borrowerLoanID;
@@ -95,9 +94,13 @@ public class CustomerInformationBodyCont {
         AddJavaFXCell.addButtonToTable(lenderTable,
                 this::putLoanOnSaleRequest,
                 "Sell");
+
     }
 
-
+    public void bindDisable(BooleanProperty booleanProperty){
+        transactionsController.bindDisable(booleanProperty);
+        lenderTable.disableProperty().bind(booleanProperty);
+    }
 
 /*    public SimpleStringProperty customerNameProperty() {
         return customerMainBodyController.customerNameProperty();
@@ -301,11 +304,12 @@ public class CustomerInformationBodyCont {
     }
 
     public void loadBorrowerLoanTable(List<LoanInformationObj> loanInformationObjs) {
-        synchronized (this){
+        synchronized (this) {
             clientAsBorrowLoanList.clear();
             clientAsBorrowLoanList.addAll(loanInformationObjs);
         }
         borrowerTable.setItems(clientAsBorrowLoanList);
+
         customiseFactory(borrowerLoanStatus);
 
     }
