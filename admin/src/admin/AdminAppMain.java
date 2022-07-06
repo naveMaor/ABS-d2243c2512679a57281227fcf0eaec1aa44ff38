@@ -1,20 +1,13 @@
 package admin;
 
-import client.main.ClientMainController;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-public class AdminMainMain extends Application {
+public class AdminAppMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,9 +16,7 @@ public class AdminMainMain extends Application {
 
         primaryStage.setTitle("ABS System");
 
-        Scene scene = new Scene(load, 1200, 800);
-        primaryStage.setMaximized(true);
-        primaryStage.setFullScreen(true);
+        Scene scene = new Scene(load, 1000, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -38,6 +29,6 @@ public class AdminMainMain extends Application {
     }
 
     public static void main(String[] args) {
-        launch(AdminMainMain.class);
+        launch(AdminAppMain.class);
     }}
 

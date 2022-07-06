@@ -26,7 +26,6 @@ public class PutLoanOnSaleServlet extends HttpServlet {
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        //load LOAN NAME and price from request body
         String loanName = new Gson().fromJson(reqBodyAsString, String.class);
         Loan loan = systemEngine.getDatabase().getLoanById(loanName);
         BuyLoanObj buyLoanObj = new BuyLoanObj(loan,usernameFromSession);

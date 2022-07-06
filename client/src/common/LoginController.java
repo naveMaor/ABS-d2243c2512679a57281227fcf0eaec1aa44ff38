@@ -1,9 +1,13 @@
 package common;
 
 import client.main.ClientMainController;
+import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.WritableFloatValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -36,6 +40,7 @@ public class LoginController {
     @FXML
     public Button quitButton;
     private ClientMainController clientMainController;
+    private BooleanProperty systemInRewindMode = new SimpleBooleanProperty(false);
 
 
     @FXML
@@ -43,19 +48,46 @@ public class LoginController {
         errorMessageLabel.textProperty().bind(errorMessageProperty);
 
     }
+    private void createRewindRequest(){
+        String finalUrl = HttpUrl
+                .parse(Constants.GET_REWIND)
+                .newBuilder()
+                .build()
+                .toString();
+
+        Request request = new Request.Builder()
+                .url(finalUrl)
+                .build();
+
+
+        Response response = HttpClientUtil.execute(request);
+        if (response.code() == 200) {
+
+            try {
+                String jsonOfClientString = response.body().string();
+                response.body().close();
+                boolean rewind = new Gson().fromJson(jsonOfClientString, boolean.class);
+                systemInRewindMode.setValue(rewind);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("failed to call url rewind");
+        }
+    }
 
     @FXML
     private void loginButtonClicked(ActionEvent event) {
 
-        if(clientMainController.getIsRewind()){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "system in rewind mode");
-            alert.showAndWait();
-            return;
-        }
-
         String userName = userNameTextField.getText();
         if (userName.isEmpty()) {
             errorMessageProperty.set("User name is empty. You can't login with empty user name");
+            return;
+        }
+        createRewindRequest();
+        if (systemInRewindMode.getValue()) {
+            errorMessageProperty.set("The System is in rewind mode sorry you have to wait");
             return;
         }
 
@@ -108,14 +140,6 @@ public class LoginController {
     private void quitButtonClicked(ActionEvent e) {
         Platform.exit();
     }
-
-/*    private void updateHttpStatusLine(String data) {
-        chatAppMainController.updateHttpLine(data);
-    }
-
-    public void setChatAppMainController(ChatAppMainController chatAppMainController) {
-        this.chatAppMainController = chatAppMainController;
-    }*/
 
     public void setMainController(ClientMainController mainController) {
         this.clientMainController = mainController;

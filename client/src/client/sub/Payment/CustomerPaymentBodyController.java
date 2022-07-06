@@ -83,6 +83,8 @@ public class CustomerPaymentBodyController {
         ReleventLoansTable.disableProperty().bind(booleanProperty);
         LoansListView.disableProperty().bind(booleanProperty);
         closeEntireLoanButton.disableProperty().bind(booleanProperty);
+        partialAmoutLable.disableProperty().bind(booleanProperty);
+
     }
 
     @FXML
@@ -388,7 +390,9 @@ public class CustomerPaymentBodyController {
 
         ClientDTOforServlet clientDTOforServlet = customerMainBodyController.getCurrClient();
         notificationsTextArea.clear();
-        notificationsTextArea.setText(clientDTOforServlet.getNotification());
+        if(clientDTOforServlet!=null) {
+            notificationsTextArea.setText(clientDTOforServlet.getNotification());
+        }
 
 
     }

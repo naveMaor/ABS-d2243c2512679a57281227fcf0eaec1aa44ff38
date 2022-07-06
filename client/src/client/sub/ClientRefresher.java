@@ -33,12 +33,12 @@ public class ClientRefresher extends TimerTask {
     private final BooleanProperty systemInRewindMode = new SimpleBooleanProperty(false);
     private String clientName;
 
-    public ClientRefresher(Consumer<List<LoanInformationObj>> borrowLoanConsumer, Consumer<List<LoanInformationObj>> lenderLoanConsumer, Consumer<List<Transaction>> updatedTransactionsData, Consumer<List<LoanPaymentObj>> loadLoanPaymentTableData, Consumer<ClientDTOforServlet> getClient, BooleanProperty systemInRewindMode, Consumer<Set<String>> updateScrambleCategories, Consumer<List<BuyLoanObj>> loadTableBuyData) {
+    public ClientRefresher(Consumer<List<LoanInformationObj>> borrowLoanConsumer, Consumer<List<LoanInformationObj>> lenderLoanConsumer, Consumer<List<LoanPaymentObj>> loadLoanPaymentTableData, Consumer<ClientDTOforServlet> getClient, BooleanProperty systemInRewindMode, Consumer<Set<String>> updateScrambleCategories, Consumer<List<BuyLoanObj>> loadTableBuyData, Consumer<List<Transaction>> updatedTransactionsData) {
         this.borrowLoanConsumer = borrowLoanConsumer;
         this.lenderLoanConsumer = lenderLoanConsumer;
-        this.updatedTransactionsData = updatedTransactionsData;
         this.loadLoanPaymentTableData = loadLoanPaymentTableData;
         this.getClient = getClient;
+        this.updatedTransactionsData = updatedTransactionsData;
         this.updateScrambleCategories = updateScrambleCategories;
         this.loadTableBuyData = loadTableBuyData;
         this.systemInRewindMode.bindBidirectional(systemInRewindMode);
@@ -198,7 +198,9 @@ public class ClientRefresher extends TimerTask {
             getClient.accept(currClient);
             clientName = currClient.getFullName();
         } else {
-            System.out.println("failed to GET CLIENT");
+            getClient.accept(null);
+            clientName = "";
+            System.out.println("Client doesn't exist");
         }
 
     }
@@ -351,35 +353,49 @@ public class ClientRefresher extends TimerTask {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
+//        HttpClientUtil.runAsync(request, new Callback() {
+//
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                Platform.runLater(() ->
+//                        System.out.println("failed to call url rewind")
+//                );
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//
+//                Platform.runLater(() -> {
+//                    try {
+//                        if(response.code()==200){
+//                            String jsonOfClientString = response.body().string();
+//                            response.body().close();
+//                            boolean rewind = new Gson().fromJson(jsonOfClientString, boolean.class);
+//                            systemInRewindMode.setValue(rewind);
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }
+//
+//        });
 
-        HttpClientUtil.runAsync(request, new Callback() {
+        Response response = HttpClientUtil.execute(request);
+        if (response.code() == 200) {
 
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url rewind")
-                );
+            try {
+                String jsonOfClientString = response.body().string();
+                response.body().close();
+                boolean rewind = new Gson().fromJson(jsonOfClientString, boolean.class);
+                systemInRewindMode.setValue(rewind);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            String jsonOfClientString = response.body().string();
-                            response.body().close();
-                            boolean rewind = new Gson().fromJson(jsonOfClientString, boolean.class);
-                            systemInRewindMode.setValue(rewind);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
+        } else {
+            System.out.println("failed to call url rewind");
+        }
     }
 
 
@@ -391,9 +407,9 @@ public class ClientRefresher extends TimerTask {
             return;
         }*/
         createClientDTORequest();
+        createTransactionListRequest();
         createLoansAsLenderRequest();
         createLoansAsBorrowerRequest();
-        createTransactionListRequest();
         updatePaymentLoanListRequest();
         getAllCategories();
         buyLoanTableListRequest();

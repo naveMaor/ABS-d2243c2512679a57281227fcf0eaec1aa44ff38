@@ -504,18 +504,12 @@ public class Engine {
     public ObservableList<Transaction> getClientTransactionsList(String name) {
         Client client = database.getClientByname(name);
         ObservableList<Transaction> result = FXCollections.observableArrayList();
-        Account account = client.getMyAccount();
-        List<Transaction> transactionList = account.getTnuaList();
+        if(client!=null) {
+            Account account = client.getMyAccount();
+            List<Transaction> transactionList = account.getTnuaList();
+            result.addAll(transactionList);
 
-/*        if(!transactionList.isEmpty()) {
-            double lastBalance = transactionList.get(0).getBalanceBefore();
-
-            for (Transaction transaction : transactionList) {
-                transaction.setBalanceBefore(lastBalance);
-                transaction.setBalanceAfter(lastBalance + transaction.getSum());
-            }
-        }*/
-        result.addAll(transactionList);
+        }
         return result;
     }
 

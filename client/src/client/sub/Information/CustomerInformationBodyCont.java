@@ -1,19 +1,28 @@
 package client.sub.Information;
 
 import Money.operations.Transaction;
-import com.google.gson.Gson;
 import client.sub.Information.transactionsTableView.TransactionsController;
 import client.sub.main.CustomerMainBodyController;
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import loan.enums.eLoanStatus;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import servletDTO.LoanInformationObj;
@@ -67,17 +76,13 @@ public class CustomerInformationBodyCont {
     private ObservableList<LoanInformationObj> clientAsBorrowLoanList = FXCollections.observableArrayList();
 
 
-/*    public void initializeClientTable(){
-        createLoansAsLenderRequest();
-        createLoansAsBorrowerRequest();
-    }*/
-
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;
     }
 
 
-    @FXML public void initialize() {
+    @FXML
+    public void initialize() {
         clientAsLenderLoanList = FXCollections.observableArrayList();
         clientAsBorrowLoanList = FXCollections.observableArrayList();
         if (transactionsController != null) {
@@ -97,23 +102,14 @@ public class CustomerInformationBodyCont {
 
     }
 
-    public void bindDisable(BooleanProperty booleanProperty){
+    public void bindDisable(BooleanProperty booleanProperty) {
         transactionsController.bindDisable(booleanProperty);
         lenderTable.disableProperty().bind(booleanProperty);
+
     }
 
-/*    public SimpleStringProperty customerNameProperty() {
-        return customerMainBodyController.customerNameProperty();
-    }*/
+    public void loadClientTransactions(List<Transaction> transactionList) {
 
-/*
-    public void loadTransactionsTable(){
-        transactionsController.loadTableData();
-    }
-*/
-
-
-    public void loadClientTransactions(List<Transaction> transactionList){
         transactionsController.loadClientTransactions(transactionList);
     }
 
@@ -131,7 +127,7 @@ public class CustomerInformationBodyCont {
 
                     if (!isEmpty()) {
 
-                        if(item==eLoanStatus.RISK)
+                        if (item == eLoanStatus.RISK)
                             currentRow.setStyle("-fx-background-color:red");
 
                     }
@@ -140,108 +136,13 @@ public class CustomerInformationBodyCont {
         });
     }
 
-    private void createLoansAsLenderRequest(){
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                .parse(Constants.LOANS_AS_LENDER)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url information body controller")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            clientAsLenderLoanList.clear();
-                            String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            Gson gson = new Gson();
-                            LoanInformationObj[] loanAsLenderList = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
-                            clientAsLenderLoanList.addAll(loanAsLenderList);
-                            lenderTable.setItems(clientAsLenderLoanList);
-                            customiseFactory(lenderLoanStatus);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
-    }
-
-
-
-/*
-    private void createLoansAsBorrowerRequest(){
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                .parse(Constants.LOANS_AS_BORROW)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url information body")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            clientAsBorrowLoanList.clear();
-                            String jsonOfClientString = response.body().string();
-                            response.body().close();
-                            LoanInformationObj[] loanAsBorrowList = new Gson().fromJson(jsonOfClientString, LoanInformationObj[].class);
-                            clientAsBorrowLoanList.addAll(loanAsBorrowList);
-                            borrowerTable.setItems(clientAsBorrowLoanList);
-                            customerMainBodyController.resetFields();
-                            //customiseFactory(borrowerLoanStatus);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
-    }
-*/
-
-    public ClientDTOforServlet getCurrClient(){
+    public ClientDTOforServlet getCurrClient() {
         return customerMainBodyController.getCurrClient();
     }
 
-    private void putLoanOnSaleRequest(LoanInformationObj loan){
+    private void putLoanOnSaleRequest(LoanInformationObj loan) {
 
-        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(),String.class);
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loan.getLoanID(), String.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
@@ -277,14 +178,13 @@ public class CustomerInformationBodyCont {
                     }
                     response.body().close();
 
-                    if(response.code()==200){
+                    if (response.code() == 200) {
                         //customerMainBodyController.loadData();
                         loan.setOnSale(true);
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"loan "+loan.getLoanID()+"is now on sale!");
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "loan " + loan.getLoanID() + "is now on sale!");
                         alert.showAndWait();
-                    }
-                    else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, jsonOfClientString);
                         alert.showAndWait();
                     }
                 });
@@ -293,14 +193,15 @@ public class CustomerInformationBodyCont {
         });
     }
 
-
     public void loadLenderLoanTable(List<LoanInformationObj> loanInformationObjs) {
-        synchronized (this){
+        synchronized (this) {
             clientAsLenderLoanList.clear();
             clientAsLenderLoanList.addAll(loanInformationObjs);
         }
-        lenderTable.setItems(clientAsLenderLoanList);
-        customiseFactory(lenderLoanStatus);
+        if( customerMainBodyController.getCurrClient() != null) {
+            lenderTable.setItems(clientAsLenderLoanList);
+            customiseFactory(lenderLoanStatus);
+        }
     }
 
     public void loadBorrowerLoanTable(List<LoanInformationObj> loanInformationObjs) {
@@ -308,9 +209,10 @@ public class CustomerInformationBodyCont {
             clientAsBorrowLoanList.clear();
             clientAsBorrowLoanList.addAll(loanInformationObjs);
         }
-        borrowerTable.setItems(clientAsBorrowLoanList);
-
-        customiseFactory(borrowerLoanStatus);
+        if( customerMainBodyController.getCurrClient() != null) {
+            borrowerTable.setItems(clientAsBorrowLoanList);
+            customiseFactory(borrowerLoanStatus);
+        }
 
     }
 }

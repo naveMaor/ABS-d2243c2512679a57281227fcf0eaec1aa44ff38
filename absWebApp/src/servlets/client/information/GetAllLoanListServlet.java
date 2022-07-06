@@ -21,7 +21,6 @@ public class GetAllLoanListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
-        String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         List<Loan> loanList = systemEngine.getDatabase().getLoanList();

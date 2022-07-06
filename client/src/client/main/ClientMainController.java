@@ -2,6 +2,7 @@ package client.main;
 
 import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
+import com.google.gson.Gson;
 import common.LoginController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -36,6 +37,7 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
@@ -49,7 +51,7 @@ import java.util.TimerTask;
 
 public class ClientMainController implements Closeable {
     public final static int REFRESH_RATE = 4000;
-    private final IntegerProperty cuerrYaz;
+    private final IntegerProperty currYaz;
     private final BooleanProperty autoUpdate;
     Node header;
     Node clientDesktop;
@@ -79,18 +81,19 @@ public class ClientMainController implements Closeable {
     @FXML
     private Button currYAZ;
     private StringProperty currentUserName = new SimpleStringProperty();
+    private Stage newLoanStage = new Stage();
+
 
     public ClientMainController() {
         autoUpdate = new SimpleBooleanProperty();
-        cuerrYaz = new SimpleIntegerProperty();
+        currYaz = new SimpleIntegerProperty();
         autoUpdate.set(true);
     }
 
     public void NewManualLoanButton(ActionEvent actionEvent) {
-        Stage Newstage = new Stage();
-        Newstage.setMinHeight(600);
-        Newstage.setMinWidth(600);
-        Newstage.setTitle("Add new loan");
+        newLoanStage.setMinHeight(600);
+        newLoanStage.setMinWidth(600);
+        newLoanStage.setTitle("Add new loan");
 
         URL newLoanWindow = getClass().getResource("newLoanWindow/NewLoanWindow.fxml");
         try {
@@ -102,19 +105,19 @@ public class ClientMainController implements Closeable {
             newLoanWindowController.setMainController(this);
 
             Scene scene = new Scene(root, 700, 600);
-            Newstage.setScene(scene);
-            Newstage.show();
+            newLoanStage.setScene(scene);
+            newLoanStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public  void closeNewLoanWindow()
+    {
+        newLoanStage.close();
+    }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-
-    public boolean getIsRewind(){
-        return customerMainBodyController.getIsRewind();
     }
 
     @FXML
@@ -132,9 +135,10 @@ public class ClientMainController implements Closeable {
         bindDisable(customerMainBodyController.isRewindProperty());
         startListRefresher();
     }
-    private void updateYAZ(Integer currYaz) {
+
+    private void updateYAZ(Integer currYazToSet) {
         Platform.runLater(() -> {
-            currYAZ.setText("Current YAZ: " + currYaz);
+            currYAZ.setText("Current YAZ: " + currYazToSet);
 
         });
     }
@@ -154,6 +158,7 @@ public class ClientMainController implements Closeable {
             timer.cancel();
         }
     }
+
     public void updateUserName(String userName) {
         currentUserName.set(userName);
     }
@@ -164,13 +169,8 @@ public class ClientMainController implements Closeable {
             root.setBottom(null);
             root.setCenter(clientDesktop);
             root.setTop(header);
-/*            try {
-                createClientDTORequest();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+
             customerMainBodyController.startLoanListRefresher();
-            //customerMainBodyController.loadData();
         }
 
 
@@ -250,13 +250,8 @@ public class ClientMainController implements Closeable {
     }
 
 
-
     public ClientDTOforServlet getCurrClient() {
-/*        try {
-            createClientDTORequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
         return currClient;
     }
 
@@ -264,8 +259,10 @@ public class ClientMainController implements Closeable {
         this.currClient = currClient;
     }
 
-    public void bindDisable(BooleanProperty autoUpdate){
+
+    public void bindDisable(BooleanProperty autoUpdate) {
         NewLoanFile.disableProperty().bind(autoUpdate);
         NewLoanUser.disableProperty().bind(autoUpdate);
     }
+
 }

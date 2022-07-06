@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class Timeline implements Serializable {
 
-    private static int currTime = 0;
+    private static int currTime = 1;
     private static SimpleIntegerProperty currTimePropery = new SimpleIntegerProperty(currTime);
     private int timeStamp;
 

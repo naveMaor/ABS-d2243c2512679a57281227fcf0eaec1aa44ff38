@@ -22,7 +22,6 @@ public class RewindTimeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain;charset=UTF-8");
 
-        String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
