@@ -36,6 +36,15 @@ public class SaveSystemData {
         this.adminSet =new HashSet<>(database.getAdminSet());
     }
 
+    public SaveSystemData(Map<String, List<Loan>> loanMapByCategory, Map<String, Client> clientMap, int currTime, Map<String, List<BuyLoanObj>> loanOnSale, boolean isAdminConnected, Set<String> adminSet) {
+        this.loanMapByCategory = loanMapByCategory;
+        this.clientMap = clientMap;
+        this.currTime = currTime;
+        this.loanOnSale = loanOnSale;
+        this.isAdminConnected = isAdminConnected;
+        this.adminSet = adminSet;
+    }
+
     public Map<String, List<Loan>> getLoanMapByCategory() {
         return loanMapByCategory;
     }
