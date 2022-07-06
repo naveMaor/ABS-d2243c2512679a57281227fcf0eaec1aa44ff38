@@ -23,8 +23,7 @@ public class IncreaseYazServlet extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
         systemEngine.increaseYaz();
-        int yaz = Timeline.getCurrTime();
-        String jsonResponse = new Gson().toJson(yaz);
+        String jsonResponse = new Gson().toJson(Timeline.getCurrTime());
 
         try (PrintWriter out = response.getWriter()) {
             out.print(jsonResponse);

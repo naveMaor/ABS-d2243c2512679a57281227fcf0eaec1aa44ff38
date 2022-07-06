@@ -2,7 +2,6 @@ package client.sub.scramble;
 
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
-
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
@@ -36,7 +35,6 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +44,7 @@ public class CustomerScrambleBodyController {
 
     private CustomerMainBodyController customerMainBodyController;
     private Set<String> allCategoriesList;
-//    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
+    //    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
     private ObservableList<LoanInformationObj> LoansToInvestList = FXCollections.observableArrayList();
 
     private List<String> chosenCategories;
@@ -147,6 +145,24 @@ public class CustomerScrambleBodyController {
     private TableView<LoanInformationObj> ReleventLoansTable;
 
 
+    public void bindDisable(BooleanProperty booleanProperty) {
+        amountToInvestTextField.disableProperty().bind(booleanProperty);
+        minimumInterestTextField.disableProperty().bind(booleanProperty);
+        minimumYazTextField.disableProperty().bind(booleanProperty);
+        maxOwnershipTextField.disableProperty().bind(booleanProperty);
+        minYazLabel.disableProperty().bind(booleanProperty);
+        categoriesOptionsListView.disableProperty().bind(booleanProperty);
+        userChoiceCategoriesListView.disableProperty().bind(booleanProperty);
+        forwardCategoriesButton.disableProperty().bind(booleanProperty);
+        backwardCategoriesButton.disableProperty().bind(booleanProperty);
+        minInterestLabel.disableProperty().bind(booleanProperty);
+        showRelevantButton.disableProperty().bind(booleanProperty);
+        scrambleButton.disableProperty().bind(booleanProperty);
+        ReleventLoansTable.disableProperty().bind(booleanProperty);
+        maxOpenLoansTextField.disableProperty().bind(booleanProperty);
+    }
+
+
     @FXML
     void activateScrambleButton(ActionEvent event) {
         int num = 0;
@@ -236,15 +252,7 @@ public class CustomerScrambleBodyController {
         chosenCategories = userChoiceCategoriesListView.getSelectionModel().getSelectedItems();
         userChoiceCategoriesListView.getItems().remove(chosenCategories.get(0));
 
-/*        //tsad smal
-        existChosenCategories = categoriesOptionsListView.getItems();
 
-        for (String category : chosenCategories) {
-            if (!existChosenCategories.contains(category)) {
-                existChosenCategories.add(category);
-                userChoiceCategoriesListView.getItems().remove(category);
-            }
-        }*/
     }
 
     @FXML
@@ -289,9 +297,9 @@ public class CustomerScrambleBodyController {
         }
         clientName = customerMainBodyController.getCurrClient().getFullName();
         List<String> n = existChosenCategories;
-        RelevantLoansRequestObj requestObj = new  RelevantLoansRequestObj(clientName,amount,n,minInterest,minYaz, maxOpenLoans,maxOwnership) ;
+        RelevantLoansRequestObj requestObj = new RelevantLoansRequestObj(clientName, amount, n, minInterest, minYaz, maxOpenLoans, maxOwnership);
 
-        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(requestObj,RelevantLoansRequestObj.class);
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(requestObj, RelevantLoansRequestObj.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
@@ -305,8 +313,6 @@ public class CustomerScrambleBodyController {
                 .url(finalUrl)
                 .post(body)
                 .build();
-
-
 
 
         HttpClientUtil.runAsync(request, new Callback() {
@@ -335,9 +341,7 @@ public class CustomerScrambleBodyController {
                             p.setStyle(" -fx-progress-color: orange;");
                             ReleventLoansTable.setItems(filterLoans);
 
-                        }
-                        else
-                        {
+                        } else {
                             Alert a = new Alert(Alert.AlertType.ERROR, response.body().string());
                             a.showAndWait();
 
@@ -377,58 +381,6 @@ public class CustomerScrambleBodyController {
 
     }
 
-/*
-    private void getAllCategories() {
-
-        String finalUrl = HttpUrl
-                .parse(Constants.CATEGORIES)
-                .newBuilder()
-                .addQueryParameter("username", clientName)
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to get categories from server")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
-                Platform.runLater(() -> {
-
-                    if (response.code() != 200) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Categories Not return from server!");
-                        alert.showAndWait();
-                    } else {
-                        try {
-                            String jsonOfClientString = response.body().string();
-                            response.body().close();
-                            String[] cat = new Gson().fromJson(jsonOfClientString, String[].class);
-                            allCategoriesList.clear();
-                            allCategoriesList.addAll(Arrays.asList(cat));
-                            categoriesOptionsListView.getItems().clear();
-                            categoriesOptionsListView.getItems().addAll(allCategoriesList);
-
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                });
-
-            }
-        });
-    }
-*/
 
     public void resetFields() {
         ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
@@ -443,33 +395,18 @@ public class CustomerScrambleBodyController {
         userChoiceCategoriesListView.getItems().removeAll();
         categoriesOptionsListView.getItems().clear();
         userChoiceCategoriesListView.getItems().clear();
-        //getAllCategories();
     }
 
     public void resetRelevantLoansTable() {
         ReleventLoansTable.getItems().clear();
     }
 
-    public void setAllCategories(Set<String> allCategoriesList){
-        synchronized (this){
+    public void setAllCategories(Set<String> allCategoriesList) {
+        synchronized (this) {
             categoriesOptionsListView.getItems().clear();
             categoriesOptionsListView.getItems().addAll(allCategoriesList);
         }
     }
 
-    public void bindDisable(BooleanProperty booleanProperty){
-        amountToInvestTextField.disableProperty().bind(booleanProperty);
-        minimumInterestTextField.disableProperty().bind(booleanProperty);
-        minimumYazTextField.disableProperty().bind(booleanProperty);
-        maxOwnershipTextField.disableProperty().bind(booleanProperty);
 
-        categoriesOptionsListView.disableProperty().bind(booleanProperty);
-        userChoiceCategoriesListView.disableProperty().bind(booleanProperty);
-        forwardCategoriesButton.disableProperty().bind(booleanProperty);
-        backwardCategoriesButton.disableProperty().bind(booleanProperty);
-
-        showRelevantButton.disableProperty().bind(booleanProperty);
-        scrambleButton.disableProperty().bind(booleanProperty);
-        ReleventLoansTable.disableProperty().bind(booleanProperty);
-    }
 }

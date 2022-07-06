@@ -80,15 +80,22 @@ public class BuyLoanController {
     public void bindDisable(BooleanProperty booleanProperty){
         ReleventLoansTable.disableProperty().bind(booleanProperty);
 
+
     }
 
     public void loadTableData(List<BuyLoanObj> loanObjList){
         synchronized (this){
             LoanToBuyList.clear();
-            LoanToBuyList.addAll(loanObjList);
-        }
-        ReleventLoansTable.setItems(LoanToBuyList);
+            if(customerMainBodyController.getCurrClient()!=null) {
+                LoanToBuyList.addAll(loanObjList);
+                ReleventLoansTable.setItems(LoanToBuyList);
 
+            }
+            else
+            {
+                ReleventLoansTable.getItems().clear();
+            }
+        }
     }
 
 /*

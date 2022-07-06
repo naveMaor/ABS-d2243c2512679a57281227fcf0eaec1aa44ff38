@@ -3,7 +3,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.effect.Glow?>
-<?import javafx.scene.effect.Light.Distant?>
 <?import javafx.scene.effect.Lighting?>
 <?import javafx.scene.effect.Shadow?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,11 +10,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.adminClientTable.ClientTableController">
     <children>
-        <TableView fx:id="adminClientTable" blendMode="MULTIPLY" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <TableView fx:id="adminClientTable" blendMode="MULTIPLY" prefHeight="400.0" prefWidth="923.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-21.0" AnchorPane.topAnchor="0.0">
             <columns>
-                <TableColumn fx:id="name" prefWidth="75.0" text="name" />
-                <TableColumn fx:id="balance" prefWidth="75.0" text="balance" />
-                <TableColumn fx:id="lender" prefWidth="75.0" text="Client as lender">
+                <TableColumn fx:id="name" prefWidth="105.0" text="name" />
+                <TableColumn fx:id="balance" prefWidth="76.0" text="balance" />
+                <TableColumn fx:id="lender" prefWidth="398.0" text="Client as lender">
                     <columns>
                         <TableColumn fx:id="lenderNew" prefWidth="75.0" text="new" />
                         <TableColumn fx:id="lenderPending" prefWidth="75.0" text="pending" />

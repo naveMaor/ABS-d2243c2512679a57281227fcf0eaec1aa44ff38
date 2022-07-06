@@ -40,26 +40,10 @@
                         </AnchorPane>
                      </children>
                   </AnchorPane>
-                  <GridPane prefHeight="159.0" prefWidth="989.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="326.0" minWidth="10.0" prefWidth="183.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="376.0" minWidth="10.0" prefWidth="376.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="282.0" minWidth="10.0" prefWidth="282.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="217.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                  <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <fx:include fx:id="usersList" source="users/users.fxml" GridPane.columnIndex="1" />
-                        <Button fx:id="IncreaseYazButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="48.0" prefWidth="176.0" text="Increase YAZ" textAlignment="CENTER" GridPane.columnIndex="4">
-                           <opaqueInsets>
-                              <Insets left="100.0" />
-                           </opaqueInsets>
-                        </Button>
-                        <Button fx:id="currYaz" defaultButton="true" disable="true" mnemonicParsing="false" opacity="0.72" prefHeight="41.0" prefWidth="136.0" text="Current YAZ: " textAlignment="CENTER" />
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
+                        <AnchorPane layoutX="691.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0">
                            <children>
                               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="65.0" layoutY="14.0" prefHeight="38.0" prefWidth="127.0" text="choose rewind yaz" textAlignment="CENTER" underline="true">
                                  <font>
@@ -67,12 +51,18 @@
                                  </font>
                               </Label>
                               <ComboBox fx:id="yazComboBox" layoutX="53.0" layoutY="52.0" prefWidth="150.0" styleClass="center-aligned" />
-                              <Button fx:id="rewindButton" layoutX="28.0" layoutY="98.0" mnemonicParsing="false" onAction="#rewindButtonAction" prefHeight="48.0" prefWidth="206.0" text="rewind choosen" />
+                              <Button fx:id="rewindButton" layoutX="24.0" layoutY="98.0" mnemonicParsing="false" onAction="#rewindButtonAction" prefHeight="48.0" prefWidth="210.0" text="rewind choosen" />
                               <Button fx:id="backToNormalButton" layoutX="24.0" layoutY="154.0" mnemonicParsing="false" onAction="#backToNormalButtonAction" prefHeight="48.0" prefWidth="209.0" text="Back to normal" />
                            </children>
                         </AnchorPane>
+                        <Button fx:id="IncreaseYazButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" layoutX="467.0" layoutY="111.0" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="48.0" prefWidth="211.0" text="Increase YAZ" textAlignment="CENTER">
+                           <opaqueInsets>
+                              <Insets left="100.0" />
+                           </opaqueInsets>
+                        </Button>
+                        <Button fx:id="currYaz" defaultButton="true" disable="true" layoutX="467.0" layoutY="170.0" mnemonicParsing="false" opacity="0.72" prefHeight="45.0" prefWidth="211.0" text="Current YAZ: 1" textAlignment="CENTER" />
                      </children>
-                  </GridPane>
+                  </AnchorPane>
                </children>
                <effect>
                   <Glow />

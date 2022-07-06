@@ -6,7 +6,6 @@ import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
-import servletDTO.client.ClientBalanceObj;
 import util.Constants;
 import util.HttpClientUtil;
 
@@ -45,8 +44,7 @@ public class YazRefresher extends TimerTask {
             @Override
             public void onFailure(@org.jetbrains.annotations.NotNull Call call, @org.jetbrains.annotations.NotNull IOException e) {
                 Platform.runLater(() ->
-//                        httpRequestLoggerConsumer.accept("Users Request # " + finalRequestNumber + " | Ended with failure...")
-                                //TODO ADD LOGS
+//
                                 System.out.println("Users Request Ended with failure...")
                 );
             }

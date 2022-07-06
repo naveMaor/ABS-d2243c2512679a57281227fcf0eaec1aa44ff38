@@ -81,6 +81,8 @@ public class NewLoanWindowController {
         String clientName = clientMainController.getCurrClient().getFullName();
         LoanInformationObj loanInformationObj = new LoanInformationObj(category,id,clientName, (double) capital, (double) interest,payEveryYaz,YazTimeText);
         createNewLoanRequest(loanInformationObj);
+
+
     }
 
     private void createNewLoanRequest(LoanInformationObj loanInformationObj){
@@ -126,6 +128,7 @@ public class NewLoanWindowController {
                         //clientMainController.loadData();
                         alert.showAndWait();
                         resetFields();
+                        clientMainController.closeNewLoanWindow();
                     }
                     else {
                         Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
