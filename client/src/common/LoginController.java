@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -36,6 +37,7 @@ public class LoginController {
     public Button quitButton;
     private ClientMainController clientMainController;
 
+
     @FXML
     public void initialize() {
         errorMessageLabel.textProperty().bind(errorMessageProperty);
@@ -44,6 +46,12 @@ public class LoginController {
 
     @FXML
     private void loginButtonClicked(ActionEvent event) {
+
+        if(clientMainController.getIsRewind()){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "system in rewind mode");
+            alert.showAndWait();
+            return;
+        }
 
         String userName = userNameTextField.getText();
         if (userName.isEmpty()) {

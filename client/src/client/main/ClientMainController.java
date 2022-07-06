@@ -2,7 +2,6 @@ package client.main;
 
 import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
-import com.google.gson.Gson;
 import common.LoginController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -37,7 +36,6 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
@@ -46,7 +44,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -116,6 +113,10 @@ public class ClientMainController implements Closeable {
         this.primaryStage = primaryStage;
     }
 
+    public boolean getIsRewind(){
+        return customerMainBodyController.getIsRewind();
+    }
+
     @FXML
     public void initialize() {
         header = root.getTop();
@@ -128,7 +129,7 @@ public class ClientMainController implements Closeable {
         loginComponentController.setMainController(this);
         customerMainBodyController.setMainController(this);
         welcomeLable.textProperty().bind(Bindings.concat("Welcome ", currentUserName));
-        bindDisable(customerMainBodyController.autoUpdateProperty());
+        bindDisable(customerMainBodyController.isRewindProperty());
         startListRefresher();
     }
     private void updateYAZ(Integer currYaz) {

@@ -44,7 +44,7 @@ public class CustomerMainBodyController {
     private Timer timer;
     private TimerTask listRefresher;
     public final static int REFRESH_RATE = 2000;
-    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    private final BooleanProperty isRewind = new SimpleBooleanProperty(false);
 
 
     private SimpleStringProperty customerName = new SimpleStringProperty();
@@ -75,10 +75,10 @@ public class CustomerMainBodyController {
             customerPaymentBodyController.setMainController(this);
             buyLoanController.setMainController(this);
         }
-        customerInformationBodyController.bindDisable(autoUpdate);
-        customerScrambleBodyController.bindDisable(autoUpdate);
-        customerPaymentBodyController.bindDisable(autoUpdate);
-        buyLoanController.bindDisable(autoUpdate);
+        customerInformationBodyController.bindDisable(isRewind);
+        customerScrambleBodyController.bindDisable(isRewind);
+        customerPaymentBodyController.bindDisable(isRewind);
+        buyLoanController.bindDisable(isRewind);
     }
 
     public void bindProperties(SimpleStringProperty customerName, SimpleBooleanProperty yazChanged){
@@ -102,12 +102,12 @@ public class CustomerMainBodyController {
         customerScrambleBodyController.resetRelevantLoansTable();
     }*/
 
-    public boolean isAutoUpdate() {
-        return autoUpdate.get();
+    public boolean getIsRewind() {
+        return isRewind.get();
     }
 
-    public BooleanProperty autoUpdateProperty() {
-        return autoUpdate;
+    public BooleanProperty isRewindProperty() {
+        return isRewind;
     }
 
 /*    public void loadData(){
@@ -131,7 +131,7 @@ public class CustomerMainBodyController {
                 customerInformationBodyController::loadClientTransactions,
                 customerPaymentBodyController::loadPaymentData,
                 mainController::setCurrClient,
-                autoUpdate,
+                isRewind,
                 customerScrambleBodyController::setAllCategories,
                 buyLoanController::loadTableData
                 );
