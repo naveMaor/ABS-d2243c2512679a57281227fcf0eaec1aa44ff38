@@ -15,7 +15,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.sub.Information.transactionsTableView.transactionsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.sub.Information.transactionsTableView.TransactionsController">
    <center>
       <TableView fx:id="transactionsTableView" blendMode="DARKEN" style="-fx-border-color: black;" BorderPane.alignment="CENTER">
         <columns>

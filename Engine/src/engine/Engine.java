@@ -626,7 +626,7 @@ public class Engine {
         Transaction transactionOfBuyer = new Transaction(currTimeStamp, -price, seller, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() - price);
         buyerAccount.addTnuaToAccount(transactionOfBuyer);
 
-        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, buyerAccount.getCurrBalance(), buyerAccount.getCurrBalance() + price);
+        Transaction transactionOfSeller = new Transaction(currTimeStamp, price, buyer, sellerAccount.getCurrBalance(), sellerAccount.getCurrBalance() + price);
         sellerAccount.addTnuaToAccount(transactionOfSeller);
 
         //update balance
@@ -681,7 +681,9 @@ public class Engine {
 
     public void loadRewindData(int yaz){
         if(!database.isRewind()){
-            database.setNormalSystem(new SaveSystemData(Timeline.getCurrTime(),database));
+            SaveSystemData normalSystemSaved = new SaveSystemData(database.getLoanMapByCategory(),database.getClientMap(),Timeline.getCurrTime(),database.getLoanOnSale(),database.isAdminConnected(),database.getAdminSet());
+            database.setNormalSystem(normalSystemSaved);
+            //database.setNormalSystem(new SaveSystemData(Timeline.getCurrTime(),database));
             database.setRewind(true);
         }
         SaveSystemData savedSystemData = database.getSavedSystemData(yaz);

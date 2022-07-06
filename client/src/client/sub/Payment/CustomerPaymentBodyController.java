@@ -3,6 +3,7 @@ package client.sub.Payment;
 import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,8 +62,28 @@ public class CustomerPaymentBodyController {
     private TextArea notificationsTextArea;
 
     @FXML
-    private Button pay;
+    private Button paySingleButton;
 
+    @FXML
+    private Button forwardButton;
+
+    @FXML
+    private Button backwardButton;
+
+    @FXML
+    private Button partialButton;
+
+
+    public void bindDisable(BooleanProperty booleanProperty){
+        paySingleButton.disableProperty().bind(booleanProperty);
+        forwardButton.disableProperty().bind(booleanProperty);
+        backwardButton.disableProperty().bind(booleanProperty);
+        partialButton.disableProperty().bind(booleanProperty);
+        notificationsTextArea.disableProperty().bind(booleanProperty);
+        ReleventLoansTable.disableProperty().bind(booleanProperty);
+        LoansListView.disableProperty().bind(booleanProperty);
+        closeEntireLoanButton.disableProperty().bind(booleanProperty);
+    }
 
     @FXML
     private TableView<LoanPaymentObj> ReleventLoansTable;
@@ -329,18 +350,19 @@ public class CustomerPaymentBodyController {
 
 
         //ReleventLoansTable.getItems().add(loanPaymentObj);
-
     }
 
     public void bindProperties(SimpleBooleanProperty yazChanged){
         loadTextAfterYazChange.bindBidirectional(yazChanged);
     }
 
+/*
     public void loadLoanTableData(){
         loadTextAreaData();
         updatePaymentLoanListRequest();
 
     }
+*/
 
 
     //todo:add get servlet for loan list from database
@@ -394,6 +416,7 @@ public class CustomerPaymentBodyController {
     }
 
 
+/*
     private void updatePaymentLoanListRequest(){
 
         String finalUrl = HttpUrl
@@ -438,6 +461,20 @@ public class CustomerPaymentBodyController {
 
         });
     }
+*/
 
+
+    public void loadPaymentData(List<LoanPaymentObj> loanPaymentObjs){
+        loadTextAreaData();
+        synchronized (this){
+            loanListForTable.clear();
+            ReleventLoansTable.getItems().clear();
+            loanListForTable.addAll(loanPaymentObjs);
+            ReleventLoansTable.setItems(loanListForTable);
+        }
+
+        customiseFactory(status);
+
+    }
 
 }

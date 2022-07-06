@@ -4,6 +4,7 @@ import client.sub.main.CustomerMainBodyController;
 import com.google.gson.Gson;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -74,6 +75,15 @@ public class CustomerScrambleBodyController {
 
     @FXML
     private Button forwardCategoriesButton;
+
+    @FXML
+    private Button backwardCategoriesButton;
+
+    @FXML
+    private Button scrambleButton;
+
+    @FXML
+    private Button showRelevantButton;
 
     @FXML
     private Label maxOpenLoansLabel;
@@ -215,7 +225,7 @@ public class CustomerScrambleBodyController {
         for (String category : chosenCategories) {
             if (!existChosenCategories.contains(category)) {
                 existChosenCategories.add(category);
-                categoriesOptionsListView.getItems().remove(category);
+                //categoriesOptionsListView.getItems().remove(category);
             }
         }
     }
@@ -224,7 +234,9 @@ public class CustomerScrambleBodyController {
     void activateBackwardCategoriesButton(ActionEvent event) {
         //tsad yamin
         chosenCategories = userChoiceCategoriesListView.getSelectionModel().getSelectedItems();
-        //tsad smal
+        userChoiceCategoriesListView.getItems().remove(chosenCategories.get(0));
+
+/*        //tsad smal
         existChosenCategories = categoriesOptionsListView.getItems();
 
         for (String category : chosenCategories) {
@@ -232,7 +244,7 @@ public class CustomerScrambleBodyController {
                 existChosenCategories.add(category);
                 userChoiceCategoriesListView.getItems().remove(category);
             }
-        }
+        }*/
     }
 
     @FXML
@@ -350,7 +362,7 @@ public class CustomerScrambleBodyController {
     public void initialize() {
 
         allCategoriesList = new HashSet<>();
-        getAllCategories();
+        //getAllCategories();
         resetFields();
         AddJavaFXCell.addCheckBoxCellScramble(ReleventLoansTable);
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Double>("loanOriginalDepth"));
@@ -363,9 +375,9 @@ public class CustomerScrambleBodyController {
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<LoanInformationObj, eLoanStatus>("status"));
 
-
     }
 
+/*
     private void getAllCategories() {
 
         String finalUrl = HttpUrl
@@ -416,6 +428,7 @@ public class CustomerScrambleBodyController {
             }
         });
     }
+*/
 
     public void resetFields() {
         ObservableList<LoanInformationObj> items = ReleventLoansTable.getItems();
@@ -430,10 +443,33 @@ public class CustomerScrambleBodyController {
         userChoiceCategoriesListView.getItems().removeAll();
         categoriesOptionsListView.getItems().clear();
         userChoiceCategoriesListView.getItems().clear();
-        getAllCategories();
+        //getAllCategories();
     }
 
     public void resetRelevantLoansTable() {
         ReleventLoansTable.getItems().clear();
+    }
+
+    public void setAllCategories(Set<String> allCategoriesList){
+        synchronized (this){
+            categoriesOptionsListView.getItems().clear();
+            categoriesOptionsListView.getItems().addAll(allCategoriesList);
+        }
+    }
+
+    public void bindDisable(BooleanProperty booleanProperty){
+        amountToInvestTextField.disableProperty().bind(booleanProperty);
+        minimumInterestTextField.disableProperty().bind(booleanProperty);
+        minimumYazTextField.disableProperty().bind(booleanProperty);
+        maxOwnershipTextField.disableProperty().bind(booleanProperty);
+
+        categoriesOptionsListView.disableProperty().bind(booleanProperty);
+        userChoiceCategoriesListView.disableProperty().bind(booleanProperty);
+        forwardCategoriesButton.disableProperty().bind(booleanProperty);
+        backwardCategoriesButton.disableProperty().bind(booleanProperty);
+
+        showRelevantButton.disableProperty().bind(booleanProperty);
+        scrambleButton.disableProperty().bind(booleanProperty);
+        ReleventLoansTable.disableProperty().bind(booleanProperty);
     }
 }

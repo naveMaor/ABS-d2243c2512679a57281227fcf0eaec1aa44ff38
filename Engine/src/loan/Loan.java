@@ -105,8 +105,8 @@ public class Loan implements Serializable {
         this.status = other.getStatus();
         this.loanID = other.getLoanID();
         this.borrowerName = other.getBorrowerName();
-        this.lendersList = new ArrayList<>(other.lendersList);
-        this.paymentsList = new ArrayList<>(other.paymentsList);
+        this.lendersList = new ArrayList<>(other.getLendersList());
+        this.paymentsList = new ArrayList<>(other.getPaymentsList());
         this.originalLoanTimeFrame = other.getOriginalLoanTimeFrame();
         this.startLoanYaz = other.getStartLoanYaz();
         this.paymentFrequency = other.getPaymentFrequency();

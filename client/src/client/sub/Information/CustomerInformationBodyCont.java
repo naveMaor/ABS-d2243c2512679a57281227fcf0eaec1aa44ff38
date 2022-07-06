@@ -1,10 +1,11 @@
 package client.sub.Information;
 
+import Money.operations.Transaction;
 import com.google.gson.Gson;
-import client.sub.Information.transactionsTableView.transactionsController;
+import client.sub.Information.transactionsTableView.TransactionsController;
 import client.sub.main.CustomerMainBodyController;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,7 +22,7 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 public class CustomerInformationBodyCont {
 
@@ -30,7 +31,7 @@ public class CustomerInformationBodyCont {
     @FXML
     private BorderPane transactions;
     @FXML
-    private transactionsController transactionsController;
+    private TransactionsController transactionsController;
 
     @FXML
     private TableColumn<LoanInformationObj, String> borrowerLoanID;
@@ -66,10 +67,10 @@ public class CustomerInformationBodyCont {
     private ObservableList<LoanInformationObj> clientAsBorrowLoanList = FXCollections.observableArrayList();
 
 
-    public void initializeClientTable(){
+/*    public void initializeClientTable(){
         createLoansAsLenderRequest();
         createLoansAsBorrowerRequest();
-    }
+    }*/
 
     public void setMainController(CustomerMainBodyController customerMainBodyController) {
         this.customerMainBodyController = customerMainBodyController;
@@ -93,16 +94,27 @@ public class CustomerInformationBodyCont {
         AddJavaFXCell.addButtonToTable(lenderTable,
                 this::putLoanOnSaleRequest,
                 "Sell");
+
     }
 
+    public void bindDisable(BooleanProperty booleanProperty){
+        transactionsController.bindDisable(booleanProperty);
+        lenderTable.disableProperty().bind(booleanProperty);
+    }
 
-
-    public SimpleStringProperty customerNameProperty() {
+/*    public SimpleStringProperty customerNameProperty() {
         return customerMainBodyController.customerNameProperty();
-    }
+    }*/
 
+/*
     public void loadTransactionsTable(){
         transactionsController.loadTableData();
+    }
+*/
+
+
+    public void loadClientTransactions(List<Transaction> transactionList){
+        transactionsController.loadClientTransactions(transactionList);
     }
 
     private void customiseFactory(TableColumn<LoanInformationObj, eLoanStatus> calltypel) {
@@ -174,6 +186,9 @@ public class CustomerInformationBodyCont {
         });
     }
 
+
+
+/*
     private void createLoansAsBorrowerRequest(){
         //noinspection ConstantConditions
         String finalUrl = HttpUrl
@@ -218,6 +233,7 @@ public class CustomerInformationBodyCont {
 
         });
     }
+*/
 
     public ClientDTOforServlet getCurrClient(){
         return customerMainBodyController.getCurrClient();
@@ -262,7 +278,7 @@ public class CustomerInformationBodyCont {
                     response.body().close();
 
                     if(response.code()==200){
-                        customerMainBodyController.loadData();
+                        //customerMainBodyController.loadData();
                         loan.setOnSale(true);
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"loan "+loan.getLoanID()+"is now on sale!");
                         alert.showAndWait();
@@ -278,4 +294,23 @@ public class CustomerInformationBodyCont {
     }
 
 
+    public void loadLenderLoanTable(List<LoanInformationObj> loanInformationObjs) {
+        synchronized (this){
+            clientAsLenderLoanList.clear();
+            clientAsLenderLoanList.addAll(loanInformationObjs);
+        }
+        lenderTable.setItems(clientAsLenderLoanList);
+        customiseFactory(lenderLoanStatus);
+    }
+
+    public void loadBorrowerLoanTable(List<LoanInformationObj> loanInformationObjs) {
+        synchronized (this) {
+            clientAsBorrowLoanList.clear();
+            clientAsBorrowLoanList.addAll(loanInformationObjs);
+        }
+        borrowerTable.setItems(clientAsBorrowLoanList);
+
+        customiseFactory(borrowerLoanStatus);
+
+    }
 }

@@ -2,9 +2,9 @@ package client.sub.Information.transactionsTableView;
 
 import Money.operations.Transaction;
 import client.sub.Information.CustomerInformationBodyCont;
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,9 +19,9 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
-public class transactionsController {
+public class TransactionsController {
     private CustomerInformationBodyCont customerInformationBodyCont;
 
     @FXML
@@ -32,7 +32,6 @@ public class transactionsController {
 
     @FXML
     private Button chargeButton;
-
 
 
     @FXML
@@ -81,7 +80,7 @@ public class transactionsController {
     @FXML
     private TableColumn<Transaction, Integer> yaz;
 
-    ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList();
+    private ObservableList<Transaction> transactionsObservableList = FXCollections.observableArrayList();
 
     public void setMainController(CustomerInformationBodyCont customerInformationBodyCont) {
         this.customerInformationBodyCont = customerInformationBodyCont;
@@ -95,10 +94,13 @@ public class transactionsController {
         currentBalanceLabel.textProperty().bind(Bindings.concat(balance));
     }
 
+/*
     public void loadTableData() {
         createTransactionListRequest();
     }
+*/
 
+/*
     private void createTransactionListRequest(){
         String finalUrl = HttpUrl
                 .parse(Constants.GET_TRANSACTION_LIST)
@@ -138,7 +140,13 @@ public class transactionsController {
 
         });
     }
+*/
 
+    public void bindDisable(BooleanProperty autoUpdate){
+        chargeButton.disableProperty().bind(autoUpdate);
+        withdrawButton.disableProperty().bind(autoUpdate);
+        amountTextField.disableProperty().bind(autoUpdate);
+    }
 
     public void createTransaction(int amount) {
         createTransactionRequest(amount);
@@ -180,7 +188,7 @@ public class transactionsController {
                         try {
                             String jsonOfClientString = response.body().string();
                             response.body().close();
-                            updatedData(jsonOfClientString);
+                            //updatedData(jsonOfClientString);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -195,15 +203,26 @@ public class transactionsController {
     }
 
 
-    private void updatedData(String jsonOfClientString){
+/*    private void updatedData(String jsonOfClientString){
         ClientDTOforServlet client= customerInformationBodyCont.getCurrClient();
-        Transaction[] TransactionList = new Gson().fromJson(jsonOfClientString, Transaction[].class);
+*//*        Transaction[] TransactionList = new Gson().fromJson(jsonOfClientString, Transaction[].class);
         transactionsObservableList.clear();
         transactionsObservableList.addAll(Arrays.asList(TransactionList));
-        transactionsTableView.setItems(transactionsObservableList);
+        transactionsTableView.setItems(transactionsObservableList);*//*
         amountTextField.setText("");
         double TmpBalance = client.getMyAccount().getCurrBalance();
         balance.set(TmpBalance);
-    }
+    }*/
 
+    public void loadClientTransactions(List<Transaction> transactionList) {
+        synchronized (this){
+            transactionsObservableList.clear();
+            transactionsObservableList.addAll(transactionList);
+            transactionsTableView.setItems(transactionsObservableList);
+        }
+        ClientDTOforServlet client= customerInformationBodyCont.getCurrClient();
+        //amountTextField.setText("");
+        double TmpBalance = client.getMyAccount().getCurrBalance();
+        balance.set(TmpBalance);
+    }
 }

@@ -41,7 +41,7 @@ public class Database implements Serializable {
 
 
     public void setLoanMapByCategory(Map<String, List<Loan>> loanMapByCategory) {
-        loanMapByCategory = loanMapByCategory;
+        this.loanMapByCategory = loanMapByCategory;
     }
     public void setClientMap(Map<String, Client> clientMap) {
         this.clientMap = clientMap;

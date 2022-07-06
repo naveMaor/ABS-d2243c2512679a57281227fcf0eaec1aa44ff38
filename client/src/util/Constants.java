@@ -45,7 +45,7 @@ public class Constants {
     public final static String GET_PAYMENT_LOAN_LIST = FULL_SERVER_PATH + "/PaymentsLoanList";
 
     public final static String GET_CURR_YEZ = FULL_SERVER_PATH + "/GetCurrYaz";
-    //stam
+    public final static String GET_REWIND = FULL_SERVER_PATH + "/Rewind";
 
 
     //buy loan
