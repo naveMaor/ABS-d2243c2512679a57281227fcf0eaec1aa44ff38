@@ -1,4 +1,21 @@
 
+/*.error-label {*/
+/*    -fx-text-fill: RED;*/
+/*    -fx-font-weight: BOLD;*/
+/*    -fx-font-size: 12px;*/
+/*}*/
+
+/*.main-action-button {*/
+/*    -fx-text-fill: GREEN;*/
+/*    -fx-font-size: 20px;*/
+/*    -fx-font-weight: BOLD;*/
+/*}*/
+
+/*#quit-button {*/
+/*    -fx-text-fill: RED;*/
+/*}*/
+
+
 .error-label {
     -fx-text-fill: RED;
     -fx-font-weight: BOLD;
@@ -13,4 +30,40 @@
 
 #quit-button {
     -fx-text-fill: RED;
+}
+
+.anchorPane
+{
+    -fx-background-color: linear-gradient( to right top,#facd68, #fc76b3);
+}
+
+
+
+.button {
+    -fx-background-color: white;
+    -fx-background-radius: 100;
+    -fx-text-fill: #002151;
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-radius: 100;
+    -fx-font-weight: bold;
+    -fx-font-size: 20;
+
+}
+
+.button:hover {
+    -fx-background-color: transparent;
+    -fx-background-radius: 100;
+    -fx-text-fill: white;
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-radius: 100;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:pressed{
+    -fx-scale-z: 0.9;
+    -fx-scale-y: 0.9;
+    -fx-scale-x: 0.9;
 }

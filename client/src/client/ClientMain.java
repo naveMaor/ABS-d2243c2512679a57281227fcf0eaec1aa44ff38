@@ -7,7 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ClientMain extends Application {
 
@@ -27,14 +29,12 @@ public class ClientMain extends Application {
 
         ScrollPane root = loader.load();
 
-        ClientMainController controller = loader.getController();
-        controller.setPrimaryStage(primaryStage);
-
-
+        ClientMainController controller = loader.getController();;
         primaryStage.setTitle("ABS System");
 
-        Scene scene = new Scene(load, 1000, 800);
+        Scene scene = new Scene(load);
         primaryStage.setScene(scene);
+        controller.setPrimaryStage(primaryStage);
         primaryStage.show();
     }
 }
