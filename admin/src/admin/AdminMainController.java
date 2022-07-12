@@ -14,12 +14,14 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
@@ -223,6 +225,10 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
+            Scene s =  rootBP.getParent().getScene();
+            Stage thisStage = (Stage)s.getWindow();
+            thisStage.setWidth(900);
+            thisStage.setHeight(1000);
             adminLoanTablesController.startLoanListRefresher();
             clientsTableController.startListRefresher();
         }

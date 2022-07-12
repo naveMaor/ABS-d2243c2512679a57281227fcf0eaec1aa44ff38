@@ -5,7 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class AdminAppMain extends Application {
 
@@ -16,7 +18,8 @@ public class AdminAppMain extends Application {
 
         primaryStage.setTitle("ABS System");
 
-        Scene scene = new Scene(load, 1000, 800);
+        Scene scene = new Scene(load);
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }

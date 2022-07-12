@@ -2,7 +2,6 @@ package client.main;
 
 import client.main.newLoanWindow.NewLoanWindowController;
 import client.sub.main.CustomerMainBodyController;
-import com.google.gson.Gson;
 import common.LoginController;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -29,6 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -37,7 +37,6 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import servletDTO.ClientDTOforServlet;
 import util.Constants;
 import util.HttpClientUtil;
@@ -46,6 +45,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.EventObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +56,7 @@ public class ClientMainController implements Closeable {
     Node header;
     Node clientDesktop;
     Node login;
+
     private Stage primaryStage;
     @FXML
     private BorderPane root;
@@ -111,8 +112,8 @@ public class ClientMainController implements Closeable {
             e.printStackTrace();
         }
     }
-    public  void closeNewLoanWindow()
-    {
+
+    public void closeNewLoanWindow() {
         newLoanStage.close();
     }
 
@@ -167,9 +168,14 @@ public class ClientMainController implements Closeable {
     public void switchToClientDesktop() {
         synchronized (this) {
             root.setBottom(null);
-            root.setCenter(clientDesktop);
-            root.setTop(header);
+           Scene s =  root.getParent().getScene();
+           Stage thisStage = (Stage)s.getWindow();
+           thisStage.setWidth(850);
+           thisStage.setHeight(830);
 
+
+           root.setCenter(clientDesktop);
+            root.setTop(header);
             customerMainBodyController.startLoanListRefresher();
         }
 

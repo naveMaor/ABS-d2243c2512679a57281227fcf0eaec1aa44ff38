@@ -15,7 +15,7 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.AdminMainController">
    <content>
-      <BorderPane fx:id="rootBP">
+      <BorderPane fx:id="rootBP" minHeight="-Infinity" minWidth="-Infinity">
          <center>
             <GridPane prefHeight="1045.0" prefWidth="1092.0">
                <columnConstraints>
@@ -32,8 +32,8 @@
                <children>
                   <AnchorPane style="-fx-text-fill: black;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <children>
-                        <fx:include fx:id="adminLoanTables" source="adminLoanTables/adminLoanTablesMain/adminLoanTables.fxml" />
-                        <AnchorPane layoutY="464.0" prefHeight="400.0" prefWidth="989.0" style="-fx-text-fill: black;">
+                        <fx:include fx:id="adminLoanTables" source="adminLoanTables/adminLoanTablesMain/adminLoanTables.fxml" AnchorPane.bottomAnchor="429.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="113.0" AnchorPane.topAnchor="0.0" />
+                        <AnchorPane layoutY="464.0" prefHeight="400.0" prefWidth="989.0" style="-fx-text-fill: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="464.0">
                            <children>
                               <fx:include fx:id="clientsTable" source="adminClientTable/adminClientTable.fxml" />
                            </children>
@@ -42,8 +42,8 @@
                   </AnchorPane>
                   <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <fx:include fx:id="usersList" source="users/users.fxml" GridPane.columnIndex="1" />
-                        <AnchorPane layoutX="691.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0">
+                        <fx:include fx:id="usersList" source="users/users.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="610.0" AnchorPane.topAnchor="0.0" GridPane.columnIndex="1" />
+                        <AnchorPane layoutX="691.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="691.0" AnchorPane.rightAnchor="107.0">
                            <children>
                               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="65.0" layoutY="14.0" prefHeight="38.0" prefWidth="127.0" text="choose rewind yaz" textAlignment="CENTER" underline="true">
                                  <font>
@@ -55,12 +55,12 @@
                               <Button fx:id="backToNormalButton" layoutX="24.0" layoutY="154.0" mnemonicParsing="false" onAction="#backToNormalButtonAction" prefHeight="48.0" prefWidth="209.0" text="Back to normal" />
                            </children>
                         </AnchorPane>
-                        <Button fx:id="IncreaseYazButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" layoutX="467.0" layoutY="111.0" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="48.0" prefWidth="211.0" text="Increase YAZ" textAlignment="CENTER">
+                        <Button fx:id="IncreaseYazButton" alignment="CENTER" contentDisplay="RIGHT" depthTest="DISABLE" layoutX="467.0" layoutY="111.0" mnemonicParsing="false" onAction="#IncreaseYazButtonListener" prefHeight="48.0" prefWidth="211.0" text="Increase YAZ" textAlignment="CENTER" AnchorPane.leftAnchor="467.0" AnchorPane.rightAnchor="354.0">
                            <opaqueInsets>
                               <Insets left="100.0" />
                            </opaqueInsets>
                         </Button>
-                        <Button fx:id="currYaz" defaultButton="true" disable="true" layoutX="467.0" layoutY="170.0" mnemonicParsing="false" opacity="0.72" prefHeight="45.0" prefWidth="211.0" text="Current YAZ: 1" textAlignment="CENTER" />
+                        <Button fx:id="currYaz" defaultButton="true" disable="true" layoutX="467.0" layoutY="170.0" mnemonicParsing="false" opacity="0.72" prefHeight="45.0" prefWidth="211.0" text="Current YAZ: 1" textAlignment="CENTER" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="467.0" AnchorPane.rightAnchor="354.0" AnchorPane.topAnchor="170.0" />
                      </children>
                   </AnchorPane>
                </children>
