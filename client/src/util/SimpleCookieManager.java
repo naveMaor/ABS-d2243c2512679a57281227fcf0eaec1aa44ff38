@@ -5,7 +5,11 @@ import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class SimpleCookieManager implements CookieJar {
@@ -14,9 +18,6 @@ public class SimpleCookieManager implements CookieJar {
     Map<String, Map<String, Cookie>> cookies = new HashMap<>();
     private Consumer<String> logData = System.out::println;
 
-/*    public void setLogData(Consumer<String> logData) {
-        this.logData = logData;
-    }*/
 
     @NotNull
     @Override

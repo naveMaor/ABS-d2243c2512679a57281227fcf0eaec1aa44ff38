@@ -290,20 +290,26 @@ public class Engine {
         }
     }
 
-    public void addNewLoanFromUser(Loan loan) throws IOException {
-        checkValidLoanFromUser(loan);
-        database.addCategory(loan.getLoanCategory());
-        database.addLoanToLoanMap(loan);
+    public void addNewLoanFromUser(Loan loan) throws Exception {
+        if(database.getClientByname(loan.getBorrowerName())!= null) {
+            checkValidLoanFromUser(loan);
+            database.addCategory(loan.getLoanCategory());
+            database.addLoanToLoanMap(loan);
+        }
+        else {
+        throw new Exception("Error, User don't exist! please insert loan for one of the user are existing in the system");
+        }
     }
 
 
-    private boolean checkValidLoanFromUser(Loan loan) throws IOException {
+    private boolean checkValidLoanFromUser(Loan loan) throws Exception {
         boolean isValid = true;
         String s = new String();
 
         if(!checkValidLoanNameFromUser(loan.getLoanID())){
             s += "\nthere is already a loan with the same name";
             isValid = false;
+            throw new Exception("user don't exist");
         }
 
 

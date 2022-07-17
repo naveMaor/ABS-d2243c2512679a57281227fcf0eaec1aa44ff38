@@ -27,7 +27,7 @@
          <center>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <fx:include fx:id="customerMainBody" source="../sub/main/CustomerMainBody.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include fx:id="customerMainBody" source="../sub/main/CustomerMainBody.fxml" />
                </children>
             </AnchorPane>
          </center>

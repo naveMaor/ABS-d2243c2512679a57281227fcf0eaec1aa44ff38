@@ -44,7 +44,6 @@ public class CustomerScrambleBodyController {
 
     private CustomerMainBodyController customerMainBodyController;
     private Set<String> allCategoriesList;
-    //    private ObservableList<LoanInformationObj> userFilteredLoanList = FXCollections.observableArrayList();
     private ObservableList<LoanInformationObj> LoansToInvestList = FXCollections.observableArrayList();
 
     private List<String> chosenCategories;
@@ -135,8 +134,6 @@ public class CustomerScrambleBodyController {
     @FXML
     private TableColumn<LoanInformationObj, Integer> ColumnTotalYaz;
 
-//    @FXML
-//    private TableColumn<LoanInformationObj, CheckBox> ColumnCheckBox;
 
     @FXML
     private TableColumn<LoanInformationObj, Double> TotalLoanCost;
@@ -199,7 +196,7 @@ public class CustomerScrambleBodyController {
                 public void onFailure(Call call, IOException e) {
                     Platform.runLater(() ->
                     {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "Unknown Error");
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Unknown Error with the request ");
                         alert.showAndWait();
                     });
                 }
@@ -226,7 +223,7 @@ public class CustomerScrambleBodyController {
 
                         });
                     }
-                    //   return false;
+
                 }
             });
         }
@@ -241,7 +238,7 @@ public class CustomerScrambleBodyController {
         for (String category : chosenCategories) {
             if (!existChosenCategories.contains(category)) {
                 existChosenCategories.add(category);
-                //categoriesOptionsListView.getItems().remove(category);
+
             }
         }
     }

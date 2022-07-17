@@ -3,7 +3,6 @@ package client.sub.Information;
 import Money.operations.Transaction;
 import client.sub.Information.transactionsTableView.TransactionsController;
 import client.sub.main.CustomerMainBodyController;
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
@@ -198,7 +197,7 @@ public class CustomerInformationBodyCont {
             clientAsLenderLoanList.clear();
             clientAsLenderLoanList.addAll(loanInformationObjs);
         }
-        if( customerMainBodyController.getCurrClient() != null) {
+        if (customerMainBodyController.getCurrClient() != null) {
             lenderTable.setItems(clientAsLenderLoanList);
             customiseFactory(lenderLoanStatus);
         }
@@ -209,7 +208,7 @@ public class CustomerInformationBodyCont {
             clientAsBorrowLoanList.clear();
             clientAsBorrowLoanList.addAll(loanInformationObjs);
         }
-        if( customerMainBodyController.getCurrClient() != null) {
+        if (customerMainBodyController.getCurrClient() != null) {
             borrowerTable.setItems(clientAsBorrowLoanList);
             customiseFactory(borrowerLoanStatus);
         }

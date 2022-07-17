@@ -309,8 +309,6 @@ public class ClientRefresher extends TimerTask {
                 .url(finalUrl)
                 .build();
 
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
         HttpClientUtil.runAsync(request, new Callback() {
 
             @Override
@@ -328,7 +326,6 @@ public class ClientRefresher extends TimerTask {
                             ObservableList<BuyLoanObj> LoanToBuyList = FXCollections.observableArrayList();
                             LoanToBuyList.clear();
                             String jsonOfClientString = response.body().string();
-                            // response.body().close();
                             Gson gson = new Gson();
                             BuyLoanObj[] BuyLoansArray = new Gson().fromJson(jsonOfClientString, BuyLoanObj[].class);
                             LoanToBuyList.addAll(BuyLoansArray);

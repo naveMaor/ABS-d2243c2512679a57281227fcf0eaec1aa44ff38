@@ -6,7 +6,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import servletDTO.LoanInformationObj;
 import util.Constants;
@@ -16,33 +21,25 @@ import java.io.IOException;
 
 public class NewLoanWindowController {
 
-    private ClientMainController clientMainController;
-
-
-    @FXML
-    private TextField CapitalText;
-
-    @FXML
-    private TextField CategoryText;
-
-    @FXML
-    private TextField IdText;
-
-    @FXML
-    private TextField InterestText;
-
-    @FXML
-    private TextField PayEveryYazText;
-
-    @FXML
-    private TextField YazTImeText;
-
     String id;
     String category;
     int capital;
     int interest;
     int payEveryYaz;
     int YazTimeText;
+    private ClientMainController clientMainController;
+    @FXML
+    private TextField CapitalText;
+    @FXML
+    private TextField CategoryText;
+    @FXML
+    private TextField IdText;
+    @FXML
+    private TextField InterestText;
+    @FXML
+    private TextField PayEveryYazText;
+    @FXML
+    private TextField YazTImeText;
 
     @FXML
     void CreateNewLoanButton(ActionEvent event) {
@@ -66,28 +63,28 @@ public class NewLoanWindowController {
             if (YazTimeTextTmp.matches("[0-9]+"))
                 YazTimeText = Integer.parseInt(YazTimeTextTmp);
 
-            if((capital<=0)||(interest<=0)||(payEveryYaz<=0)||(YazTimeText<=0)){
+            if ((capital <= 0) || (interest <= 0) || (payEveryYaz <= 0) || (YazTimeText <= 0)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "invalid parameters");
                 alert.showAndWait();
                 return;
             }
 
 
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "invalid parameters");
-                alert.showAndWait();
-                return;
-            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "invalid parameters");
+            alert.showAndWait();
+            return;
+        }
         String clientName = clientMainController.getCurrClient().getFullName();
-        LoanInformationObj loanInformationObj = new LoanInformationObj(category,id,clientName, (double) capital, (double) interest,payEveryYaz,YazTimeText);
+        LoanInformationObj loanInformationObj = new LoanInformationObj(category, id, clientName, (double) capital, (double) interest, payEveryYaz, YazTimeText);
         createNewLoanRequest(loanInformationObj);
 
 
     }
 
-    private void createNewLoanRequest(LoanInformationObj loanInformationObj){
+    private void createNewLoanRequest(LoanInformationObj loanInformationObj) {
 
-        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanInformationObj,LoanInformationObj.class);
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(loanInformationObj, LoanInformationObj.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
@@ -123,15 +120,13 @@ public class NewLoanWindowController {
                     }
                     response.body().close();
 
-                    if(response.code()==200){
+                    if (response.code() == 200) {
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        //clientMainController.loadData();
                         alert.showAndWait();
                         resetFields();
                         clientMainController.closeNewLoanWindow();
-                    }
-                    else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,jsonOfClientString);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, jsonOfClientString);
                         alert.showAndWait();
                     }
                 });
@@ -144,7 +139,7 @@ public class NewLoanWindowController {
         this.clientMainController = mainController;
     }
 
-    private void resetFields(){
+    private void resetFields() {
         CapitalText.clear();
         CategoryText.clear();
         IdText.clear();

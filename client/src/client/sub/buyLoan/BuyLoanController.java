@@ -98,53 +98,6 @@ public class BuyLoanController {
         }
     }
 
-/*
-    private void buyLoanTableListRequest(){
-        //noinspection ConstantConditions
-        String finalUrl = HttpUrl
-                .parse(Constants.GET_LOAN_TO_BUY_LIST)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Request request = new Request.Builder()
-                .url(finalUrl)
-                .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
-
-        HttpClientUtil.runAsync(request, new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() ->
-                        System.out.println("failed to call url get loan to buy list")
-                );
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Platform.runLater(() -> {
-                    try {
-                        if(response.code()==200){
-                            LoanToBuyList.clear();
-                            String jsonOfClientString = response.body().string();
-                            // response.body().close();
-                            Gson gson = new Gson();
-                            BuyLoanObj[] BuyLoansArray = new Gson().fromJson(jsonOfClientString, BuyLoanObj[].class);
-                            LoanToBuyList.addAll(BuyLoansArray);
-                            ReleventLoansTable.setItems(LoanToBuyList);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-
-        });
-    }
-*/
-
     private void buyLoanRequest(BuyLoanObj loan){
 
 
@@ -185,8 +138,6 @@ public class BuyLoanController {
                     response.body().close();
 
                     if(response.code()==200){
-                        //loan.setOnSale(false);
-                        //customerMainBodyController.loadData();
                         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"You just bought "+loan.getLoanID()+"!");
                         ReleventLoansTable.getItems().remove(loan);
                         alert.showAndWait();

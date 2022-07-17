@@ -47,9 +47,7 @@ public class ClientTableRefresher extends TimerTask {
             @Override
             public void onFailure(@org.jetbrains.annotations.NotNull Call call, @org.jetbrains.annotations.NotNull IOException e) {
                 Platform.runLater(() ->
-//                        httpRequestLoggerConsumer.accept("Users Request # " + finalRequestNumber + " | Ended with failure...")
-                                //TODO ADD LOGS
-                                System.out.println("Users Request Ended with failure...")
+                        System.out.println("Users Request Ended with failure")
                 );
             }
 

@@ -28,17 +28,21 @@ public class LoansAsLenderServlet extends HttpServlet {
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         Gson gson = new Gson();
-        List<LoanInformationObj> loanInformationObjList =new ArrayList<>();
-
+        List<LoanInformationObj> loanInformationObjList = new ArrayList<>();
         Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
-        if(client!=null){
-            List<Loan> loanList = client.getClientAsLenderLoanList();
-
-            for(Loan loan:loanList){
-                double AsSellerLoanPrice = loan.getTotalRemainingFund()*(loan.calculateClientLoanOwningPercentage(usernameFromSession)/100);
-                loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(),loan.getBorrowerName(),loan.getLoanCategory(),loan.getStatus(),AsSellerLoanPrice));
-            }
+        if (client == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print("The user don't exist ");
+            System.out.println("Error, The user don't exist ");
+            return;
         }
+        List<Loan> loanList = client.getClientAsLenderLoanList();
+
+        for (Loan loan : loanList) {
+            double AsSellerLoanPrice = loan.getTotalRemainingFund() * (loan.calculateClientLoanOwningPercentage(usernameFromSession) / 100);
+            loanInformationObjList.add(new LoanInformationObj(loan.getLoanID(), loan.getBorrowerName(), loan.getLoanCategory(), loan.getStatus(), AsSellerLoanPrice));
+        }
+
 
         String jsonResponse = gson.toJson(loanInformationObjList);
 

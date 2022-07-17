@@ -46,7 +46,7 @@ public class AddJavaFXCell {
 
                     }
                 });
-    ////asdadasdasd
+
                 return new SimpleObjectProperty<CheckBox>(checkBox);
 
             }

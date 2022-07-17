@@ -3,14 +3,12 @@ package servlets.client.scramble;
 import com.google.gson.Gson;
 import engine.Engine;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
 import servletDTO.LoanInformationObj;
-import servletDTO.RelevantLoansRequestObj;
 import servletDTO.ScrambleRequestObj;
 import utils.ServletUtils;
 
@@ -32,16 +30,13 @@ public class ScrambleLoansServlet extends HttpServlet {
         String errorResponse = "";
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
-        String reqBodyAsString = s.hasNext() ? s.next():"" ;
+        String reqBodyAsString = s.hasNext() ? s.next() : "";
         ScrambleRequestObj scrambleRequest = new Gson().fromJson(reqBodyAsString, ScrambleRequestObj.class);
-
-
 
         if (scrambleRequest == null) {
             errorResponse = "Request didnt send properly please try again";
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getOutputStream().print(errorResponse);
-            response.setStatus(401);
         } else {
 
             try {
@@ -55,11 +50,13 @@ public class ScrambleLoansServlet extends HttpServlet {
                     response.getOutputStream().print(errorResponse);
                 } else {
                     systemEngine.investing_according_to_agreed_risk_management_methodology(loans, scrambleRequest.getWantedInvestment(), scrambleRequest.getClientName(), scrambleRequest.getMaxPercentage());
-                    response.setStatus(200);
+                    response.getOutputStream().print("successfully, I Scramble the loan/s.");
+                    response.setStatus(HttpServletResponse.SC_OK);
 
                 }
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                response.getOutputStream().print("Error, " + e.toString());
             }
         }
     }

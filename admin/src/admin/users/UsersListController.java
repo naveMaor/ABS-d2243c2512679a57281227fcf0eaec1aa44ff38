@@ -25,7 +25,7 @@ import java.util.TimerTask;
 
 
 public class UsersListController implements Closeable {
-    public final static int REFRESH_RATE = 4000;
+    public final static int REFRESH_RATE = 3000;
     private final BooleanProperty autoUpdate;
     private final IntegerProperty totalUsers;
     private Timer timer;

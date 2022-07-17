@@ -1,6 +1,11 @@
 package admin.adminLoanTables.adminLoanTablesMain;
 
 import admin.adminLoanTables.TablesRefresher;
+import admin.adminLoanTables.activeStatus.ActiveTableController;
+import admin.adminLoanTables.finishedStatus.FinishedTableController;
+import admin.adminLoanTables.newStatus.NewTableController;
+import admin.adminLoanTables.pendingStatus.PendingTableController;
+import admin.adminLoanTables.riskStatus.RiskTableController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -12,11 +17,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import loan.Loan;
-import admin.adminLoanTables.activeStatus.ActiveTableController;
-import admin.adminLoanTables.finishedStatus.FinishedTableController;
-import admin.adminLoanTables.newStatus.NewTableController;
-import admin.adminLoanTables.pendingStatus.PendingTableController;
-import admin.adminLoanTables.riskStatus.RiskTableController;
 import servletDTO.admin.AdminLoanObj;
 
 import java.util.List;
@@ -24,43 +24,52 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class AdminLoanTablesController {
-    @FXML AnchorPane NewTable;
-    @FXML NewTableController NewTableController;
-    @FXML AnchorPane PendingTable;
-    @FXML PendingTableController PendingTableController;
-    @FXML AnchorPane ActiveTable;
-    @FXML ActiveTableController ActiveTableController;
-    @FXML AnchorPane RiskTable;
-    @FXML RiskTableController RiskTableController;
-    @FXML AnchorPane FinishedTable;
-    @FXML FinishedTableController FinishedTableController;
-
-
+    public final static int REFRESH_RATE = 4000;
+    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    @FXML
+    AnchorPane NewTable;
+    @FXML
+    NewTableController NewTableController;
+    @FXML
+    AnchorPane PendingTable;
+    @FXML
+    PendingTableController PendingTableController;
+    @FXML
+    AnchorPane ActiveTable;
+    @FXML
+    ActiveTableController ActiveTableController;
+    @FXML
+    AnchorPane RiskTable;
+    @FXML
+    RiskTableController RiskTableController;
+    @FXML
+    AnchorPane FinishedTable;
+    @FXML
+    FinishedTableController FinishedTableController;
     private Timer timer;
     private TimerTask listRefresher;
-    public final static int REFRESH_RATE = 2000;
-    private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
 
-    @FXML public void initialize() {
+    @FXML
+    public void initialize() {
 
-        if(NewTableController!=null ){
+        if (NewTableController != null) {
             NewTableController.setMainController(this);
         }
 
-        if(ActiveTableController!=null){
+        if (ActiveTableController != null) {
             ActiveTableController.setMainController(this);
         }
-        if(PendingTableController != null){
+        if (PendingTableController != null) {
             PendingTableController.setMainController(this);
         }
-        if(RiskTableController != null) {
+        if (RiskTableController != null) {
             RiskTableController.setMainController(this);
         }
 
 
     }
 
-        public void loadAdminTablesData(List<AdminLoanObj> adminLoanObj){
+    public void loadAdminTablesData(List<AdminLoanObj> adminLoanObj) {
         NewTableController.initializeTable(adminLoanObj);
         PendingTableController.initializeTable(adminLoanObj);
         ActiveTableController.initializeTable(adminLoanObj);
@@ -73,13 +82,11 @@ public class AdminLoanTablesController {
         TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
 
         Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>> cellFactory =
-                new Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>>()
-                {
+                new Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>>() {
                     @Override
                     public TableCell<Loan, Void> call(final TableColumn<Loan, Void> param) {
 
-                        final TableCell<Loan, Void> cell = new TableCell<Loan, Void>()
-                        {
+                        final TableCell<Loan, Void> cell = new TableCell<Loan, Void>() {
 
                             private final Button btn = new Button("Loan info");
 
@@ -109,7 +116,6 @@ public class AdminLoanTablesController {
         table.getColumns().add(colBtn);
 
     }
-
 
 
     public void startLoanListRefresher() {

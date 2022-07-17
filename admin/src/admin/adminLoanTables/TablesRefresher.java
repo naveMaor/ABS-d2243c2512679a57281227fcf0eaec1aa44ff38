@@ -26,7 +26,7 @@ public class TablesRefresher extends TimerTask {
         this.shouldUpdate = shouldUpdate;
     }
 
-    private void getAdminTablesDataRequest(){
+    private void getAdminTablesDataRequest() {
         Request request = new Request.Builder()
                 .url(Constants.ADMIN_LOAN_LIST)
                 .build();

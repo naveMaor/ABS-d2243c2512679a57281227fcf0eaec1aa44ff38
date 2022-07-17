@@ -9,21 +9,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import loan.enums.eLoanStatus;
-import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
 
 import java.util.List;
 
 public class NewTableController {
 
-    private Engine engine =Engine.getInstance();
 
+    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();
     private AdminLoanTablesController mainTablesController;
-
-    public void setMainController(AdminLoanTablesController mainTablesController){
-        this.mainTablesController = mainTablesController;
-    }
-
     @FXML
     private TableColumn<AdminLoanObj, Double> ColumnAmount;
 
@@ -48,57 +42,15 @@ public class NewTableController {
     @FXML
     private TableColumn<AdminLoanObj, Integer> ColumnTotalYaz;
 
-    //TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
-
 
     @FXML
     private TableView<AdminLoanObj> NewTable;
 
-    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();;
+    public void setMainController(AdminLoanTablesController mainTablesController) {
+        this.mainTablesController = mainTablesController;
+    }
 
-/*    private void addButtonToTable() {
-        TableColumn<Loan, Void> colBtn = new TableColumn("Button Column");
-
-        Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>> cellFactory =
-                new Callback<TableColumn<Loan, Void>, TableCell<Loan, Void>>()
-                {
-            @Override
-            public TableCell<Loan, Void> call(final TableColumn<Loan, Void> param) {
-
-                final TableCell<Loan, Void> cell = new TableCell<Loan, Void>()
-                {
-
-                   private final Button btn = new Button("Loan info");
-
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            Loan data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data.getStatus());
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(btn);
-                        }
-                    }
-                };
-                return cell;
-            }
-        };
-
-        colBtn.setCellFactory(cellFactory);
-
-        NewTable.getColumns().add(colBtn);
-
-    }*/
-
-
-    public void initialize(){
+    public void initialize() {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("loanOriginalDepth"));
         ColumnInterest.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("interestPercentagePerTimeUnit"));
         ColumnCategory.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, String>("loanCategory"));
@@ -113,14 +65,13 @@ public class NewTableController {
         loanObservableList.clear();
         NewTable.getItems().clear();
         initialize();
-        for(AdminLoanObj loanObj:adminLoanObj){
-            if(loanObj.getStatus()==eLoanStatus.NEW){
+        for (AdminLoanObj loanObj : adminLoanObj) {
+            if (loanObj.getStatus() == eLoanStatus.NEW) {
                 loanObservableList.add(loanObj);
             }
         }
         NewTable.setItems(loanObservableList);
 
-        //mainTablesController.addButtonToTable(NewTable);
     }
 
 

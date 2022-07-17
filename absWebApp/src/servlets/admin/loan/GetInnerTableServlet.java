@@ -22,7 +22,6 @@ public class GetInnerTableServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get engine and info
-        String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
@@ -41,13 +40,6 @@ public class GetInnerTableServlet extends HttpServlet {
                 innerTableObj = new InnerTableObj(loan);
             }
         }
-
-
-/*        InnerTableObj innerTableObj =
-                (InnerTableObj) AllLoans
-                        .stream()
-                        .filter(loan -> loan.getLoanID().equals(loanName))
-                        .map(InnerTableObj::new);*/
 
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(innerTableObj);

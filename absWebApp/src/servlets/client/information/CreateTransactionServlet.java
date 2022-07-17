@@ -31,6 +31,8 @@ public class CreateTransactionServlet extends HttpServlet {
         } catch (BalanceException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         List<Transaction> TransactionList = systemEngine.getClientTransactionsList(usernameFromSession);

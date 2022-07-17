@@ -8,14 +8,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import loan.Loan;
-import servletDTO.LoanInformationObj;
 import servletDTO.admin.AdminLoanObj;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

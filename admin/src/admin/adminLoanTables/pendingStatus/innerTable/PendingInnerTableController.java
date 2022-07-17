@@ -7,27 +7,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import loan.Loan;
-import engine.Engine;
 import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
 public class PendingInnerTableController {
-    Engine engine =Engine.getInstance();
-
-
+    ObservableList<Lenders> LendersObservableList = FXCollections.observableArrayList();
     @FXML
     private TableColumn<Lenders, Double> InvestedAmount;
-
     @FXML
     private TableColumn<Lenders, String> lenderName;
-
     @FXML
     private TableView<Lenders> pendingInnerTable;
-
-    ObservableList<Lenders> LendersObservableList = FXCollections.observableArrayList();
-
 
     public void initialize(List<Lenders> lendersObservableList) {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
@@ -37,7 +28,7 @@ public class PendingInnerTableController {
         pendingInnerTable.setItems(LendersObservableList);
     }
 
-    public void loadTableData(InnerTableObj innerTableObj){
+    public void loadTableData(InnerTableObj innerTableObj) {
         LendersObservableList.clear();
         LendersObservableList.addAll(innerTableObj.getLendersList());
 

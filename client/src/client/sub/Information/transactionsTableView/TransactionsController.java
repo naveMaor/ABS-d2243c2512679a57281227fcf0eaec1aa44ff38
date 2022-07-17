@@ -72,7 +72,7 @@ public class TransactionsController {
         }
         createTransaction(amount);
         amountTextField.clear();
-        //loadTableData();
+
     }
 
     @FXML
@@ -83,7 +83,6 @@ public class TransactionsController {
         }
         amountTextField.clear();
         createTransaction(amount);
-        //loadTableData();
     }
 
     public void setMainController(CustomerInformationBodyCont customerInformationBodyCont) {
@@ -143,7 +142,6 @@ public class TransactionsController {
                         try {
                             String jsonOfClientString = response.body().string();
                             response.body().close();
-                            //updatedData(jsonOfClientString);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -155,10 +153,6 @@ public class TransactionsController {
         });
 
 
-    }
-
-    public void restFields() {
-        transactionsObservableList.clear();
     }
 
 

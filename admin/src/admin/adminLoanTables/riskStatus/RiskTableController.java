@@ -2,7 +2,6 @@ package admin.adminLoanTables.riskStatus;
 
 import admin.adminLoanTables.InnerTablesRefresher;
 import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
-import admin.adminLoanTables.pendingStatus.innerTable.PendingInnerTableController;
 import admin.adminLoanTables.riskStatus.innerTable.riskInnerTableController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -17,7 +16,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import loan.enums.eLoanStatus;
-import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
 import servletDTO.admin.InnerTableObj;
 import util.AddJavaFXCell;
@@ -28,21 +26,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class RiskTableController {
-    Engine engine =Engine.getInstance();
-
-    private Timer timer;
-    private TimerTask listRefresher;
     public final static int REFRESH_RATE = 2000;
     private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();
+    private Timer timer;
+    private TimerTask listRefresher;
     private riskInnerTableController innerTableController;
-
-
     private AdminLoanTablesController mainTablesController;
-
-    public void setMainController(AdminLoanTablesController mainTablesController){
-        this.mainTablesController = mainTablesController;
-    }
-
     @FXML
     private TableColumn<AdminLoanObj, String> ColumnId;
 
@@ -77,12 +67,9 @@ public class RiskTableController {
     @FXML
     private TableView<AdminLoanObj> RiskTable;
 
-
-    ObservableList<AdminLoanObj> loanObservableList= FXCollections.observableArrayList();
-
-
-
-
+    public void setMainController(AdminLoanTablesController mainTablesController) {
+        this.mainTablesController = mainTablesController;
+    }
 
     public void initialize() {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("totalLoanCostInterestPlusOriginalDepth"));
@@ -95,50 +82,28 @@ public class RiskTableController {
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
         ActiveStatusYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("startLoanYaz"));
         NextPaymentColumn.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("nextYazToPay"));
-        AddJavaFXCell.addButtonToTable(RiskTable,this::openLoanDetails,"show","Lenders&Payments");
+        AddJavaFXCell.addButtonToTable(RiskTable, this::openLoanDetails, "show", "Lenders&Payments");
     }
 
 
-        public void initializeTable(List<AdminLoanObj> adminLoanObj) {
+    public void initializeTable(List<AdminLoanObj> adminLoanObj) {
         loanObservableList.clear();
         RiskTable.getItems().clear();
-        for(AdminLoanObj loanObj:adminLoanObj){
-            if(loanObj.getStatus()==eLoanStatus.RISK){
+        for (AdminLoanObj loanObj : adminLoanObj) {
+            if (loanObj.getStatus() == eLoanStatus.RISK) {
                 loanObservableList.add(loanObj);
             }
         }
         RiskTable.setItems(loanObservableList);
-
-        //mainTablesController.addButtonToTable(RiskTable);
     }
-/*    public void ActiveActionHandle(Loan loan){
-        //create stage
-        Stage stage = new Stage();
-        stage.setTitle("lenders info");
-        //load fxml
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/riskInnerTable.fxml"));
-        AnchorPane riskInnerTable = null;
-        try {
-            riskInnerTable = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //get the controller
-        riskInnerTableController innerTableController = fxmlLoader.getController();
-        innerTableController.initializeTable(loan.getLendersList(),loan.getPaymentsList());
-        Scene scene = new Scene(riskInnerTable);
-        stage.setScene(scene);
-        stage.show();
-    }*/
 
 
-    private void openLoanDetails(AdminLoanObj adminLoanObj){
+    private void openLoanDetails(AdminLoanObj adminLoanObj) {
         activeActionHandle(adminLoanObj.getLoanID());
     }
 
 
-
-    private void activeActionHandle(String loanName){
+    private void activeActionHandle(String loanName) {
         //create stage
         Stage stage = new Stage();
         stage.setTitle("lenders info");
@@ -158,7 +123,7 @@ public class RiskTableController {
         stage.show();
     }
 
-    private void loadInnerTableData(InnerTableObj innerTableObj){
+    private void loadInnerTableData(InnerTableObj innerTableObj) {
         innerTableController.loadTableData(innerTableObj);
     }
 

@@ -22,10 +22,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import servletDTO.ClientDTOforServlet;
-import time.Timeline;
 import util.Constants;
 import util.HttpAdminUtil;
 import util.HttpClientUtil;
@@ -77,8 +80,6 @@ public class AdminMainController {
     private ComboBox<Integer> yazComboBox;
 
 
-
-
     private StringProperty currentAdminName = new SimpleStringProperty();
     private StringProperty currentYaz = new SimpleStringProperty();
     private BooleanProperty isRewind = new SimpleBooleanProperty();
@@ -102,14 +103,12 @@ public class AdminMainController {
                 .build();
 
 
-
-
         HttpAdminUtil.runAsync(request, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() ->
-                               new Alert(Alert.AlertType.ERROR,"Can't increase yaz request failed").showAndWait()
+                        new Alert(Alert.AlertType.ERROR, "Can't increase yaz request failed").showAndWait()
                 );
             }
 
@@ -125,8 +124,8 @@ public class AdminMainController {
                         try {
                             jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
                             int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
-                            currYaz.setText("Current YAZ: "+ responseYaz);
-                            yazComboBox.getItems().add(responseYaz-1);
+                            currYaz.setText("Current YAZ: " + responseYaz);
+                            yazComboBox.getItems().add(responseYaz - 1);
                         } catch (IOException e) {
                             e.printStackTrace();
 
@@ -138,7 +137,6 @@ public class AdminMainController {
         });
 
     }
-
 
 
     @FXML
@@ -159,7 +157,6 @@ public class AdminMainController {
         Response response = HttpClientUtil.execute(request);
 
 
-
         if (response.code() != 200) {
             Alert alert = null;
             try {
@@ -169,27 +166,27 @@ public class AdminMainController {
             }
             alert.showAndWait();
         } else {
-                increaseYaz.setValue(true);
-                String jsonArrayOfUsersNames = null;
-                try {
-                    jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
-                    int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
-                    currYaz.setText("Current YAZ: "+ responseYaz);
-                    yazComboBox.getItems().add(responseYaz-1);
-                } catch (IOException e) {
-                            e.printStackTrace();
+            increaseYaz.setValue(true);
+            String jsonArrayOfUsersNames = null;
+            try {
+                jsonArrayOfUsersNames = Objects.requireNonNull(response.body()).string();
+                int responseYaz = new Gson().fromJson(jsonArrayOfUsersNames, int.class);
+                currYaz.setText("Current YAZ: " + responseYaz);
+                yazComboBox.getItems().add(responseYaz - 1);
+            } catch (IOException e) {
+                e.printStackTrace();
 
 
-                        }
+            }
 
         }
-            }
+    }
 
     @FXML
     public void rewindButtonAction(ActionEvent actionEvent) {
-        rewindTime =yazComboBox.getValue();
-        if(rewindTime==null){
-            Alert alert = new Alert(Alert.AlertType.ERROR,"PLEASE CHOOSE YAZ FIRST!");
+        rewindTime = yazComboBox.getValue();
+        if (rewindTime == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "PLEASE CHOOSE YAZ FIRST!");
             alert.showAndWait();
             return;
         }
@@ -199,7 +196,6 @@ public class AdminMainController {
     public void backToNormalButtonAction(ActionEvent actionEvent) {
         backToNormalSystemRequest();
     }
-
 
 
     @FXML
@@ -225,17 +221,17 @@ public class AdminMainController {
         synchronized (this) {
             rootBP.setTop(null);
             rootBP.setCenter(body);
-            Scene s =  rootBP.getParent().getScene();
-            Stage thisStage = (Stage)s.getWindow();
-            thisStage.setWidth(900);
-            thisStage.setHeight(1000);
+            Scene s = rootBP.getParent().getScene();
+            Stage thisStage = (Stage) s.getWindow();
+            thisStage.setWidth(1200);
+            thisStage.setHeight(1200);
             adminLoanTablesController.startLoanListRefresher();
             clientsTableController.startListRefresher();
         }
     }
 
-    private void rewindSystemRequest(int yaz){
-        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(yaz,int.class);
+    private void rewindSystemRequest(int yaz) {
+        String jsonExistChosenCategories = HttpClientUtil.GSON_INST.toJson(yaz, int.class);
 
         RequestBody body = RequestBody.create(jsonExistChosenCategories, HttpClientUtil.JSON);
 
@@ -261,8 +257,8 @@ public class AdminMainController {
                 e.printStackTrace();
             }
             int responseYaz = new Gson().fromJson(respon, int.class);
-            currYaz.setText("Current YAZ: "+ responseYaz);
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now READONLY mode at yaz "+yaz);
+            currYaz.setText("Current YAZ: " + responseYaz);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now READONLY mode at yaz " + yaz);
             alert.showAndWait();
             isRewind.setValue(true);
         } else {
@@ -271,7 +267,7 @@ public class AdminMainController {
 
     }
 
-    private void backToNormalSystemRequest(){
+    private void backToNormalSystemRequest() {
         String finalUrl = HttpUrl
                 .parse(Constants.LOAD_NORMAL_DATA)
                 .newBuilder()
@@ -293,7 +289,7 @@ public class AdminMainController {
                 e.printStackTrace();
             }
             int responseYaz = new Gson().fromJson(respon, int.class);
-            currYaz.setText("Current YAZ: "+ responseYaz);
+            currYaz.setText("Current YAZ: " + responseYaz);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "system is now back to normal mode");
             isRewind.setValue(false);
             alert.showAndWait();

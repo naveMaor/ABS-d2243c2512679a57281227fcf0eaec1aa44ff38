@@ -7,10 +7,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.WritableFloatValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,14 +23,13 @@ import util.Constants;
 import util.HttpClientUtil;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class LoginController {
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
     @FXML
     public TextField userNameTextField;
-
-    //private ChatAppMainController chatAppMainController;
     @FXML
     public Label errorMessageLabel;
     @FXML
@@ -48,7 +45,8 @@ public class LoginController {
         errorMessageLabel.textProperty().bind(errorMessageProperty);
 
     }
-    private void createRewindRequest(){
+
+    private void createRewindRequest() {
         String finalUrl = HttpUrl
                 .parse(Constants.GET_REWIND)
                 .newBuilder()
@@ -61,7 +59,8 @@ public class LoginController {
 
 
         Response response = HttpClientUtil.execute(request);
-        if (response.code() == 200) {
+        if(response!= null && response.code() == 200)
+        {
 
             try {
                 String jsonOfClientString = response.body().string();
@@ -91,7 +90,6 @@ public class LoginController {
             return;
         }
 
-        //noinspection ConstantConditions
         String finalUrl = HttpUrl
                 .parse(Constants.LOGIN_PAGE)
                 .newBuilder()
@@ -102,8 +100,6 @@ public class LoginController {
         Request request = new Request.Builder()
                 .url(finalUrl)
                 .build();
-
-        //updateHttpStatusLine("New request is launched for: " + finalUrl);
 
         HttpClientUtil.runAsync(request, new Callback() {
 

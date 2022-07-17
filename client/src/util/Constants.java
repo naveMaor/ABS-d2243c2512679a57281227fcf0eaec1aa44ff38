@@ -4,10 +4,6 @@ import com.google.gson.Gson;
 
 public class Constants {
 
-    // fxml locations
-    public final static String MAIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/main/chat-app-main.fxml";
-    public final static String LOGIN_PAGE_FXML_RESOURCE_LOCATION = "/chat/client/component/login/login.fxml";
-    public final static String CHAT_ROOM_FXML_RESOURCE_LOCATION = "/chat/client/component/chatroom/chat-room-main.fxml";
 
     // Server resources locations
     public final static String BASE_DOMAIN = "localhost";

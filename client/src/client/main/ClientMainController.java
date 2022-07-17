@@ -65,7 +65,7 @@ public class ClientMainController implements Closeable {
     @FXML
     private LoginController loginComponentController;
     @FXML
-    private ScrollPane customerMainBody;
+    private AnchorPane customerMainBody;
     @FXML
     private CustomerMainBodyController customerMainBodyController;
     private ClientDTOforServlet currClient;
@@ -170,8 +170,8 @@ public class ClientMainController implements Closeable {
             root.setBottom(null);
            Scene s =  root.getParent().getScene();
            Stage thisStage = (Stage)s.getWindow();
-           thisStage.setWidth(850);
-           thisStage.setHeight(830);
+           thisStage.setWidth(1000);
+           thisStage.setHeight(1100);
 
 
            root.setCenter(clientDesktop);

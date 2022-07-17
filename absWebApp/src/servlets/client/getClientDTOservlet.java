@@ -24,9 +24,14 @@ public class getClientDTOservlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
+
+
         Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
-        if(client==null){
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        if(client == null)
+        {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print("The user don't exist ");
+            System.out.println("Error, The user don't exist ");
             return;
         }
         ClientDTOforServlet clientDTOforServlet = new ClientDTOforServlet(client);

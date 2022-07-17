@@ -2,7 +2,6 @@ package admin.adminLoanTables.pendingStatus;
 
 import admin.adminLoanTables.InnerTablesRefresher;
 import admin.adminLoanTables.adminLoanTablesMain.AdminLoanTablesController;
-import admin.adminLoanTables.finishedStatus.innerTable.finishedInnerTableController;
 import admin.adminLoanTables.pendingStatus.innerTable.PendingInnerTableController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -11,12 +10,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import loan.enums.eLoanStatus;
-import engine.Engine;
 import servletDTO.admin.AdminLoanObj;
 import servletDTO.admin.InnerTableObj;
 import util.AddJavaFXCell;
@@ -28,19 +27,14 @@ import java.util.TimerTask;
 
 public class PendingTableController {
 
-    Engine engine =Engine.getInstance();
 
-    private AdminLoanTablesController mainTablesController;
-
-    private Timer timer;
-    private TimerTask listRefresher;
     public final static int REFRESH_RATE = 2000;
     private final BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();
+    private AdminLoanTablesController mainTablesController;
+    private Timer timer;
+    private TimerTask listRefresher;
     private PendingInnerTableController innerTableController;
-
-    public void setMainController(AdminLoanTablesController mainTablesController){
-        this.mainTablesController = mainTablesController;
-    }
     @FXML
     private TableView<AdminLoanObj> PendingTable;
 
@@ -74,12 +68,9 @@ public class PendingTableController {
     @FXML
     private TableColumn<AdminLoanObj, Double> LeftToMakeActive;
 
-    ObservableList<AdminLoanObj> loanObservableList = FXCollections.observableArrayList();
-
-
-
-
-
+    public void setMainController(AdminLoanTablesController mainTablesController) {
+        this.mainTablesController = mainTablesController;
+    }
 
     public void initialize() {
         ColumnAmount.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Double>("loanOriginalDepth"));
@@ -92,50 +83,28 @@ public class PendingTableController {
         ColumnPayEvery.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("paymentFrequency"));
         ColumnTotalYaz.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, Integer>("originalLoanTimeFrame"));
         ColumnStatus.setCellValueFactory(new PropertyValueFactory<AdminLoanObj, eLoanStatus>("status"));
-        AddJavaFXCell.addButtonToTable(PendingTable,this::openLoanDetails,"show","Lenders&Payments");
+        AddJavaFXCell.addButtonToTable(PendingTable, this::openLoanDetails, "show", "Lenders&Payments");
     }
 
 
-        public void initializeTable(List<AdminLoanObj> adminLoanObj) {
+    public void initializeTable(List<AdminLoanObj> adminLoanObj) {
         loanObservableList.clear();
         PendingTable.getItems().clear();
-        for(AdminLoanObj loanObj:adminLoanObj){
-            if(loanObj.getStatus()==eLoanStatus.PENDING){
+        for (AdminLoanObj loanObj : adminLoanObj) {
+            if (loanObj.getStatus() == eLoanStatus.PENDING) {
                 loanObservableList.add(loanObj);
             }
         }
         PendingTable.setItems(loanObservableList);
 
     }
-/*
-    public void ActiveActionHandle(Loan loan){
-        //create stage
-        Stage stage = new Stage();
-        stage.setTitle("lenders info");
-        //load fxml
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("innerTable/PendingInnerTable.fxml"));
-        AnchorPane pendingInnerTable = null;
-        try {
-            pendingInnerTable = fxmlLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //get the controller
-        PendingInnerTableController innerTableController = fxmlLoader.getController();
-        innerTableController.initializeTable(loan.getLendersList());
-        Scene scene = new Scene(pendingInnerTable);
-        stage.setScene(scene);
-        stage.show();
-    }
-*/
 
-    private void openLoanDetails(AdminLoanObj adminLoanObj){
+    private void openLoanDetails(AdminLoanObj adminLoanObj) {
         activeActionHandle(adminLoanObj.getLoanID());
     }
 
 
-
-    private void activeActionHandle(String loanName){
+    private void activeActionHandle(String loanName) {
         //create stage
         Stage stage = new Stage();
         stage.setTitle("lenders info");
@@ -155,7 +124,7 @@ public class PendingTableController {
         stage.show();
     }
 
-    private void loadInnerTableData(InnerTableObj innerTableObj){
+    private void loadInnerTableData(InnerTableObj innerTableObj) {
         innerTableController.loadTableData(innerTableObj);
     }
 

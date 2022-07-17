@@ -5,60 +5,44 @@ import customes.Lenders;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import engine.Engine;
 import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
 public class riskInnerTableController {
-    private Engine engine =Engine.getInstance();
-    private int amountNotPayed=0;
-    private int numNotPayed=0;
-
-    @FXML
-    private TableColumn<Lenders, Double> InvestedAmount;
-
-    @FXML
-    private TableColumn<Lenders, String> lenderName;
-
-    @FXML
-    private TableView<Lenders> pendingInnerTable;
-
-
-
-    @FXML
-    private TableView<Payment> borrowerPayements;
-
-    @FXML
-    private TableColumn<Payment, Double> fund;
-
-    @FXML
-    private TableColumn<Payment, Double> interest;
-
-
-
-    @FXML
-    private TableColumn<Payment, Double> paymentAmount;
-
-
-    @FXML
-    private TableColumn<Payment, Integer> yaz;
-
-
-    @FXML
-    private Label amountNotPayedLable;
-
-    @FXML
-    private Label numNotPayedLable;
-
-    @FXML
-    private TableColumn<Payment, Boolean> payed;
 
     ObservableList<Lenders> LendersObservableList = FXCollections.observableArrayList();
     ObservableList<Payment> PaymentObservableList = FXCollections.observableArrayList();
-
+    private int amountNotPayed = 0;
+    private int numNotPayed = 0;
+    @FXML
+    private TableColumn<Lenders, Double> InvestedAmount;
+    @FXML
+    private TableColumn<Lenders, String> lenderName;
+    @FXML
+    private TableView<Lenders> pendingInnerTable;
+    @FXML
+    private TableView<Payment> borrowerPayements;
+    @FXML
+    private TableColumn<Payment, Double> fund;
+    @FXML
+    private TableColumn<Payment, Double> interest;
+    @FXML
+    private TableColumn<Payment, Double> paymentAmount;
+    @FXML
+    private TableColumn<Payment, Integer> yaz;
+    @FXML
+    private Label amountNotPayedLable;
+    @FXML
+    private Label numNotPayedLable;
+    @FXML
+    private TableColumn<Payment, Boolean> payed;
 
     public void initialize() {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
@@ -85,7 +69,7 @@ public class riskInnerTableController {
 
                     if (!isEmpty()) {
 
-                        if(!item)
+                        if (!item)
                             currentRow.setStyle("-fx-background-color:red");
                         else
                             currentRow.setStyle("-fx-background-color:green");
@@ -95,13 +79,13 @@ public class riskInnerTableController {
         });
     }
 
-    private void setNotPayedData(List<Payment> paymentObservableList){
-        amountNotPayed=0;
-        numNotPayed=0;
-        for (Payment payment:paymentObservableList){
-            if(!payment.getIsPayed()){
+    private void setNotPayedData(List<Payment> paymentObservableList) {
+        amountNotPayed = 0;
+        numNotPayed = 0;
+        for (Payment payment : paymentObservableList) {
+            if (!payment.getIsPayed()) {
                 ++numNotPayed;
-                amountNotPayed+=payment.getFundPlusInterest();
+                amountNotPayed += payment.getFundPlusInterest();
             }
         }
     }

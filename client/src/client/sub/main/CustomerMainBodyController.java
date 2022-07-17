@@ -25,11 +25,11 @@ import java.util.TimerTask;
 public class CustomerMainBodyController {
 
 
-    public final static int REFRESH_RATE = 2000;
+    public final static int REFRESH_RATE = 4000;
     private final BooleanProperty isRewind = new SimpleBooleanProperty(false);
     private ClientMainController mainController;
     @FXML
-    private ScrollPane customerInformationBody;
+    private AnchorPane customerInformationBody;
     @FXML
     private CustomerInformationBodyCont customerInformationBodyController;
     @FXML
@@ -91,7 +91,6 @@ public class CustomerMainBodyController {
     public void bindProperties(SimpleStringProperty customerName, SimpleBooleanProperty yazChanged) {
         this.customerName.bind(Bindings.concat(customerName));
         loadTextAfterYazChange.bindBidirectional(yazChanged);
-        //yazChanged.bind(loadTextAfterYazChange);
     }
 
     public void setMainController(ClientMainController mainController) {
@@ -121,7 +120,7 @@ public class CustomerMainBodyController {
                 buyLoanController::loadTableData,
                 customerInformationBodyController::loadClientTransactions
 
-                );
+        );
         timer = new Timer();
         timer.schedule(listRefresher, REFRESH_RATE, REFRESH_RATE);
     }

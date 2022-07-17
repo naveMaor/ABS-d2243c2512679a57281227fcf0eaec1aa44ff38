@@ -62,11 +62,6 @@ public class AdminLoginServlet extends HttpServlet{
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getOutputStream().print(errorMessage);
                     } else {
-                        //add the new user to the users list
-//                        systemEngine.getDatabase().addUser(usernameFromParameter);
-                        //set the username in a session so it will be available on each request
-                        //the true parameter means that if a session object does not exists yet
-                        //create a new one
                         request.getSession(true).setAttribute(ADMIN, usernameFromParameter);
                         engine.getDatabase().addAdmin(usernameFromParameter);
                         engine.getDatabase().setAdminConnected(true);

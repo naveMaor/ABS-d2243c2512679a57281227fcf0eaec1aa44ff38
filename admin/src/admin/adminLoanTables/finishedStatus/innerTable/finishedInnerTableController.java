@@ -8,46 +8,31 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import engine.Engine;
 import servletDTO.admin.InnerTableObj;
 
 import java.util.List;
 
 public class finishedInnerTableController {
 
-    Engine engine =Engine.getInstance();
-
-
-    @FXML
-    private TableColumn<Lenders, Double> InvestedAmount;
-
-    @FXML
-    private TableColumn<Lenders, String> lenderName;
-
-    @FXML
-    private TableView<Lenders> pendingInnerTable;
-
-
-    @FXML
-    private TableView<Payment> borrowerPayements;
-
-    @FXML
-    private TableColumn<Payment, Double> fund;
-
-    @FXML
-    private TableColumn<Payment, Double> interest;
-
-
-    @FXML
-    private TableColumn<Payment, Double> paymentAmount;
-
-
-    @FXML
-    private TableColumn<Payment, Integer> yaz;
 
     ObservableList<Lenders> LendersObservableList = FXCollections.observableArrayList();
     ObservableList<Payment> PaymentObservableList = FXCollections.observableArrayList();
-
+    @FXML
+    private TableColumn<Lenders, Double> InvestedAmount;
+    @FXML
+    private TableColumn<Lenders, String> lenderName;
+    @FXML
+    private TableView<Lenders> pendingInnerTable;
+    @FXML
+    private TableView<Payment> borrowerPayements;
+    @FXML
+    private TableColumn<Payment, Double> fund;
+    @FXML
+    private TableColumn<Payment, Double> interest;
+    @FXML
+    private TableColumn<Payment, Double> paymentAmount;
+    @FXML
+    private TableColumn<Payment, Integer> yaz;
 
     public void initialize(List<Lenders> lendersObservableList, List<Payment> paymentObservableList) {
         InvestedAmount.setCellValueFactory(new PropertyValueFactory<Lenders, Double>("deposit"));
@@ -58,7 +43,7 @@ public class finishedInnerTableController {
         yaz.setCellValueFactory(new PropertyValueFactory<Payment, Integer>("paymentYaz"));
     }
 
-    public void loadTableData(InnerTableObj innerTableObj){
+    public void loadTableData(InnerTableObj innerTableObj) {
         LendersObservableList.clear();
         LendersObservableList.addAll(innerTableObj.getLendersList());
         PaymentObservableList.clear();

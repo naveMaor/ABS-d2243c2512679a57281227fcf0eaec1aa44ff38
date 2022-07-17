@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import javafx.scene.control.Alert;
 import loan.Loan;
 import servletDTO.LoanInformationObj;
 import utils.ServletUtils;
@@ -24,14 +25,30 @@ public class NewLoanFromUserServlet extends HttpServlet {
         Scanner s = new Scanner(request.getInputStream()).useDelimiter("\\A");
         String reqBodyAsString = s.hasNext() ? s.next() : "";
 
-        LoanInformationObj loanInformationObj = new Gson().fromJson(reqBodyAsString, LoanInformationObj.class);
-        Loan newLoan = new Loan(loanInformationObj.getLoanID(), loanInformationObj.getBorrowerName(), loanInformationObj.getLoanCategory(), loanInformationObj.getLoanOriginalDepth(), loanInformationObj.getOriginalLoanTimeFrame(), loanInformationObj.getPaymentFrequency(), loanInformationObj.getPaymentFrequency());
+
+
+
         try {
-            systemEngine.addNewLoanFromUser(newLoan);
+            LoanInformationObj loanInformationObj = new Gson().fromJson(reqBodyAsString, LoanInformationObj.class);
+
+
+            if(loanInformationObj!= null) {
+                Loan newLoan = new Loan(loanInformationObj.getLoanID(), loanInformationObj.getBorrowerName(), loanInformationObj.getLoanCategory(), loanInformationObj.getLoanOriginalDepth(), loanInformationObj.getOriginalLoanTimeFrame(), loanInformationObj.getPaymentFrequency(), loanInformationObj.getPaymentFrequency());
+                systemEngine.addNewLoanFromUser(newLoan);
+                response.getOutputStream().print("successfully, I Placed the loan.");
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            else
+            {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getOutputStream().print("The request didn't send properly we cant convert the loan json the filed type");
+                return;
+            }
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            response.getOutputStream().print(e.getMessage());
+
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getOutputStream().print(e.toString());
             return;
         }
         response.setStatus(200);

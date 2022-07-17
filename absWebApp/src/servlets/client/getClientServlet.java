@@ -24,6 +24,13 @@ public class getClientServlet extends HttpServlet {
         Engine systemEngine = ServletUtils.getSystemEngine(getServletContext());
 
         Client client = systemEngine.getDatabase().getClientByname(usernameFromSession);
+        if(client == null)
+        {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getOutputStream().print("The user don't exist ");
+            System.out.println("Error, The user don't exist ");
+            return;
+        }
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(client);
 
