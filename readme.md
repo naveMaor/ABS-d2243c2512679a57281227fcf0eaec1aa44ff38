@@ -1,4 +1,6 @@
-**Alternative Banking System - P2P**
+![System Architecture Diagram](https://pub.mdpi-res.com/sustainability/sustainability-15-04028/article_deploy/html/images/sustainability-15-04028-g001.png?1677075418)
+
+**Alternative Banking System - P2P** 
 
 Peer-to-peer (P2P) lending enables individuals to obtain loans directly from other individuals, cutting out the financial institution as the middleman.
 Websites that facilitate P2P lending have greatly increased its adoption as an alternative method of financing. P2P lending is also known as “social lending” or “crowd lending.”
