@@ -41,6 +41,9 @@ This project is a desktop application, aims to build an Alternative Banking Syst
 
 - Import a system configuration from an XML file or create your own system.
 
+**Demo Usage:**
+
+[!Demo usage]{https://i.ibb.co/2SqwcZQ/p2p-lending-system-demo.gif)
 
 
 
