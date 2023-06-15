@@ -43,7 +43,6 @@ This project is a desktop application, aims to build an Alternative Banking Syst
 
 **Demo Usage:**
 
-![Demo_usage]{https://i.ibb.co/2SqwcZQ/p2p-lending-system-demo.gif)
-
+![Alt Text](https://i.ibb.co/2SqwcZQ/p2p-lending-system-demo.gif)
 
 
